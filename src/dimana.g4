@@ -1,10 +1,6 @@
 grammar dimana;
 
-// Lexer rules
-
-
-// Parser rules
-program: statement*;
+program: statement* EOF;
 
 statement: dimensionDefinition | unitDefinition | dataTypeDefinition | expr | printStatement | readStatement | conversion | listAppend | listAccess | loop | include | assignment | comparison;
 dimensionDefinition: 'dimension' ID ('=' dimensionExpression)? ';';
