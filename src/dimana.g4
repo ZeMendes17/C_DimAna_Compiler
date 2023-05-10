@@ -1,36 +1,59 @@
 grammar dimana;
 
-program: statement* EOF;
+program: statList EOF;
+
+statList: (statement? ';')*;
 
 statement: 
-      variableDeclaration
-    | assignment
-    | inputStatement
+      assignment
+    | variableDeclaration
+    // | inputStatement
     | outputStatement
     | loopStatement
+    | headerFile
+    | prefixUnit
+    | unit
+    | alternativeUnit
+    | listDeclaration
     ;
 
-variableDeclaration: dataType ID ('=' expression)? ';';
+variableDeclaration: dataType ID ('=' expression)?;
 
-assignment: ID '=' expression ';';
+assignment: ID '=' expression;
 
-inputStatement: ID '=' dataType '(' 'read' STRING ')' '*'? ID ';';
+// inputStatement: ID '=' dataType '(' 'read' STRING ')' ('*' ID)?;
 
-outputStatement: ('write' | 'writeln') expressionList ';';
+outputStatement: ('write' | 'writeln') expression;
 
-loopStatement: 'for' ID '=' INT 'to' INT 'do' statement* 'end' ';';
+loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | 'length' '(' ID ')') 'do' ((expression ';')* | statList) 'end';
 
-expressionList: expression (',' expression)*;
+// expressionList: expression (',' expression)*;
+
+headerFile: 'use' STRING;
+
+prefixUnit: 'prefix' dataType ID '=' (INT |  '1e' minus='-'? INT);
+
+unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
+
+alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
+
+listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
+
 
 expression
-    : expression ('*' | '/') expression # MulDivExpression
-    | expression ('+' | '-') expression # AddSubExpression
-    | '(' expression ')'                # ParenExpression
-    | ID                                # IdExpression
-    | dataType '(' expression ')'       # TypeConversion
-    | REAL                              # RealLiteral
-    | INT                               # IntLiteral
-    | STRING                            # StringLiteral
+    : 'read' STRING                                     # InputExpression
+    | 'string' '(' (STRING | ID) ',' INT ')'            # StringAssignExpression
+    | expression ('*' | '/') expression                 # MulDivExpression
+    | expression ('+' | '-') expression                 # AddSubExpression
+    | '(' expression ')'                                # ParenExpression
+    | expression ',' expression                         # ExprListExpression
+    | expression '>>' ID                                #AddListExpression
+    | ID '[' ID ']'                                     #IndexExpression
+    | ID                                                # IdExpression
+    | dataType '(' expression ')'                       # TypeConversion
+    | REAL                                              # RealLiteral
+    | INT                                               # IntLiteral
+    | STRING                                            # StringLiteral
     ;
 
 dataType: 'integer' | 'real' | 'string' | 'list' '[' ID ']' | ID;
@@ -42,3 +65,4 @@ STRING: '"' .*? '"';
 
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '#' ~[\r\n]* -> skip;
+ERROR: .;
