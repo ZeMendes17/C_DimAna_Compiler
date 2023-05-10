@@ -1,0 +1,22 @@
+module(name,stat) ::= <<
+ # código que vai aparecer no ficheiro compilado
+>>
+
+stats(stat) ::= <<
+<if(stat)><stat; separator="\n"><endif>
+>>
+
+
+/*
+decl(type,var,value) ::= "<type> <var><if(value)> = <value><endif>;"
+
+assign(var,value) ::= "<var> = <value>;"
+
+declareHashMap (type1,type2,hashmapname) ::= "HashMap \<<type1>,<type2>> <hashmapname> = new HashMap \<<type1>,<type2>>();"
+
+binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
+   
+inserttohashmap (var,key,value) ::= "<var>.put(<key>,<value>);"
+
+print(value) ::= "System.out.println(<value>);"
+*/ cenas do ultimo ex, pode ser que ajudem
