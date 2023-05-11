@@ -163,4 +163,16 @@ public class DimanaCompiler extends dimanaBaseVisitor<String> {
       return visitChildren(ctx);
       //return res;
    }
+
+   // creates new vars to be used in the compiled file
+   private String newVar() {
+      numVars++;
+      return "v" + numVars;
+   }
+
+   // increments the number of vars to update the name
+   private int numVars=0;
+
+   // to use the .stg file
+   private STGroup templates = new STGroupFile("dimana.stg");
 }
