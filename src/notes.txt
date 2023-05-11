@@ -1,0 +1,11 @@
+Como compilar o use??
+
+
+dimension integer NMEC [nmec];
+dimension real Grade [val];
+
+
+
+
+
+

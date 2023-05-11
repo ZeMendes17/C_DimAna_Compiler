@@ -1,14 +1,65 @@
+typeValue ::= [
+   "integer":"int",
+   "real":"double",
+   default:"null"
+]
+
+
 module(name,stat) ::= <<
  # código que vai aparecer no ficheiro compilado
 >>
+public class <name> {
+   import java.util.*
+   import java.io.*
+
+   public static void main(String[] args) {
+      Scanner sc = new Scanner(System.in); /*para depois usar nos READS*/
+      <stats(stat)>
+      sc.close(); /*tem de fechar*/
+   }
+}
 
 stats(stat) ::= <<
 <if(stat)><stat; separator="\n"><endif>
 >>
 
+forLoop(stat, var, init, final, action) ::= <<
+   <stats(stat)>
+   for(int <var> = <init>; <init> < <final>; <var>++) {
+      <action> /*nao deve ser assim esta parte*/
+   }
+>>
+
+
+list(var, type) ::= <<
+   List<<type>> <var> = new ArrayList<>();
+   */ Mudar o primeiro index de 0 para 1*/
+>>
+
+
+InsertIntoList(lista, value) ::=<<
+   <lista>.add(<value>) 
+>>
+
+
+
+
+/* unit() */
+
+/* Dimension()*/
+
+/* Vamos precisar */
+
+read(var, name) ::= <<
+   System.out.print("Insert value into" + " '" + <name> + "': ");
+   String <var> = sc.nextLine();
+>>
+
+print(value) ::= "System.out.print(<value>);"
+println(value) ::= "System.out.println(<value>);" /* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
 
 /*
-decl(type,var,value) ::= "<type> <var><if(value)> = <value><endif>;"
+decl(type,var,value) ::= "<typeValue.(type)> <var><init(value)>;"
 
 assign(var,value) ::= "<var> = <value>;"
 
@@ -18,5 +69,6 @@ binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
    
 inserttohashmap (var,key,value) ::= "<var>.put(<key>,<value>);"
 
-print(value) ::= "System.out.println(<value>);"
+
 */ cenas do ultimo ex, pode ser que ajudem
+

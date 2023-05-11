@@ -1,8 +1,12 @@
 
 import java.util.*;
+import java.util.ArrayList;
 import org.stringtemplate.v4.*;
+
 @SuppressWarnings("CheckReturnValue")
 public class DimanaCompiler extends dimanaBaseVisitor<String> {
+
+    Arraylist<String> declared_dimensions = new ArrayList<String>();
 
    @Override public String visitProgram(dimanaParser.ProgramContext ctx) {
       String res = null;
