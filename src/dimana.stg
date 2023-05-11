@@ -61,6 +61,15 @@ println(value) ::= "System.out.println(<value>);" /* write incompleto secalhar.N
 /*
 decl(type,var,value) ::= "<typeValue.(type)> <var><init(value)>;"
 
+
+// unit = unidade da dimensão (ex: m, kg, s, etc)
+// name = nome da variável
+// value = quando tem valor inicial
+declare_var(unit,name) ::= "DimensionVar <name> = new DimensionVar(<unit>);"
+
+declare_var_with_value(unit,name,value) ::= "DimensionVar <name> = new DimensionVar(<unit>,<value>);"
+
+
 assign(var,value) ::= "<var> = <value>;"
 
 declareHashMap (type1,type2,hashmapname) ::= "HashMap \<<type1>,<type2>> <hashmapname> = new HashMap \<<type1>,<type2>>();"
