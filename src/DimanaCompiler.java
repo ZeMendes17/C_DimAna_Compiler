@@ -8,7 +8,18 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    private int varCount = 0; // variable counter
    HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
    // por exemplo, length: [real, m , cm , mm]
-   // pra ser + facil, tentem definir por esta convenção , nome_dimensão : [tipo_de_dados, unidade_principal, unidade_alternativa1, unidade_alternativa2, ...]
+   // pra ser + facil, tentem definir por esta convenção , nome_dimensão :
+   // [tipo_de_dados, unidade_principal, unidade_alternativa1,
+   // unidade_alternativa2, ...]
+
+
+   ArrayList<String> default_types = new ArrayList<String>() {
+      {
+         add("integer");
+         add("real");
+         add("string");
+      }
+   };
 
 
    // não está acabada esta função, basica af
@@ -18,14 +29,16 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       String dimension_name = ctx.ID(0).getText();
       String dataType = ctx.dataType().getText();
       String dimension_unit = ctx.ID(1).getText();
-      varMap.put(dimension_name, new ArrayList<String>(){{
-         add(dataType);
-         add(dimension_unit);
-      }});
+      System.out.print("New dimension declared " + dimension_name + " | Type: " +  dataType + " |  Default Unit: " + dimension_unit + "\n" );
+      varMap.put(dimension_name, new ArrayList<String>() {
+         {
+            add(dataType);
+            add(dimension_unit);
+         }
+      });
       return visitChildren(ctx);
       // return res;
    }
-
 
    @Override
    public ST visitVariableDeclaration(dimanaParser.VariableDeclarationContext ctx) {
@@ -39,28 +52,31 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       }
       if (!varMap.containsKey(dataType)) // se esta dimensão ainda não foi declarada
       {
-         System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
-         System.exit(0);
+         if (!default_types.contains(dataType)) {
+            System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
+            System.exit(0);
+         }
       }
 
-      ST res = null;
-
+      ST variable_declaration = null;
 
       if (expression.isEmpty()) { // não é dado um valor inicial
-         res = templates.getInstanceOf("declare_var");
-         res.add("unit", dataType);
-         res.add("name", id);
+         variable_declaration = templates.getInstanceOf("declare_var");
+         variable_declaration.add("unit", dataType);
+         variable_declaration.add("name", id);
       } else { // é dado um valor inicial ( expression )
-         ST res = templates.getInstanceOf("declare_var_with_value");
-         res.add("unit", dataType);
-         res.add("name", id);
-         res.add("value", expression);
+         variable_declaration = templates.getInstanceOf("declare_var_with_value");
+         variable_declaration.add("unit", dataType);
+         variable_declaration.add("name", id);
+         variable_declaration.add("value", expression);
       }
 
-      return res;
+      System.out.println("New variable declared " + dataType + " " + id + " " + expression + "\n");
+      //System.out.println(variable_declaration.render() + "\n");
+
+      return variable_declaration;
 
    }
-
 
    @Override
    public ST visitProgram(dimanaParser.ProgramContext ctx) {
@@ -82,7 +98,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
-
 
    @Override
    public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
@@ -118,7 +133,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
-
 
    @Override
    public ST visitAlternativeUnit(dimanaParser.AlternativeUnitContext ctx) {

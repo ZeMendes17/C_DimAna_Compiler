@@ -1,14 +1,5 @@
-typeValue ::= [
-   "integer":"int",
-   "real":"double",
-   default:"null"
-]
-
-
 module(name,stat) ::= <<
- # código que vai aparecer no ficheiro compilado
->>
-public class <name> {
+ public class <name> {
    import java.util.*
    import java.io.*
 
@@ -18,28 +9,34 @@ public class <name> {
       sc.close(); /*tem de fechar*/
    }
 }
+>>
 
 stats(stat) ::= <<
 <if(stat)><stat; separator="\n"><endif>
 >>
 
-forLoop(stat, var, init, final, action) ::= <<
-   <stats(stat)>
-   for(int <var> = <init>; <init> < <final>; <var>++) {
-      <action> /*nao deve ser assim esta parte*/
-   }
->>
 
 
+
+typeValue ::= [
+   "integer":"int",
+   "real":"double",
+   default:"null"
+]
+
+
+
+/*
 list(var, type) ::= <<
    List<<type>> <var> = new ArrayList<>();
-   */ Mudar o primeiro index de 0 para 1*/
->>
+   >>
+*/
 
-
+/*
 InsertIntoList(lista, value) ::=<<
    <lista>.add(<value>) 
 >>
+*/
 
 
 
@@ -50,15 +47,18 @@ InsertIntoList(lista, value) ::=<<
 
 /* Vamos precisar */
 
+/*
 read(var, name) ::= <<
    System.out.print("Insert value into" + " '" + <name> + "': ");
    String <var> = sc.nextLine();
 >>
+*/
 
 print(value) ::= "System.out.print(<value>);"
-println(value) ::= "System.out.println(<value>);" /* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
+println(value) ::= "System.out.println(<value>);" 
+/* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
 
-/*
+
 decl(type,var,value) ::= "<typeValue.(type)> <var><init(value)>;"
 
 
@@ -72,12 +72,10 @@ declare_var_with_value(unit,name,value) ::= "DimensionVar <name> = new Dimension
 
 assign(var,value) ::= "<var> = <value>;"
 
-declareHashMap (type1,type2,hashmapname) ::= "HashMap \<<type1>,<type2>> <hashmapname> = new HashMap \<<type1>,<type2>>();"
+
 
 binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
    
-inserttohashmap (var,key,value) ::= "<var>.put(<key>,<value>);"
 
 
-*/ cenas do ultimo ex, pode ser que ajudem
 
