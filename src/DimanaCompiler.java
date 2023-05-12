@@ -6,32 +6,26 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
    private int varCount = 0; // variable counter
-   HashMap<String, String> varMap = new HashMap<String, String>();
-   // hashmap de cada dimensão declarada e qual é a sua unidade base
-   // vai ser usado para fazer a verificação semantica das dimensões
-   // nunca deve ser possível criar uma variável com uma dimensão que não esteja
-   // declarada neste mapa
+   HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
+   // por exemplo, length: [real, m , cm , mm]
+   // pra ser + facil, tentem definir por esta convenção , nome_dimensão : [tipo_de_dados, unidade_principal, unidade_alternativa1, unidade_alternativa2, ...]
 
+
+   // não está acabada esta função, basica af
    @Override
-   public ST visitProgram(dimanaParser.ProgramContext ctx) {
-      ST res = null;
+   public ST visitUnit(dimanaParser.UnitContext ctx) {
+      // usado para declaração das dimensões
+      String dimension_name = ctx.ID(0).getText();
+      String dataType = ctx.dataType().getText();
+      String dimension_unit = ctx.ID(1).getText();
+      varMap.put(dimension_name, new ArrayList<String>(){{
+         add(dataType);
+         add(dimension_unit);
+      }});
       return visitChildren(ctx);
       // return res;
    }
 
-   @Override
-   public ST visitStatList(dimanaParser.StatListContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
-
-   @Override
-   public ST visitStatement(dimanaParser.StatementContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
 
    @Override
    public ST visitVariableDeclaration(dimanaParser.VariableDeclarationContext ctx) {
@@ -66,6 +60,29 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return res;
 
    }
+
+
+   @Override
+   public ST visitProgram(dimanaParser.ProgramContext ctx) {
+      ST res = null;
+      return visitChildren(ctx);
+      // return res;
+   }
+
+   @Override
+   public ST visitStatList(dimanaParser.StatListContext ctx) {
+      ST res = null;
+      return visitChildren(ctx);
+      // return res;
+   }
+
+   @Override
+   public ST visitStatement(dimanaParser.StatementContext ctx) {
+      ST res = null;
+      return visitChildren(ctx);
+      // return res;
+   }
+
 
    @Override
    public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
@@ -102,12 +119,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // return res;
    }
 
-   @Override
-   public ST visitUnit(dimanaParser.UnitContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
 
    @Override
    public ST visitAlternativeUnit(dimanaParser.AlternativeUnitContext ctx) {
