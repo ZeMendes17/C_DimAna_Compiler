@@ -29,7 +29,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       String dimension_name = ctx.ID(0).getText();
       String dataType = ctx.dataType().getText();
       String dimension_unit = ctx.ID(1).getText();
-      System.out.print("New dimension declared " + dimension_name + " | Type: " +  dataType + " |  Default Unit: " + dimension_unit + "\n" );
+      // System.out.print("New dimension declared " + dimension_name + " | Type: " +  dataType + " |  Default Unit: " + dimension_unit + "\n" );
       varMap.put(dimension_name, new ArrayList<String>() {
          {
             add(dataType);
@@ -53,25 +53,32 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       if (!varMap.containsKey(dataType)) // se esta dimensão ainda não foi declarada
       {
          if (!default_types.contains(dataType)) {
-            System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
+            // System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
             System.exit(0);
          }
       }
 
       ST variable_declaration = null;
 
-      if (expression.isEmpty()) { // não é dado um valor inicial
-         variable_declaration = templates.getInstanceOf("declare_var");
-         variable_declaration.add("unit", dataType);
-         variable_declaration.add("name", id);
-      } else { // é dado um valor inicial ( expression )
-         variable_declaration = templates.getInstanceOf("declare_var_with_value");
-         variable_declaration.add("unit", dataType);
-         variable_declaration.add("name", id);
-         variable_declaration.add("value", expression);
+      if(dataType.equals("string") || dataType.equals("real") || dataType.equals("integer")) {
+         variable_declaration = templates.getInstanceOf("decl");
+         variable_declaration.add("type", dataType);
+         variable_declaration.add("var", id);
+      } else {
+
+         if (expression.isEmpty()) { // não é dado um valor inicial
+            variable_declaration = templates.getInstanceOf("declare_var");
+            variable_declaration.add("unit", dataType);
+            variable_declaration.add("name", id);
+         } else { // é dado um valor inicial ( expression )
+            variable_declaration = templates.getInstanceOf("declare_var_with_value");
+            variable_declaration.add("unit", dataType);
+            variable_declaration.add("name", id);
+            variable_declaration.add("value", expression);
+         }
       }
 
-      System.out.println("New variable declared " + dataType + " " + id + " " + expression + "\n");
+      // System.out.println("New variable declared " + dataType + " " + id + " " + expression + "\n");
       //System.out.println(variable_declaration.render() + "\n");
 
       return variable_declaration;
@@ -80,24 +87,26 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitProgram(dimanaParser.ProgramContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("module");
+      res.add("stat", visit(ctx.statList()));
+      res.add("name", "Output");
+      return res;
    }
 
    @Override
    public ST visitStatList(dimanaParser.StatListContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("stats");
+      for(dimanaParser.StatementContext sc: ctx.statement())
+         res.add("stat", visit(sc));
+      return res;
    }
 
-   @Override
-   public ST visitStatement(dimanaParser.StatementContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
+   // @Override
+   // public ST visitStatement(dimanaParser.StatementContext ctx) {
+   //    ST res = null;
+   //    return visitChildren(ctx);
+   //    // return res;
+   // }
 
    @Override
    public ST visitAssignment(dimanaParser.AssignmentContext ctx) {

@@ -1,7 +1,8 @@
 module(name,stat) ::= <<
- public class <name> {
-   import java.util.*
-   import java.io.*
+import java.util.*;
+import java.io.*;
+
+public class <name> {
 
    public static void main(String[] args) {
       Scanner sc = new Scanner(System.in); /*para depois usar nos READS*/
@@ -21,7 +22,8 @@ stats(stat) ::= <<
 typeValue ::= [
    "integer":"int",
    "real":"double",
-   default:"null"
+   "string":"String"
+
 ]
 
 
@@ -59,15 +61,17 @@ println(value) ::= "System.out.println(<value>);"
 /* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
 
 
-decl(type,var,value) ::= "<typeValue.(type)> <var><init(value)>;"
+decl(type,var) ::= "<typeValue.(type)> <var>;"
 
 
 // unit = unidade da dimensão (ex: m, kg, s, etc)
 // name = nome da variável
 // value = quando tem valor inicial
-declare_var(unit,name) ::= "DimensionVar <name> = new DimensionVar(<unit>);"
+declare_var(unit,name) ::= <<DimensionVar <name> = new DimensionVar("<unit>");>>
 
-declare_var_with_value(unit,name,value) ::= "DimensionVar <name> = new DimensionVar(<unit>,<value>);"
+declare_var_with_value(unit,name,value) ::= <<
+DimensionVar <name> = new DimensionVar("<unit>",<value>);
+>>
 
 
 assign(var,value) ::= "<var> = <value>;"
