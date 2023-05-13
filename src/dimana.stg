@@ -65,14 +65,12 @@ assign_scanner(var) ::= "<var> = sc.nextLine();"
 read_and_cast (type,var,dimension,temp) ::= <<
 System.out.print("Insert value into " + <var> + " : ");
 <typeValue.(type)> <temp> = sc.next<typeValue.(type)>();
-<var> = new DimensionVar("<dimension>",<temp>);
+<var>.setValue_<typeValue.(type)>(<temp>);
 >>
 
 read(var,temp)   ::= <<
 System.out.print("Insert value into " + <var> + " : ");
-String <temp> = sc.next();
-<var> = new DimensionVar("string");
-<var>.setValue_string(<temp>);
+<var> = sc.next();
 >>
 
 

@@ -62,21 +62,21 @@ public class DimensionVar  {
     }
 
 
-    public double getValue_real() {
+    public double getValue_double() {
         return value_real;
     }
 
-    public void setValue_real(double value_real) {
+    public void setValue_double(double value_real) {
         this.value_real = value_real;
     }
 
     
-    public int getvalue_int() {
+    public int getValue_int() {
         return value_int;
     }
 
-    public void setvalue_int(String inicial_value) {
-        this.value_int = Integer.parseInt(inicial_value);
+    public void setValue_int(int inicial_value) {
+        this.value_int = inicial_value;
     }
 
 
