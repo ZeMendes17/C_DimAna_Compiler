@@ -147,6 +147,26 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       }
    }
 
+
+   // não está acabado / bem feito ainda
+   @Override
+   public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
+      
+      String write_expr = ctx.write_expr().getText();
+      String expr = ctx.expression().getText();
+
+      if (write_expr.equals("write")){
+         ST print = templates.getInstanceOf("print");
+         print.add("value", expr);
+         return print;
+      }
+      else{
+         ST println = templates.getInstanceOf("println");
+         println.add("value", expr);
+         return println;
+      }
+   }
+
    public String temp_vars(){
       return "temp" + temp_var_counter++;
    }
@@ -157,6 +177,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
+
+   
+      
+      // return res;
+   
 
    // como está definida a gramática, o Assignment só é usado no example3.da
    // vou ignorar por enquanto, até porque dar run no example3 não está a fazer
@@ -179,12 +204,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
     * }
     */
 
-   @Override
-   public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
 
    @Override
    public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {

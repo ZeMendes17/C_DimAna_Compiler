@@ -66,6 +66,13 @@ public class dimanaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitWrite_expr(dimanaParser.Write_exprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitLoopStatement(dimanaParser.LoopStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

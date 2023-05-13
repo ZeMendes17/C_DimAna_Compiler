@@ -77,6 +77,16 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitOutputStatement(dimanaParser.OutputStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link dimanaParser#write_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterWrite_expr(dimanaParser.Write_exprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#write_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitWrite_expr(dimanaParser.Write_exprContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link dimanaParser#loopStatement}.
 	 * @param ctx the parse tree
 	 */

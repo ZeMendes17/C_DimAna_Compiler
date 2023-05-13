@@ -52,6 +52,12 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOutputStatement(dimanaParser.OutputStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link dimanaParser#write_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWrite_expr(dimanaParser.Write_exprContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link dimanaParser#loopStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

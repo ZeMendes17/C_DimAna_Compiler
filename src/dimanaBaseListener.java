@@ -100,6 +100,18 @@ public class dimanaBaseListener implements dimanaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterWrite_expr(dimanaParser.Write_exprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWrite_expr(dimanaParser.Write_exprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterLoopStatement(dimanaParser.LoopStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}

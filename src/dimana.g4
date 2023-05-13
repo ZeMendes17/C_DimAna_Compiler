@@ -24,7 +24,9 @@ assignment: ID '=' expression;
 inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 // fiz umas alterações aqui, para também apanhar casos deste tipo -> name = read "Name: ";
 
-outputStatement: ('write' | 'writeln') expression;
+outputStatement:  write_expr expression;
+
+write_expr: 'write' | 'writeln';
 
 loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | 'length' '(' ID ')') 'do' ((expression ';')* | statList) 'end';
 
