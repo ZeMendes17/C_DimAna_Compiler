@@ -24,7 +24,7 @@ public class dimanaMain {
             // System.out.println(tree.toStringTree(parser));
             DimanaCompiler compiler = new DimanaCompiler();
             ST result = compiler.visit(tree);
-            //result.add("name", "Output"); // not needed, depends on the compiled file name
+            //result.add("name", "DimanaCompiled"); // not needed, depends on the compiled file name
             System.out.println(result.render()); // dislays generated code
          }
       }

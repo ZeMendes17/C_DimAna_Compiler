@@ -50,18 +50,31 @@ InsertIntoList(lista, value) ::=<<
 /* Vamos precisar */
 
 /*
-read(var, name) ::= <<
-   System.out.print("Insert value into" + " '" + <name> + "': ");
-   String <var> = sc.nextLine();
->>
+
 */
 
 print(value) ::= "System.out.print(<value>);"
-println(value) ::= "System.out.println(<value>);" 
+println(value) ::= "System.out.println(<value>);"
+scanner_next(var) ::= "<var> = sc.next();"
 /* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
 
 
 decl(type,var) ::= "<typeValue.(type)> <var>;"
+assign_scanner(var) ::= "<var> = sc.nextLine();"
+
+read_and_cast (type,var,dimension,temp) ::= <<
+System.out.print("Insert value into " + <var> + " : ");
+<typeValue.(type)> <temp> = sc.next<typeValue.(type)>();
+<var> = new DimensionVar("<dimension>",<temp>);
+>>
+
+read(var,temp)   ::= <<
+System.out.print("Insert value into " + <var> + " : ");
+String <temp> = sc.next();
+<var> = new DimensionVar("string");
+<var>.setValue_string(<temp>);
+>>
+
 
 
 // unit = unidade da dimensão (ex: m, kg, s, etc)

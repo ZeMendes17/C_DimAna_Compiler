@@ -5,9 +5,9 @@ program: statList EOF;
 statList: (statement? ';')*;
 
 statement: 
-      assignment
+     inputStatement
+    | assignment
     | variableDeclaration
-    // | inputStatement
     | outputStatement
     | loopStatement
     | headerFile
@@ -21,7 +21,8 @@ variableDeclaration: dataType ID ('=' expression)?;
 
 assignment: ID '=' expression;
 
-// inputStatement: ID '=' dataType '(' 'read' STRING ')' ('*' ID)?;
+inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
+// fiz umas alterações aqui, para também apanhar casos deste tipo -> name = read "Name: ";
 
 outputStatement: ('write' | 'writeln') expression;
 

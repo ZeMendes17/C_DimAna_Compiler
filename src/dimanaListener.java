@@ -57,6 +57,16 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitAssignment(dimanaParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link dimanaParser#inputStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterInputStatement(dimanaParser.InputStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#inputStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitInputStatement(dimanaParser.InputStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link dimanaParser#outputStatement}.
 	 * @param ctx the parse tree
 	 */

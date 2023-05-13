@@ -40,6 +40,12 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(dimanaParser.AssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link dimanaParser#inputStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputStatement(dimanaParser.InputStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link dimanaParser#outputStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
