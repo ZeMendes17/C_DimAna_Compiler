@@ -24,13 +24,13 @@ assignment: ID '=' expression;
 inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 // fiz umas alterações aqui, para também apanhar casos deste tipo -> name = read "Name: ";
 
-outputStatement:  write_expr expression;
+//outputStatement:  write_expr expression   ;
+outputStatement: write_expr outputFormat (',' outputFormat)*;
+outputFormat: 'string' '(' ( ID | STRING ) ',' INT ')';
 
 write_expr: 'write' | 'writeln';
 
 loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | 'length' '(' ID ')') 'do' ((expression ';')* | statList) 'end';
-
-// expressionList: expression (',' expression)*;
 
 headerFile: 'use' STRING;
 
@@ -65,6 +65,7 @@ ID: [a-zA-Z_][a-zA-Z0-9_]*;
 INT: [0-9]+;
 REAL: [0-9]* '.' [0-9]+;
 STRING: '"' .*? '"';
+STRING_OR_ID: (ID | STRING);
 
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '#' ~[\r\n]* -> skip;

@@ -1,0 +1,2 @@
+        NMEC:       Name:       Grade:  (\n por causa do writeln do grade)
+        valor_n     valor_name  valor_grade (\n)

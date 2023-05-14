@@ -147,27 +147,63 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       }
    }
 
-
-   // não está acabado / bem feito ainda
    @Override
-   public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
-      
-      String write_expr = ctx.write_expr().getText();
-      String expr = ctx.expression().getText();
 
-      if (write_expr.equals("write")){
-         ST print = templates.getInstanceOf("print");
-         print.add("value", expr);
-         return print;
+   // not finished 
+
+   
+   public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
+
+      int print_amount = ctx.outputFormat().size();
+      ST print = null;
+
+      for (int i = 0; i < print_amount; i++) { // lidar com varias cenas num print, é necessário isto
+         String output_format = ctx.outputFormat(i).getText();
+         String write_expr = ctx.write_expr().getText();
+         String string_length = ctx.outputFormat(i).INT().getText();
+
+         if (ctx.write_expr().getText().equals("write"))
+            print = templates.getInstanceOf("print_string");
+         else
+            print = templates.getInstanceOf("println_string");
+
+         if (ctx.outputFormat(i).ID() != null) { // if its a id AKA a variable
+            String var_name = ctx.outputFormat(i).ID().getText();
+
+            if (!declared_vars.contains(var_name)) {
+               System.out.println("Variável " + var_name + " usada antes de ser declarada");
+               System.exit(0);
+
+            }
+            print.add("value", varMap.get(var_name).get(1)); // type of the variable,
+            print.add("length", string_length);
+
+         } else { // its a string
+            print.add("value", write_expr);
+            print.add("length", string_length);
+
+         }
+
       }
-      else{
-         ST println = templates.getInstanceOf("println");
-         println.add("value", expr);
-         return println;
-      }
+      return print;
+
    }
 
-   public String temp_vars(){
+   @Override
+   public ST visitOutputFormat(dimanaParser.OutputFormatContext ctx) {
+      ST res = null;
+      return visitChildren(ctx);
+      // return res;
+   }
+
+   @Override
+   public ST visitWrite_expr(dimanaParser.Write_exprContext ctx) {
+      ST res = null;
+      return visitChildren(ctx);
+      // return res;
+   }
+
+   public String temp_vars() {
       return "temp" + temp_var_counter++;
    }
 
@@ -178,10 +214,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // return res;
    }
 
-   
-      
-      // return res;
-   
+   // return res;
 
    // como está definida a gramática, o Assignment só é usado no example3.da
    // vou ignorar por enquanto, até porque dar run no example3 não está a fazer
@@ -203,7 +236,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
     * 
     * }
     */
-
 
    @Override
    public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {
