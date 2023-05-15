@@ -7,7 +7,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
    private int varCount = 0; // variable counter
    HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
-   HashMap<String,String> declared_vars = new HashMap<String,String>();
+   HashMap<String, String> declared_vars = new HashMap<String, String>();
    int temp_var_counter = 1;
    // por exemplo, length: [real, m , cm , mm]
    // pra ser + facil, tentem definir por esta convenção , nome_dimensão :
@@ -53,6 +53,23 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             add(dimension_unit);
          }
       });
+
+      // add the default types for verification purposes
+      varMap.put("string", new ArrayList<String>() {
+         {
+            add("string");
+         }
+      });
+      varMap.put("real", new ArrayList<String>() {
+         {
+            add("real");
+         }
+      });
+      varMap.put("integer", new ArrayList<String>() {
+         {
+            add("integer");
+         }
+      });
       return visitChildren(ctx);
       // return res;
    }
@@ -70,7 +87,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       if (!varMap.containsKey(dataType)) // se esta dimensão ainda não foi declarada
       {
          if (!default_types.contains(dataType)) {
-            // System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
+            System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
             System.exit(0);
          }
       }
@@ -81,6 +98,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          variable_declaration = templates.getInstanceOf("decl");
          variable_declaration.add("type", dataType);
          variable_declaration.add("var", id);
+
       } else {
 
          if (expression.isEmpty()) { // não é dado um valor inicial
@@ -95,11 +113,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          }
       }
 
-      // System.out.println("New variable declared " + dataType + " " + id + " " +
+      // System.out.println("New variable declared " + dataType + " " + id + " ") ;
       // expression + "\n");
       // System.out.println(variable_declaration.render() + "\n");
       declared_vars.put(id, dataType); // keep track of declared variables
-      System.out.println(declared_vars.toString());
+      // System.out.println(declared_vars.toString());
 
       return variable_declaration;
 
@@ -155,62 +173,98 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
 
       int print_amount = ctx.outputFormat().size();
+      System.out.println("Print amount " + print_amount + "\n");
       ST print = null;
-      //System.out.println("print amount " + print_amount + "\n");
+      StringBuilder sb = new StringBuilder();
+      // System.out.println("print amount " + print_amount + "\n");
 
       for (int i = 0; i < print_amount; i++) { // lidar com varias cenas num print, é necessário isto
          String output_format = ctx.outputFormat(i).getText();
          String write_expr = ctx.write_expr().getText();
-         //System.out.println("write expr " + write_expr);
+         // System.out.println("write expr " + write_expr);
          String string_length = ctx.outputFormat(i).INT().getText();
+         // System.out.println("String length ->" + string_length + "<-");
 
          if (ctx.write_expr().getText().equals("write")) {
             if (ctx.outputFormat(i).ID() != null) { // if its a id AKA a variable
                String var_name = ctx.outputFormat(i).ID().getText();
-               print = templates.getInstanceOf("print_var");
+               print = templates.getInstanceOf("print");
 
                if (!declared_vars.containsKey(var_name)) {
                   System.out.println("Variável " + var_name + " usada antes de ser declarada");
                   System.exit(0);
 
                }
-               print.add("type", declared_vars.get(var_name)); // type of the variable
-               print.add("var", var_name);
-               print.add("length", string_length);
 
+               // print id
+               String var_type = varMap.get(declared_vars.get(var_name)).get(0);
+               if (var_type.equals("real"))
+                  var_type = "double";
+               if (var_type.equals("string"))
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + var_name + ")");
+               else
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + var_name + ".getValue_"
+                        + var_type + "())");
+               if (i == print_amount - 1) // if its the last one
+               {
+                  print.add("value", sb.toString());
+                  sb.setLength(0);
+               } else
+                  sb.append("+");
 
             } else { // its a string
-               print = templates.getInstanceOf("print_string");
+               print = templates.getInstanceOf("print");
                String print_string = ctx.outputFormat(i).STRING().getText();
-               print.add("value", print_string);
-               print.add("length", string_length);
+               sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
+               if (i == print_amount - 1) // if its the last one
+               {
+                  print.add("value", sb.toString());
+                  sb.setLength(0);
+               } else
+                  sb.append("+");
 
             }
 
          } else if (ctx.write_expr().getText().equals("writeln")) { // writeln
 
             if (ctx.outputFormat(i).ID() != null) {
-               print = templates.getInstanceOf("println_var");
+               print = templates.getInstanceOf("println");
                String var_name = ctx.outputFormat(i).ID().getText();
                if (!declared_vars.containsKey(var_name)) {
                   System.out.println("Variável " + var_name + " usada antes de ser declarada");
                   System.exit(0);
                }
 
-                  print.add("type", declared_vars.get(var_name)); // type of the variable
-                  //System.out.println("TYPE: " + declared_vars.get(var_name) + "\n");
-                  print.add("var", var_name);
-                  //System.out.println("VAR: " + var_name + "\n");
-                  print.add("length", string_length);
-                  //System.out.println("LENGTH: " + string_length + "\n");
-                  System.out.print("Variable name -> " + var_name + " type: " + declared_vars.get(var_name) + " length:" + string_length + "\n");
-               }
+               String var_type = varMap.get(declared_vars.get(var_name)).get(0);
+               if (var_type.equals("real"))
+                  var_type = "double";
+               if (var_type.equals("string"))
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + var_name + ")");
+               else
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + var_name + ".getValue_"
+                        + var_type + "())");
+
+               if (i == print_amount - 1) // if its the last one
+               {
+                  print.add("value", sb.toString());
+                  sb.setLength(0);
+               } else
+                  sb.append("+");
+
+               System.out.println("SUP PRINTLN ID ");
+
+            }
 
             else {
-               print = templates.getInstanceOf("println_string");
+               print = templates.getInstanceOf("println");
                String print_string = ctx.outputFormat(i).STRING().getText();
-               print.add("value", print_string);
-               print.add("length", string_length);
+               sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
+               if (i == print_amount - 1) // if its the last one
+               {
+                  print.add("value", sb.toString());
+                  sb.setLength(0);
+               } else
+                  sb.append("+");
 
             }
          }

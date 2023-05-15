@@ -18,16 +18,6 @@ stats(stat) ::= <<
 
 
 
-
-typeValue ::= [
-   "integer":"int",
-   "real":"double",
-   "string":"String"
-
-]
-
-
-
 /*
 list(var, type) ::= <<
    List<<type>> <var> = new ArrayList<>();
@@ -60,16 +50,24 @@ scanner_next(var) ::= "<var> = sc.next();"
 
 print_string(value,length) ::= "System.out.print(String.format(%<length>s, <value> ));"
 println_string(value,length) ::= "System.out.println(String.format(%<length>s, <value> ));"
-print_var(var,length,type) ::= "System.out.print(String.format(%<length>s, <var>.getValue_<type>() ));"
-println_var(var,length,type) ::= "System.out.println(String.format(%<length>s, <var>.getValue_<type>() ));"
+print_var(var,length,type) ::= "System.out.print(String.format(%<length>s, <var>.getValue_<type>() );"
+println_var(var,length,type) ::= "System.out.println(String.format(%<length>s, <var>.getValue_<type>() );"
 
 
 decl(type,var) ::= "<typeValue.(type)> <var>;"
 assign_scanner(var) ::= "<var> = sc.nextLine();"
 
+typeValue ::= [
+   "integer":"int",
+   "real":"double",
+   "string":"String",
+   "double": "Double",
+   "int":"Int",
+]
+
 read_and_cast (type,var,dimension,temp) ::= <<
 System.out.print("Insert value into variable <var> (<typeValue.(type)>)  : ");
-<typeValue.(type)> <temp> = sc.next<typeValue.(type)>();
+<typeValue.(type)> <temp> = sc.next<typeValue.(typeValue.(type))>();
 <var>.setValue_<typeValue.(type)>(<temp>);
 >>
 
