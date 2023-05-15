@@ -7,7 +7,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
    private int varCount = 0; // variable counter
    HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
-   ArrayList<String> declared_vars = new ArrayList<String>();
+   HashMap<String,String> declared_vars = new HashMap<String,String>();
    int temp_var_counter = 1;
    // por exemplo, length: [real, m , cm , mm]
    // pra ser + facil, tentem definir por esta convenção , nome_dimensão :
@@ -98,7 +98,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // System.out.println("New variable declared " + dataType + " " + id + " " +
       // expression + "\n");
       // System.out.println(variable_declaration.render() + "\n");
-      declared_vars.add(id); // keep track of declared variables
+      declared_vars.put(id, dataType); // keep track of declared variables
+      System.out.println(declared_vars.toString());
 
       return variable_declaration;
 
@@ -126,7 +127,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          }
 
-         if (!declared_vars.contains(var_name)) {
+         if (!declared_vars.containsKey(var_name)) {
             System.out.println("Variável " + var_name + " usada antes de ser declarada");
             System.exit(0);
          }
@@ -149,39 +150,69 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
 
-   // not finished 
+   // not finished
 
-   
    public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
 
       int print_amount = ctx.outputFormat().size();
       ST print = null;
+      //System.out.println("print amount " + print_amount + "\n");
 
       for (int i = 0; i < print_amount; i++) { // lidar com varias cenas num print, é necessário isto
          String output_format = ctx.outputFormat(i).getText();
          String write_expr = ctx.write_expr().getText();
+         //System.out.println("write expr " + write_expr);
          String string_length = ctx.outputFormat(i).INT().getText();
 
-         if (ctx.write_expr().getText().equals("write"))
-            print = templates.getInstanceOf("print_string");
-         else
-            print = templates.getInstanceOf("println_string");
+         if (ctx.write_expr().getText().equals("write")) {
+            if (ctx.outputFormat(i).ID() != null) { // if its a id AKA a variable
+               String var_name = ctx.outputFormat(i).ID().getText();
+               print = templates.getInstanceOf("print_var");
 
-         if (ctx.outputFormat(i).ID() != null) { // if its a id AKA a variable
-            String var_name = ctx.outputFormat(i).ID().getText();
+               if (!declared_vars.containsKey(var_name)) {
+                  System.out.println("Variável " + var_name + " usada antes de ser declarada");
+                  System.exit(0);
 
-            if (!declared_vars.contains(var_name)) {
-               System.out.println("Variável " + var_name + " usada antes de ser declarada");
-               System.exit(0);
+               }
+               print.add("type", declared_vars.get(var_name)); // type of the variable
+               print.add("var", var_name);
+               print.add("length", string_length);
+
+
+            } else { // its a string
+               print = templates.getInstanceOf("print_string");
+               String print_string = ctx.outputFormat(i).STRING().getText();
+               print.add("value", print_string);
+               print.add("length", string_length);
 
             }
-            print.add("value", varMap.get(var_name).get(1)); // type of the variable,
-            print.add("length", string_length);
 
-         } else { // its a string
-            print.add("value", write_expr);
-            print.add("length", string_length);
+         } else if (ctx.write_expr().getText().equals("writeln")) { // writeln
 
+            if (ctx.outputFormat(i).ID() != null) {
+               print = templates.getInstanceOf("println_var");
+               String var_name = ctx.outputFormat(i).ID().getText();
+               if (!declared_vars.containsKey(var_name)) {
+                  System.out.println("Variável " + var_name + " usada antes de ser declarada");
+                  System.exit(0);
+               }
+
+                  print.add("type", declared_vars.get(var_name)); // type of the variable
+                  //System.out.println("TYPE: " + declared_vars.get(var_name) + "\n");
+                  print.add("var", var_name);
+                  //System.out.println("VAR: " + var_name + "\n");
+                  print.add("length", string_length);
+                  //System.out.println("LENGTH: " + string_length + "\n");
+                  System.out.print("Variable name -> " + var_name + " type: " + declared_vars.get(var_name) + " length:" + string_length + "\n");
+               }
+
+            else {
+               print = templates.getInstanceOf("println_string");
+               String print_string = ctx.outputFormat(i).STRING().getText();
+               print.add("value", print_string);
+               print.add("length", string_length);
+
+            }
          }
 
       }
