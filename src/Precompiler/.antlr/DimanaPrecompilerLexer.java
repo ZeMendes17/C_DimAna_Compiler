@@ -9,14 +9,14 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class DimanaPrecompilerLexer extends Lexer {
+public class dimanaPrecompilerLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, STRING=3, WS=4;
+		T__0=1, STRING=2, SYMBOLS=3, LETTER=4, SPACE=5, NEWLINE=6;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -27,20 +27,20 @@ public class DimanaPrecompilerLexer extends Lexer {
 
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"T__0", "T__1", "STRING", "WS"
+			"T__0", "STRING", "SYMBOLS", "LETTER", "SPACE", "NEWLINE"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'use'", "';'"
+			null, "'use'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, "STRING", "WS"
+			null, null, "STRING", "SYMBOLS", "LETTER", "SPACE", "NEWLINE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -78,7 +78,7 @@ public class DimanaPrecompilerLexer extends Lexer {
 	}
 
 
-	public DimanaPrecompilerLexer(CharStream input) {
+	public dimanaPrecompilerLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -102,16 +102,17 @@ public class DimanaPrecompilerLexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\6!\b\1\4\2\t\2\4"+
-		"\3\t\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\2\3\3\3\3\3\4\3\4\7\4\24\n\4\f\4"+
-		"\16\4\27\13\4\3\4\3\4\3\5\6\5\34\n\5\r\5\16\5\35\3\5\3\5\2\2\6\3\3\5\4"+
-		"\7\5\t\6\3\2\4\3\2$$\5\2\13\f\17\17\"\"\2\"\2\3\3\2\2\2\2\5\3\2\2\2\2"+
-		"\7\3\2\2\2\2\t\3\2\2\2\3\13\3\2\2\2\5\17\3\2\2\2\7\21\3\2\2\2\t\33\3\2"+
-		"\2\2\13\f\7w\2\2\f\r\7u\2\2\r\16\7g\2\2\16\4\3\2\2\2\17\20\7=\2\2\20\6"+
-		"\3\2\2\2\21\25\7$\2\2\22\24\n\2\2\2\23\22\3\2\2\2\24\27\3\2\2\2\25\23"+
-		"\3\2\2\2\25\26\3\2\2\2\26\30\3\2\2\2\27\25\3\2\2\2\30\31\7$\2\2\31\b\3"+
-		"\2\2\2\32\34\t\3\2\2\33\32\3\2\2\2\34\35\3\2\2\2\35\33\3\2\2\2\35\36\3"+
-		"\2\2\2\36\37\3\2\2\2\37 \b\5\2\2 \n\3\2\2\2\5\2\25\35\3\b\2\2";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\b$\b\1\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\3\2\3\2\3\2\3\2\3\3\3\3\7\3\26"+
+		"\n\3\f\3\16\3\31\13\3\3\3\3\3\3\4\3\4\3\5\3\5\3\6\3\6\3\7\3\7\2\2\b\3"+
+		"\3\5\4\7\5\t\6\13\7\r\b\3\2\7\3\2$$\3\2#\u0080\4\2C\\c|\5\2\13\13\17\17"+
+		"\"\"\3\2\f\f\2$\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3"+
+		"\2\2\2\2\r\3\2\2\2\3\17\3\2\2\2\5\23\3\2\2\2\7\34\3\2\2\2\t\36\3\2\2\2"+
+		"\13 \3\2\2\2\r\"\3\2\2\2\17\20\7w\2\2\20\21\7u\2\2\21\22\7g\2\2\22\4\3"+
+		"\2\2\2\23\27\7$\2\2\24\26\n\2\2\2\25\24\3\2\2\2\26\31\3\2\2\2\27\25\3"+
+		"\2\2\2\27\30\3\2\2\2\30\32\3\2\2\2\31\27\3\2\2\2\32\33\7$\2\2\33\6\3\2"+
+		"\2\2\34\35\t\3\2\2\35\b\3\2\2\2\36\37\t\4\2\2\37\n\3\2\2\2 !\t\5\2\2!"+
+		"\f\3\2\2\2\"#\t\6\2\2#\16\3\2\2\2\4\2\27\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

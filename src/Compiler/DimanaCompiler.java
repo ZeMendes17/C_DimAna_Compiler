@@ -174,7 +174,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
 
       int print_amount = ctx.outputFormat().size();
-      System.out.println("Print amount " + print_amount + "\n");
       ST print = null;
       StringBuilder sb = new StringBuilder();
       // System.out.println("print amount " + print_amount + "\n");
@@ -251,8 +250,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                   sb.setLength(0);
                } else
                   sb.append("+");
-
-               System.out.println("SUP PRINTLN ID ");
 
             }
 
