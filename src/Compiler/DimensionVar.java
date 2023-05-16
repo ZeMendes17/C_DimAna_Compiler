@@ -1,3 +1,4 @@
+
 public class DimensionVar  {
 
     private String type;

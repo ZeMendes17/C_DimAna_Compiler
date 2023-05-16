@@ -63,6 +63,7 @@ typeValue ::= [
    "string":"String",
    "double": "Double",
    "int":"Int",
+   default:"null"
 ]
 
 read_and_cast (type,var,dimension,temp) ::= <<

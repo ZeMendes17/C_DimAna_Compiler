@@ -1,5 +1,6 @@
 grammar dimana;
 
+
 program: statList EOF;
 
 statList: (statement? ';')*;
