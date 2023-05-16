@@ -27,7 +27,7 @@ inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 
 //outputStatement:  write_expr expression   ;
 outputStatement: write_expr outputFormat (',' outputFormat)*;
-outputFormat: 'string' '(' ( ID | STRING ) ',' INT ')';
+outputFormat: 'string' '(' ( expression | ID | STRING  ) ',' INT ')';
 
 write_expr: 'write' | 'writeln';
 
@@ -66,7 +66,6 @@ ID: [a-zA-Z_][a-zA-Z0-9_]*;
 INT: [0-9]+;
 REAL: [0-9]* '.' [0-9]+;
 STRING: '"' .*? '"';
-STRING_OR_ID: (ID | STRING);
 
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '#' ~[\r\n]* -> skip;

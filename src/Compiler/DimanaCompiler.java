@@ -1,4 +1,3 @@
-
 import java.util.*;
 import org.stringtemplate.v4.*;
 
@@ -96,9 +95,20 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       ST variable_declaration = null;
 
       if (dataType.equals("string") || dataType.equals("real") || dataType.equals("integer")) {
+
+         if (!expression.isEmpty()) {
+            
+            variable_declaration = templates.getInstanceOf("decl_with_value");
+            variable_declaration.add("type", dataType);
+            variable_declaration.add("var", id);
+            variable_declaration.add("value", expression);
+
+         } else {
+         
          variable_declaration = templates.getInstanceOf("decl");
          variable_declaration.add("type", dataType);
          variable_declaration.add("var", id);
+      }
 
       } else {
 
@@ -169,8 +179,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
 
-   // not finished
-
    public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
 
       int print_amount = ctx.outputFormat().size();
@@ -212,7 +220,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else { // its a string
+            } else if (ctx.outputFormat(i).STRING() != null) { // its a string
                print = templates.getInstanceOf("print");
                String print_string = ctx.outputFormat(i).STRING().getText();
                sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
@@ -223,6 +231,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
+            } else if (ctx.outputFormat(i).expression() != null) {
+               System.out.println("BING BONG ARRAY PRINT");
             }
 
          } else if (ctx.write_expr().getText().equals("writeln")) { // writeln
@@ -251,9 +261,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            }
-
-            else {
+            } else if (ctx.outputFormat(i).STRING() != null) {
                print = templates.getInstanceOf("println");
                String print_string = ctx.outputFormat(i).STRING().getText();
                sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
@@ -264,6 +272,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
+            } else if (ctx.outputFormat(i).expression() != null) {
+               System.out.println("BING BONG ARRAY PRINT");
             }
          }
 
@@ -271,6 +281,30 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return print;
 
    }
+   /* 
+   @Override
+   public ST visitListDeclaration(dimanaParser.ListDeclarationContext ctx) {
+
+      String datatype = ctx.dataType(0).getText();
+      if (!varMap.containsKey(datatype)) {
+         System.out.println("Tipo " + datatype + " não existe ou não foi declarado");
+         System.exit(0);
+      }
+      return;
+   }
+   */
+
+   /* 
+   @Override
+   public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
+
+      // check if ctx.expression() has any children
+      if (ctx.expression().getChildCount() > 0) { // é simplesmente um numero , não tipo 10*meter
+
+      }
+
+   }
+   */
 
    @Override
    public ST visitOutputFormat(dimanaParser.OutputFormatContext ctx) {
@@ -297,28 +331,10 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // return res;
    }
 
-   // return res;
-
    // como está definida a gramática, o Assignment só é usado no example3.da
    // vou ignorar por enquanto, até porque dar run no example3 não está a fazer
    // nada
-   /*
-    * @Override
-    * public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
-    * 
-    * 
-    * 
-    * String expression1 = ctx.expression().getText();
-    * String expression2 = ctx.expression().getText();
-    * String expression3 = ctx.expression().getText();
-    * System.out.println (expression1 + " " + expression2 + " " + expression3);
-    * 
-    * 
-    * 
-    * return null;
-    * 
-    * }
-    */
+
 
    @Override
    public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {
@@ -343,13 +359,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitAlternativeUnit(dimanaParser.AlternativeUnitContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
-
-   @Override
-   public ST visitListDeclaration(dimanaParser.ListDeclarationContext ctx) {
       ST res = null;
       return visitChildren(ctx);
       // return res;

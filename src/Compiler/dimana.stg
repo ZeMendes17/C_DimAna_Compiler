@@ -20,7 +20,8 @@ stats(stat) ::= <<
 
 /*
 list(var, type) ::= <<
-   List<<type>> <var> = new ArrayList<>();
+   List<<type>> <var> = new ArrayList<>(); 
+   
    >>
 */
 
@@ -53,8 +54,10 @@ println_string(value,length) ::= "System.out.println(String.format(%<length>s, <
 print_var(var,length,type) ::= "System.out.print(String.format(%<length>s, <var>.getValue_<type>() );"
 println_var(var,length,type) ::= "System.out.println(String.format(%<length>s, <var>.getValue_<type>() );"
 
+decl_with_value (type,var,value) ::= "<typeValue.(type)> <var> = <value>;"
 
 decl(type,var) ::= "<typeValue.(type)> <var>;"
+
 assign_scanner(var) ::= "<var> = sc.nextLine();"
 
 typeValue ::= [
