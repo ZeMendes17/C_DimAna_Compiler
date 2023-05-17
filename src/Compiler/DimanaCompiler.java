@@ -97,18 +97,18 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       if (dataType.equals("string") || dataType.equals("real") || dataType.equals("integer")) {
 
          if (!expression.isEmpty()) {
-            
+
             variable_declaration = templates.getInstanceOf("decl_with_value");
             variable_declaration.add("type", dataType);
             variable_declaration.add("var", id);
             variable_declaration.add("value", expression);
 
          } else {
-         
-         variable_declaration = templates.getInstanceOf("decl");
-         variable_declaration.add("type", dataType);
-         variable_declaration.add("var", id);
-      }
+
+            variable_declaration = templates.getInstanceOf("decl");
+            variable_declaration.add("type", dataType);
+            variable_declaration.add("var", id);
+         }
 
       } else {
 
@@ -281,7 +281,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return print;
 
    }
-   /* 
+
    @Override
    public ST visitListDeclaration(dimanaParser.ListDeclarationContext ctx) {
 
@@ -290,21 +290,57 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          System.out.println("Tipo " + datatype + " não existe ou não foi declarado");
          System.exit(0);
       }
-      return;
-   }
-   */
+      ST list = null;
+      String list_name = ctx.ID().getText();
 
-   /* 
-   @Override
-   public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
-
-      // check if ctx.expression() has any children
-      if (ctx.expression().getChildCount() > 0) { // é simplesmente um numero , não tipo 10*meter
-
+      if (!default_types.contains(datatype)) {
+         // verificar se já existe uma lista com este nome maybe?
+         list = templates.getInstanceOf("declare_list_dvar"); // declare list for declared dimensions
+         list.add("var", list_name);
+         list.add("type", "DimensionVar");
+         list.add("unit", datatype);
       }
 
+      else {
+         // verificar se já existe uma lista com este nome maybe?
+         list = templates.getInstanceOf("declare_list_dtypes"); // declare list for default types, real integer string
+         list.add("var", list_name);
+         list.add("type", datatype);
+      }
+
+      return list;
+
    }
-   */
+
+   @Override
+   public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {
+      /* 
+      ST res = null;
+      return visitChildren(ctx);
+      // return res;
+      */
+      int expression_amount;
+      int statlist_amount;
+      if (ctx.expression() != null)
+         expression_amount = ctx.expression().size(); // number of instructions executed in the loop
+      if (ctx.statList() != null)
+         statlist_amount = 1;
+      // visit the expression
+      return null;
+   }
+
+   /*
+    * @Override
+    * public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
+    * 
+    * // check if ctx.expression() has any children
+    * if (ctx.expression().getChildCount() > 0) { // é simplesmente um numero , não
+    * tipo 10*meter
+    * 
+    * }
+    * 
+    * }
+    */
 
    @Override
    public ST visitOutputFormat(dimanaParser.OutputFormatContext ctx) {
@@ -334,14 +370,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    // como está definida a gramática, o Assignment só é usado no example3.da
    // vou ignorar por enquanto, até porque dar run no example3 não está a fazer
    // nada
-
-
-   @Override
-   public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
 
    @Override
    public ST visitHeaderFile(dimanaParser.HeaderFileContext ctx) {
