@@ -39,7 +39,7 @@ inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 
 //outputStatement:  write_expr expression   ;
 outputStatement: write_expr outputFormat (',' outputFormat)*;
-outputFormat: 'string' '(' (  ID | STRING | expression ) ',' INT ')';
+outputFormat: 'string' '(' (  ID | STRING | expression ) ',' INT ')' | STRING | ID;
 
 write_expr: 'write' | 'writeln';
 
