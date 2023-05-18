@@ -76,7 +76,7 @@ public class DimensionVar  {
         return value_int;
     }
 
-    public void setValue_int(int inicial_value) {
+    public void setValue_integer(int inicial_value) {
         this.value_int = inicial_value;
     }
 

@@ -107,6 +107,16 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitLoopStatement(dimanaParser.LoopStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link dimanaParser#length}.
+	 * @param ctx the parse tree
+	 */
+	void enterLength(dimanaParser.LengthContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#length}.
+	 * @param ctx the parse tree
+	 */
+	void exitLength(dimanaParser.LengthContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link dimanaParser#headerFile}.
 	 * @param ctx the parse tree
 	 */
@@ -168,6 +178,18 @@ public interface dimanaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprListExpression(dimanaParser.ExprListExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code OutputExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterOutputExpression(dimanaParser.OutputExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code OutputExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitOutputExpression(dimanaParser.OutputExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code IndexExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.

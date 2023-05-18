@@ -1,5 +1,17 @@
 grammar dimana;
 
+// see if necessary
+
+// @parser::header {
+// import java.util.Map;
+// import java.util.HashMap;
+// import java.util.List;
+// }
+
+// @parser::members { // first is variable name, second are types (maybe) ex: l, [meter, inch]
+// // or v, [meter/time]
+// static protected Map<String,List<String>> typeTable = new HashMap<>();
+// }
 
 program: statList EOF;
 
@@ -27,11 +39,13 @@ inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 
 //outputStatement:  write_expr expression   ;
 outputStatement: write_expr outputFormat (',' outputFormat)*;
-outputFormat: 'string' '(' ( expression | ID | STRING  ) ',' INT ')';
+outputFormat: 'string' '(' (  ID | STRING | expression ) ',' INT ')';
 
 write_expr: 'write' | 'writeln';
 
-loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | 'length' '(' ID ')') 'do' ((expression ';')* | statList) 'end';
+loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | length '(' ID ')') 'do' ((expression ';')* ) 'end';
+
+length : 'length';
 
 headerFile: 'use' STRING;
 
@@ -50,9 +64,10 @@ expression
     | expression op=('*' | '/') expression              # MulDivExpression
     | expression op=('+' | '-') expression              # AddSubExpression
     | '(' expression ')'                                # ParenExpression
+    | outputStatement                                   # OutputExpression
     | expression ',' expression                         # ExprListExpression
-    | expression '>>' ID                                #AddListExpression
-    | ID '[' ID ']'                                     #IndexExpression
+    | expression '>>' ID                                # AddListExpression
+    | ID '[' ID ']'                                     # IndexExpression
     | ID                                                # IdExpression
     | dataType '(' expression ')'                       # TypeConversion
     | REAL                                              # RealLiteral

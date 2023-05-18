@@ -44,6 +44,8 @@ InsertIntoList(lista, value) ::=<<
 print(value) ::= "System.out.print(<value>);"
 println(value) ::= "System.out.println(<value>);"
 scanner_next(var) ::= "<var> = sc.next();"
+
+filler(bruh) ::= "Filler <bruh>;"
 /* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
 
 print_string(value,length) ::= "System.out.print(String.format(%<length>s, <value> ));"
@@ -83,6 +85,13 @@ System.out.print("Insert value into variable <var> (<typeValue.(type)>)  : ");
 <var>.setValue_<typeValue.(type)>(<temp>);
 >>
 
+
+for_loop(initial_value,end_value,statements) ::= <<
+for (int i = <initial_value>; i \< <end_value>; i++) {
+   <statements>
+}
+>>
+
 read(var,temp)   ::= <<
 System.out.print("Insert value into variable <var> (string) : ");
 <var> = sc.next();
@@ -100,7 +109,10 @@ DimensionVar <name> = new DimensionVar("<unit>",<value>);
 >>
 
 
-assign(var,value) ::= "<var> = <value>;"
+assign(stat,var,value) ::= <<
+<stats(stat)>
+<var> = <value>;
+>>
 
 
 
