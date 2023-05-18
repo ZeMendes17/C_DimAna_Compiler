@@ -6,7 +6,10 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
    private int varCount = 0; // variable counter
-   HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
+   //HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
+   HashMap<String, ArrayList<ArrayList<String>>> varMap = new HashMap<String, ArrayList<ArrayList<String>>>();
+   // por exemplo, length: [real, m , cm , mm]
+
    // por exemplo, length: [real, m , cm , mm]
    // pra ser + facil, tentem definir por esta convenção , nome_dimensão :
    // [tipo_de_dados, unidade_principal, unidade_alternativa1,
