@@ -1,0 +1,7 @@
+Length l; 
+
+l = l1 + l2 
+
+
+valor da expression
+l.setvalue_<typeValue.(<type>) = valor 

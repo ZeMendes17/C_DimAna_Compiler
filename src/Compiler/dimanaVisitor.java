@@ -70,6 +70,12 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLoopStatement(dimanaParser.LoopStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link dimanaParser#length}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLength(dimanaParser.LengthContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link dimanaParser#headerFile}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -106,6 +112,13 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprListExpression(dimanaParser.ExprListExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code OutputExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutputExpression(dimanaParser.OutputExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IndexExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.

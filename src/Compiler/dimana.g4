@@ -39,11 +39,13 @@ inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 
 //outputStatement:  write_expr expression   ;
 outputStatement: write_expr outputFormat (',' outputFormat)*;
-outputFormat: 'string' '(' ( expression | ID | STRING  ) ',' INT ')';
+outputFormat: 'string' '(' (  ID | STRING | expression ) ',' INT ')';
 
 write_expr: 'write' | 'writeln';
 
-loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | 'length' '(' ID ')') 'do' ((expression ';')* | statList) 'end';
+loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | length '(' ID ')') 'do' ((expression ';')* ) 'end';
+
+length : 'length';
 
 headerFile: 'use' STRING;
 
@@ -62,6 +64,7 @@ expression
     | expression ('*' | '/') expression                 # MulDivExpression
     | expression ('+' | '-') expression                 # AddSubExpression
     | '(' expression ')'                                # ParenExpression
+    | outputStatement                                   # OutputExpression
     | expression ',' expression                         # ExprListExpression
     | expression '>>' ID                                # AddListExpression
     | ID '[' ID ']'                                     # IndexExpression
