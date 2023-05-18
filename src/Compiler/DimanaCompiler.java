@@ -7,12 +7,12 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
    private int varCount = 0; // variable counter
    HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
-   HashMap<String, String> declared_vars = new HashMap<String, String>();
-   int temp_var_counter = 1;
    // por exemplo, length: [real, m , cm , mm]
    // pra ser + facil, tentem definir por esta convenção , nome_dimensão :
    // [tipo_de_dados, unidade_principal, unidade_alternativa1,
    // unidade_alternativa2, ...]
+   HashMap<String, String> declared_vars = new HashMap<String, String>();
+   int temp_var_counter = 1;
 
    ArrayList<String> default_types = new ArrayList<String>() {
       {
@@ -38,7 +38,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return res;
    }
 
-   // não está acabada esta função, basica af
    @Override
    public ST visitUnit(dimanaParser.UnitContext ctx) {
       // usado para declaração das dimensões
@@ -124,11 +123,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          }
       }
 
-      // System.out.println("New variable declared " + dataType + " " + id + " ") ;
-      // expression + "\n");
-      // System.out.println(variable_declaration.render() + "\n");
       declared_vars.put(id, dataType); // keep track of declared variables
-      // System.out.println(declared_vars.toString());
 
       return variable_declaration;
 
@@ -231,8 +226,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else if (ctx.outputFormat(i).expression() != null) {
-               System.out.println("BING BONG ARRAY PRINT");
+            } else  {
+               print = templates.getInstanceOf("filler");
+               print.add("bruh", "write array index");
             }
 
          } else if (ctx.write_expr().getText().equals("writeln")) { // writeln
@@ -272,8 +268,10 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else if (ctx.outputFormat(i).expression() != null) {
-               System.out.println("BING BONG ARRAY PRINT");
+            } else  {
+               // System.out.println("BING BONG ARRAY PRINT");
+               print = templates.getInstanceOf("filler");
+               print.add("bruh", "writeln array index");
             }
          }
 
@@ -314,19 +312,58 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {
-      /* 
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-      */
-      int expression_amount;
-      int statlist_amount;
-      if (ctx.expression() != null)
-         expression_amount = ctx.expression().size(); // number of instructions executed in the loop
-      if (ctx.statList() != null)
-         statlist_amount = 1;
+      /*
+       * ST res = null;
+       * return visitChildren(ctx);
+       * // return res;
+       */
+
+      int expression_amount = ctx.expression().size(); // amount of expressions/statements inside the for loop
+      ST loop_statement = templates.getInstanceOf("for_loop");
+      boolean is_length;
+      String for_loop_statements = "";
+      String final_value = "";
+      String initial_value;
+      
+
+      if (ctx.INT(1) != null) // final value of for loop is a INT
+         final_value = ctx.INT(1).getText();
+      
+      if (ctx.ID(1) != null && ctx.ID(2) != null)
+         final_value = ctx.ID(2).getText();
+
+      if (ctx.INT(0)!= null )
+         final_value = ctx.ID(1).getText();
+
+      if (ctx.length() != null)
+         final_value = "length("+final_value+")";
+      
+
+      //for (int i = 0; i < ctx.ID().size(); i++)
+         //System.out.println(ctx.ID(i).getText());
+
+      for (int i = 0; i < expression_amount; i++) {
+         System.out.println("Visiting expression " + i + " of " + expression_amount + " in for loop");
+         for_loop_statements += visit(ctx.expression(i)).render();
+      }
+      if (ctx.ID(1) != null && ctx.INT(0) == null && ctx.INT(1) == null) // initial value is a variable
+         initial_value = ctx.ID(1).getText();
+      else                    // initial value is a number
+         initial_value = ctx.INT(0).getText();
+      loop_statement.add("initial_value", initial_value);
+      loop_statement.add("end_value", final_value);
+      loop_statement.add("statements", for_loop_statements);
+
       // visit the expression
-      return null;
+      return loop_statement;
+   }
+
+   @Override
+   public ST visitAddListExpression(dimanaParser.AddListExpressionContext ctx) {
+      ST filler = templates.getInstanceOf("filler");
+      filler.add("bruh", "ADDLIST");
+      return filler;
+      // return res;
    }
 
    /*
@@ -443,13 +480,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitStringLiteral(dimanaParser.StringLiteralContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
-
-   @Override
-   public ST visitAddListExpression(dimanaParser.AddListExpressionContext ctx) {
       ST res = null;
       return visitChildren(ctx);
       // return res;

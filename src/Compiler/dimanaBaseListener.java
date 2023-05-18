@@ -136,6 +136,18 @@ public class dimanaBaseListener implements dimanaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLength(dimanaParser.LengthContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLength(dimanaParser.LengthContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterHeaderFile(dimanaParser.HeaderFileContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -203,6 +215,18 @@ public class dimanaBaseListener implements dimanaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExprListExpression(dimanaParser.ExprListExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOutputExpression(dimanaParser.OutputExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOutputExpression(dimanaParser.OutputExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
