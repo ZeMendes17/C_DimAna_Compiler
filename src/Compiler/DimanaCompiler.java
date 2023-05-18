@@ -213,7 +213,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else { // its a string
+            } else if (ctx.outputFormat(i).STRING() != null ) { // its a string
                print = templates.getInstanceOf("print");
                String print_string = ctx.outputFormat(i).STRING().getText();
                sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
@@ -257,7 +257,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
             }
 
-            else {
+            else if (ctx.outputFormat(i).STRING() != null ) {
                print = templates.getInstanceOf("println");
                String print_string = ctx.outputFormat(i).STRING().getText();
                sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
@@ -432,12 +432,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
     * }
     */
 
-   @Override
-   public ST visitLoopStatement(dimanaParser.LoopStatementContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
+   
 
    // @Override
    // public ST visitHeaderFile(dimanaParser.HeaderFileContext ctx) {
@@ -460,12 +455,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // return res;
    }
 
-   @Override
-   public ST visitListDeclaration(dimanaParser.ListDeclarationContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
+   
 
    @Override
    public ST visitExprListExpression(dimanaParser.ExprListExpressionContext ctx) {
@@ -543,7 +533,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
-
+    
    @Override
    public ST visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx) {
       ST res = templates.getInstanceOf("binaryOperation");
@@ -551,7 +541,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
       // getDimension() iria buscar a dimension
       // getUnit() iria buscar a unidade
-      for 
+      
       if ( varMapvisit(ctx.expression(0)) && visit(ctx.expression(1))) {
          if (visit(ctx.expression(0)).getUnit() == visit(ctx.expression(1)).getUnit()) {
             // fazer a operação
@@ -571,7 +561,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // if the dimensions are not the same, then if the operations between 
       // the two dimensions doesnt give a dimension the operation is not valid
       else if (visit(ctx.expression(0)).getDimension() != visit(ctx.expression(1)).getDimension()) {
-         if (visit(ctx.expression(0)).getDimension() /*operador*/  visit(ctx.expression(1)).getDimension() == "t"/*Dimension guardada*/ ) {
+         if (visit(ctx.expression(0)).getDimension()   visit(ctx.expression(1)).getDimension() == "t" ) {
             // fazer a operação
          } else {
             // throw error
@@ -581,6 +571,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
       // return res;
    }
+   
 
    @Override
    public ST visitDataType(dimanaParser.DataTypeContext ctx) {

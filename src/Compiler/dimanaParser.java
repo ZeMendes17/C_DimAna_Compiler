@@ -1454,6 +1454,7 @@ public class dimanaParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AddSubExpressionContext extends ExpressionContext {
+		public Token op;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -1633,6 +1634,7 @@ public class dimanaParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class MulDivExpressionContext extends ExpressionContext {
+		public Token op;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -1821,9 +1823,10 @@ public class dimanaParser extends Parser {
 						setState(227);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
 						setState(228);
+						((MulDivExpressionContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__5 || _la==T__25) ) {
-						_errHandler.recoverInline(this);
+							((MulDivExpressionContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -1841,9 +1844,10 @@ public class dimanaParser extends Parser {
 						setState(230);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
 						setState(231);
+						((AddSubExpressionContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==T__18 || _la==T__26) ) {
-						_errHandler.recoverInline(this);
+							((AddSubExpressionContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
