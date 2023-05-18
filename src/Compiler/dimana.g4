@@ -47,8 +47,8 @@ listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?
 expression
     : 'read' STRING                                     # InputExpression
     | 'string' '(' (STRING | ID) ',' INT ')'            # StringAssignExpression
-    | expression ('*' | '/') expression                 # MulDivExpression
-    | expression ('+' | '-') expression                 # AddSubExpression
+    | expression op=('*' | '/') expression              # MulDivExpression
+    | expression op=('+' | '-') expression              # AddSubExpression
     | '(' expression ')'                                # ParenExpression
     | expression ',' expression                         # ExprListExpression
     | expression '>>' ID                                #AddListExpression
