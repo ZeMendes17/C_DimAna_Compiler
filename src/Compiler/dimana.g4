@@ -60,13 +60,13 @@ listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?
 
 expression
     : 'read' STRING                                     # InputExpression
+    | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID     # InputTypeExpression
     | 'string' '(' (STRING | ID) ',' INT ')'            # StringAssignExpression
     | expression op=('*' | '/') expression              # MulDivExpression
     | expression op=('+' | '-') expression              # AddSubExpression
     | '(' expression ')'                                # ParenExpression
     | outputStatement                                   # OutputExpression
     | expression ',' expression                         # ExprListExpression
-    | expression '>>' ID                                # AddListExpression
     | ID '[' ID ']'                                     # IndexExpression
     | ID                                                # IdExpression
     | dataType '(' expression ')'                       # TypeConversion
@@ -76,6 +76,7 @@ expression
     ;
 
 dataType: 'integer' | 'real' | 'string' | 'list' '[' ID ']' | ID;
+castTypes : 'integer' | 'real';
 
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 INT: [0-9]+;

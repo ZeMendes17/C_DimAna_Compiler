@@ -18,54 +18,64 @@ stats(stat) ::= <<
 
 
 
-
-
-
-
-/*
-InsertIntoList(lista, value) ::=<<
-   <lista>.add(<value>) 
+print(value) ::= <<
+System.out.print(<value>);
 >>
-*/
-
-
-
-
-/* unit() */
-
-/* Dimension()*/
-
-/* Vamos precisar */
-
-/*
-
-*/
-
-print(value) ::= "System.out.print(<value>);"
-println(value) ::= "System.out.println(<value>);"
-scanner_next(var) ::= "<var> = sc.next();"
+println(value) ::= <<
+System.out.println(<value>);
+>>
+scanner_next(var) ::= <<
+<var> = sc.next();
+>>
 
 filler(bruh) ::= "Filler <bruh>;"
 /* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
 
-print_string(value,length) ::= "System.out.print(String.format(%<length>s, <value> ));"
-println_string(value,length) ::= "System.out.println(String.format(%<length>s, <value> ));"
-print_var(var,length,type) ::= "System.out.print(String.format(%<length>s, <var>.getValue_<type>() );"
-println_var(var,length,type) ::= "System.out.println(String.format(%<length>s, <var>.getValue_<type>() );"
+print_string(value,length) ::= <<
+System.out.print(String.format(%<length>s, <value> ));
+>>
+println_string(value,length) ::= <<
+System.out.println(String.format(%<length>s, <value> ));
+>>
+print_var(var,length,type) ::= <<
+System.out.print(String.format(%<length>s, <var>.getValue_<type>() );
+>>
+println_var(var,length,type) ::= <<
+System.out.println(String.format(%<length>s, <var>.getValue_<type>() );
+>>
+decl_with_value(type,var,value) ::= <<
+<typeValue.(type)> <var> = <value>;
+>>
 
-decl_with_value (type,var,value) ::= "<typeValue.(type)> <var> = <value>;"
+print_array_idx(list,idx,type,concat) ::= <<
+System.out.print(<list>.get(<idx>).getValue_<type>()) <concat>;
+>>
 
-decl(type,var) ::= "<typeValue.(type)> <var>;"
+println_array_idx(list,idx,type,concat) ::= <<
+System.out.println(<list>.get(<idx>).getValue_<type>()) <concat>;
+>>
 
-assign_scanner(var) ::= "<var> = sc.nextLine();"
 
+decl(type,var) ::= <<
+<typeValue.(type)> <var>;
+>>
+
+decl_value(type,var,value) ::= <<
+<typeValue.(type)> <var> = <value>;
+>>
+
+assign_scanner(var) ::= <<
+<var> = sc.nextLine();
+>>
 
 declare_list_dvar(var, type, unit) ::= <<
 ArrayList\<<type>\> <var> = new ArrayList\<<type>\>(); // List of <unit> ;
+<var>.add(null); // fill index 0 so it starts at 1
 >>
 
 declare_list_dtypes(var, type) ::= <<
 ArrayList\<<typeValue.(type)>\> <var> = new ArrayList\<<typeValue.(type)>\>(); // List of <type> ;
+<var>.add(null); // fill index 0 so it starts at 1
 >>
 
 
@@ -78,19 +88,25 @@ typeValue ::= [
    default:"null"
 ]
 
-
-read_and_cast (type,var,dimension,temp) ::= <<
+read_and_cast(type,var,temp,dimension) ::= <<
 System.out.print("Insert value into variable <var> (<typeValue.(type)>)  : ");
 <typeValue.(type)> <temp> = sc.next<typeValue.(typeValue.(type))>();
 <var>.setValue_<typeValue.(type)>(<temp>);
 >>
 
-
-for_loop(initial_value,end_value,statements) ::= <<
-for (int i = <initial_value>; i \< <end_value>; i++) {
-   <statements>
-}
+read_and_cast_toArray(type,var,temp,dimension,temp2) ::= <<
+System.out.print("Insert value into array <var> (<typeValue.(type)>)  : ");
+<typeValue.(type)> <temp> = sc.next<typeValue.(typeValue.(type))>();
+DimensionVar <temp2> = new DimensionVar("<dimension>",<temp>);
+<var>.add(<temp2>);
 >>
+
+read_toArray(var,temp,temp2)   ::= <<
+System.out.print("Insert value into array <var> (string) : ");
+String <temp> = sc.next();
+<var>.add(<temp>);
+>>
+
 
 read(var,temp)   ::= <<
 System.out.print("Insert value into variable <var> (string) : ");
@@ -99,10 +115,28 @@ System.out.print("Insert value into variable <var> (string) : ");
 
 
 
+for_loop(initial_value,end_value,statements) ::= <<
+for (i = <initial_value>; i \<= <end_value>; i++) {
+   <statements>
+}
+>>
+
+
+
+
+
+add_list(listname,value) ::= <<
+\<<listname>\>.add(<value>);
+>>
+
+
+
 // unit = unidade da dimensão (ex: m, kg, s, etc)
 // name = nome da variável
 // value = quando tem valor inicial
-declare_var(unit,name) ::= <<DimensionVar <name> = new DimensionVar("<unit>");>>
+declare_var(unit,name) ::= <<
+DimensionVar <name> = new DimensionVar("<unit>");
+>>
 
 declare_var_with_value(unit,name,value) ::= <<
 DimensionVar <name> = new DimensionVar("<unit>",<value>);
