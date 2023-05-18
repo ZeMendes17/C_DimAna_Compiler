@@ -7,8 +7,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
    private int varCount = 0; // variable counter
-   //HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
-   HashMap<String, ArrayList<ArrayList<String>>> varMap = new HashMap<String, ArrayList<ArrayList<String>>>();
+   HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
+   // HashMap<String, ArrayList<ArrayList<String>>> varMap = new HashMap<String, ArrayList<ArrayList<String>>>();
+   HashMap<String, ArrayList<String>> conversions = new HashMap<>();
+   // vai guardar por exemplo --> {inch : ["0.0254", "meter"], ...}
+
    // por exemplo, length: [real, m , cm , mm]
 
    // por exemplo, length: [real, m , cm , mm]
@@ -548,7 +551,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
       // getDimension() iria buscar a dimension
       // getUnit() iria buscar a unidade
-      if (visit(ctx.expression(0)).getDimension() == visit(ctx.expression(1)).getDimension()) {
+      for 
+      if ( varMapvisit(ctx.expression(0)) && visit(ctx.expression(1))) {
          if (visit(ctx.expression(0)).getUnit() == visit(ctx.expression(1)).getUnit()) {
             // fazer a operação
             res.add("type", ctx.expression(0).getDimension());
@@ -567,7 +571,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // if the dimensions are not the same, then if the operations between 
       // the two dimensions doesnt give a dimension the operation is not valid
       else if (visit(ctx.expression(0)).getDimension() != visit(ctx.expression(1)).getDimension()) {
-         if (visit(ctx.expression(0)).getDimension() /*operador*/  visit(ctx.expression(1)).getDimension() == /*Dimension guardada*/ ) {
+         if (visit(ctx.expression(0)).getDimension() /*operador*/  visit(ctx.expression(1)).getDimension() == "t"/*Dimension guardada*/ ) {
             // fazer a operação
          } else {
             // throw error
