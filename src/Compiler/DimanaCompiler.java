@@ -329,18 +329,23 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return null;
    }
 
-   /*
-    * @Override
-    * public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
-    * 
-    * // check if ctx.expression() has any children
-    * if (ctx.expression().getChildCount() > 0) { // é simplesmente um numero , não
-    * tipo 10*meter
-    * 
-    * }
-    * 
-    * }
-    */
+   // isto ainda não ta a funcionar, precisa de analise semantica
+   // @Override
+   // public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
+   
+   //    // em principio deve ser assim, tesmo de adcionar uma verificação ainda
+   //    // l = 10 dá erro, precisa de ser l = 10*meter;
+   //    // v = l/t esta bom, t/l da erro
+   //    ST res = templates.getInstanceOf("assign");
+   //    String id = ctx.ID().getText();
+   //    res.add("stat", visit(ctx.expression()).render());
+   //    res.add("var", id);
+   //    res.add("value", ctx.expression().varName);
+   //    return res;
+   // }
+   
+   
+   
 
    @Override
    public ST visitOutputFormat(dimanaParser.OutputFormatContext ctx) {
@@ -360,23 +365,23 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return "temp" + temp_var_counter++;
    }
 
-   @Override
-   public ST visitStatement(dimanaParser.StatementContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
+   // @Override
+   // public ST visitStatement(dimanaParser.StatementContext ctx) {
+   //    ST res = null;
+   //    return visitChildren(ctx);
+   //    // return res;
+   // }
 
    // como está definida a gramática, o Assignment só é usado no example3.da
    // vou ignorar por enquanto, até porque dar run no example3 não está a fazer
    // nada
 
-   @Override
-   public ST visitHeaderFile(dimanaParser.HeaderFileContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
-   }
+   // @Override
+   // public ST visitHeaderFile(dimanaParser.HeaderFileContext ctx) {
+   //    ST res = null;
+   //    return visitChildren(ctx);
+   //    // return res;
+   // }
 
    @Override
    public ST visitPrefixUnit(dimanaParser.PrefixUnitContext ctx) {
@@ -489,4 +494,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
+
+   private String newVar() {
+      numVars++;
+      return "v" + numVars;
+   }
+
+   private int numVars=0;
 }

@@ -100,7 +100,10 @@ DimensionVar <name> = new DimensionVar("<unit>",<value>);
 >>
 
 
-assign(var,value) ::= "<var> = <value>;"
+assign(stat,var,value) ::= <<
+<stats(stat)>
+<var> = <value>;
+>>
 
 
 

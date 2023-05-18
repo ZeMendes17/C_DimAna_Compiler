@@ -1,5 +1,17 @@
 grammar dimana;
 
+// see if necessary
+
+// @parser::header {
+// import java.util.Map;
+// import java.util.HashMap;
+// import java.util.List;
+// }
+
+// @parser::members { // first is variable name, second are types (maybe) ex: l, [meter, inch]
+// // or v, [meter/time]
+// static protected Map<String,List<String>> typeTable = new HashMap<>();
+// }
 
 program: statList EOF;
 
@@ -51,8 +63,8 @@ expression
     | expression ('+' | '-') expression                 # AddSubExpression
     | '(' expression ')'                                # ParenExpression
     | expression ',' expression                         # ExprListExpression
-    | expression '>>' ID                                #AddListExpression
-    | ID '[' ID ']'                                     #IndexExpression
+    | expression '>>' ID                                # AddListExpression
+    | ID '[' ID ']'                                     # IndexExpression
     | ID                                                # IdExpression
     | dataType '(' expression ')'                       # TypeConversion
     | REAL                                              # RealLiteral
