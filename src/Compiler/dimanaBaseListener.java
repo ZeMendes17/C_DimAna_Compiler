@@ -172,13 +172,25 @@ public class dimanaBaseListener implements dimanaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnit(dimanaParser.UnitContext ctx) { }
+	@Override public void enterIndependentUnit(dimanaParser.IndependentUnitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnit(dimanaParser.UnitContext ctx) { }
+	@Override public void exitIndependentUnit(dimanaParser.IndependentUnitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDependantUnit(dimanaParser.DependantUnitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDependantUnit(dimanaParser.DependantUnitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

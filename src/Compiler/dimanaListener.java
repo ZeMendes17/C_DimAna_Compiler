@@ -137,15 +137,29 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitPrefixUnit(dimanaParser.PrefixUnitContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link dimanaParser#unit}.
+	 * Enter a parse tree produced by the {@code independentUnit}
+	 * labeled alternative in {@link dimanaParser#unit}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnit(dimanaParser.UnitContext ctx);
+	void enterIndependentUnit(dimanaParser.IndependentUnitContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link dimanaParser#unit}.
+	 * Exit a parse tree produced by the {@code independentUnit}
+	 * labeled alternative in {@link dimanaParser#unit}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnit(dimanaParser.UnitContext ctx);
+	void exitIndependentUnit(dimanaParser.IndependentUnitContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code dependantUnit}
+	 * labeled alternative in {@link dimanaParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void enterDependantUnit(dimanaParser.DependantUnitContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code dependantUnit}
+	 * labeled alternative in {@link dimanaParser#unit}.
+	 * @param ctx the parse tree
+	 */
+	void exitDependantUnit(dimanaParser.DependantUnitContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link dimanaParser#alternativeUnit}.
 	 * @param ctx the parse tree

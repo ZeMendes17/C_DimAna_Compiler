@@ -51,7 +51,12 @@ headerFile: 'use' STRING;
 
 prefixUnit: 'prefix' dataType ID '=' (INT |  '1e' minus='-'? INT);
 
-unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
+unit: 'dimension' dataType ID 
+        ('[' ID (',' ID)? ']')                     #independentUnit         
+    |   ( ('[' ID (',' ID)? ']')? '=' expression)  #dependantUnit
+;
+
+// unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
 
 alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 
@@ -59,20 +64,20 @@ listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?
 
 
 expression
-    : 'read' STRING                                     # InputExpression
-    | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID     # InputTypeExpression
-    | 'string' '(' (STRING | ID) ',' INT ')'            # StringAssignExpression
-    | expression op=('*' | '/') expression              # MulDivExpression
-    | expression op=('+' | '-') expression              # AddSubExpression
-    | '(' expression ')'                                # ParenExpression
-    | outputStatement                                   # OutputExpression
-    | expression ',' expression                         # ExprListExpression
-    | ID '[' ID ']'                                     # IndexExpression
-    | ID                                                # IdExpression
-    | dataType '(' expression ')'                       # TypeConversion
-    | REAL                                              # RealLiteral
-    | INT                                               # IntLiteral
-    | STRING                                            # StringLiteral
+    : 'read' STRING                                         # InputExpression
+    | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID    # InputTypeExpression
+    | 'string' '(' (STRING | ID) ',' INT ')'                # StringAssignExpression
+    | expression op=('*' | '/') expression                  # MulDivExpression
+    | expression op=('+' | '-') expression                  # AddSubExpression
+    | '(' expression ')'                                    # ParenExpression
+    | outputStatement                                       # OutputExpression
+    | expression ',' expression                             # ExprListExpression
+    | ID '[' ID ']'                                         # IndexExpression
+    | ID                                                    # IdExpression
+    | dataType '(' expression ')'                           # TypeConversion
+    | REAL                                                  # RealLiteral
+    | INT                                                   # IntLiteral
+    | STRING                                                # StringLiteral
     ;
 
 dataType: 'integer' | 'real' | 'string' | 'list' '[' ID ']' | ID;

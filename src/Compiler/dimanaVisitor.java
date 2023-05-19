@@ -88,11 +88,19 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrefixUnit(dimanaParser.PrefixUnitContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link dimanaParser#unit}.
+	 * Visit a parse tree produced by the {@code independentUnit}
+	 * labeled alternative in {@link dimanaParser#unit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitUnit(dimanaParser.UnitContext ctx);
+	T visitIndependentUnit(dimanaParser.IndependentUnitContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code dependantUnit}
+	 * labeled alternative in {@link dimanaParser#unit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDependantUnit(dimanaParser.DependantUnitContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link dimanaParser#alternativeUnit}.
 	 * @param ctx the parse tree

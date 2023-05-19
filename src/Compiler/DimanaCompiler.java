@@ -47,8 +47,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return res;
    }
 
+   // agora aqui vao ser as independentes
    @Override
-   public ST visitUnit(dimanaParser.UnitContext ctx) {
+   public ST visitIndependentUnit(dimanaParser.IndependentUnitContext ctx) {
       // usado para declaração das dimensões
       String dimension_name = ctx.ID(0).getText();
       String dataType = ctx.dataType().getText();
@@ -80,6 +81,13 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       });
       return visitChildren(ctx);
       // return res;
+   }
+
+   @Override
+   public ST visitDependantUnit(dimanaParser.DependantUnitContext ctx) {
+      // aqui vao ser as unidades dependentes
+      ST res = null;
+      return visitChildren(ctx);
    }
 
    @Override
