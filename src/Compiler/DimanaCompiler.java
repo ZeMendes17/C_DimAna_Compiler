@@ -1,5 +1,6 @@
 
 import java.util.*;
+
 import org.stringtemplate.v4.*;
 
 @SuppressWarnings("CheckReturnValue")
@@ -178,7 +179,10 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
 
-   // not finished
+   // due to the concatenation of statements inside a print statement, a string builder was used in this method
+   // because we couldnt know how much statements we had to print inside a write statement beforehand
+   // for example : writeln string(10,n) string(20,x)
+   // it would be hard to define a string template for a case like this, because the number of arguments would be variable
 
    public ST visitOutputStatement(dimanaParser.OutputStatementContext ctx) {
 
@@ -187,15 +191,14 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       StringBuilder sb = new StringBuilder();
       // System.out.println("print amount " + print_amount + "\n");
 
-      for (int i = 0; i < print_amount; i++) { // lidar com varias cenas num print, é necessário isto
+      for (int i = 0; i < print_amount; i++) {
          String output_format = ctx.outputFormat(i).getText();
          String write_expr = ctx.write_expr().getText();
-         // System.out.println("write expr " + write_expr);
          String string_length = ctx.outputFormat(i).INT().getText();
-         // System.out.println("String length ->" + string_length + "<-");
 
-         if (ctx.write_expr().getText().equals("write")) {
-            if (ctx.outputFormat(i).ID() != null) { // if its a id AKA a variable
+         if (ctx.write_expr().getText().equals("write")) { // ''write'' statement
+
+            if (ctx.outputFormat(i).ID() != null) { // write a ID ( variable )
                String var_name = ctx.outputFormat(i).ID().getText();
                print = templates.getInstanceOf("print");
 
@@ -223,7 +226,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else if (ctx.outputFormat(i).STRING() != null) { // its a string
+            } else if (ctx.outputFormat(i).STRING() != null) { // write a string
                print = templates.getInstanceOf("print");
                String print_string = ctx.outputFormat(i).STRING().getText();
                sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
@@ -234,35 +237,39 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else {
-               print = templates.getInstanceOf("print_array_idx");
+            } else { // write a array index
+               print = templates.getInstanceOf("print");
 
                String array_value = ctx.outputFormat(i).expression().getText();
                String array_name;
                String array_idx;
-               
+
                int startIndex = array_value.indexOf('[');
                array_name = array_value.substring(0, startIndex);
 
-               // Extracting the "i" value
                int endIndex = array_value.indexOf(']');
                array_idx = array_value.substring(startIndex + 1, endIndex);
 
-               //print.add("list", array_name);
-               //print.add("idx", array_idx);
                String datatype_of_idx = varMap.get(declared_vars.get(array_name)).get(0);
-               print.add("type", convert_Types(datatype_of_idx));
+               datatype_of_idx = convert_Types(datatype_of_idx); // convert it to integer, string or double for use with
+                                                                 // DimensionVar
+               if (datatype_of_idx.equals("string"))
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + array_name + ".get(" + array_idx + ")");
+               else
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + array_name + ".get(" + array_idx + ")"
+                        + ".getValue_" + datatype_of_idx + "()");
                if (i == print_amount - 1) // if its the last one
                {
-                  print.add("concat", ";");
+                  print.add("value", sb.toString());
+                  sb.setLength(0);
                } else
-                  print.add("concat", "+");
+                  sb.append("+");
 
             }
 
          } else if (ctx.write_expr().getText().equals("writeln")) { // writeln
 
-            if (ctx.outputFormat(i).ID() != null) {
+            if (ctx.outputFormat(i).ID() != null) { // writeln a ID ( variable )
                print = templates.getInstanceOf("println");
                String var_name = ctx.outputFormat(i).ID().getText();
                if (!declared_vars.containsKey(var_name)) {
@@ -288,7 +295,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
             }
 
-            else if (ctx.outputFormat(i).STRING() != null) {
+            else if (ctx.outputFormat(i).STRING() != null) { // writeln a string
                print = templates.getInstanceOf("println");
                String print_string = ctx.outputFormat(i).STRING().getText();
                sb.append("String.format(\"%" + string_length + "s" + "\"," + print_string + ")");
@@ -299,30 +306,37 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                } else
                   sb.append("+");
 
-            } else {
-               print = templates.getInstanceOf("println_array_idx");
+            } else { // writeln a array index
+               print = templates.getInstanceOf("println");
+
                String array_value = ctx.outputFormat(i).expression().getText();
                String array_name;
                String array_idx;
-               
+
                int startIndex = array_value.indexOf('[');
                array_name = array_value.substring(0, startIndex);
 
                // Extracting the "i" value
                int endIndex = array_value.indexOf(']');
                array_idx = array_value.substring(startIndex + 1, endIndex);
-               print.add("list", array_name);
-               print.add("idx", array_idx);
+
+
                String datatype_of_idx = varMap.get(declared_vars.get(array_name)).get(0);
-               print.add("type", convert_Types(datatype_of_idx));
+               datatype_of_idx = convert_Types(datatype_of_idx); // convert it to integer, string or double for use with
+                                                                 // DimensionVar
+               if (datatype_of_idx.equals("string"))
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + array_name + ".get(" + array_idx + "))");
+               else
+                  sb.append("String.format(\"%" + string_length + "s" + "\"," + array_name + ".get(" + array_idx + ")"
+                        + ".getValue_" + datatype_of_idx + "())");
                if (i == print_amount - 1) // if its the last one
                {
-                  print.add("concat", ";");
+                  print.add("value", sb.toString());
+                  sb.setLength(0);
                } else
-                  print.add("concat", "+");
+                  sb.append("+");
             }
          }
-
       }
       return print;
 
