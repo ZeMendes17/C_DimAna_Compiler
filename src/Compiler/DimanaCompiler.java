@@ -169,6 +169,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             System.exit(0);
          }
 
+
          ST read_and_cast = templates.getInstanceOf("read_and_cast");
          read_and_cast.add("type", var_dataType);
          read_and_cast.add("var", var_name);
