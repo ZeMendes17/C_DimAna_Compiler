@@ -26,6 +26,7 @@ statement:
     | headerFile
     | prefixUnit
     | unit
+    //| dimension
     | alternativeUnit
     | listDeclaration
     ;
@@ -51,9 +52,17 @@ headerFile: 'use' STRING;
 
 prefixUnit: 'prefix' dataType ID '=' (INT |  '1e' minus='-'? INT);
 
-unit: 'dimension' dataType ID 
-        ('[' ID (',' ID)? ']')                     #independentUnit         
+/* dimension: 'dimension' dataType ID defDimension;
+
+defDimension
+    :   ('[' ID (',' ID)? ']')                     #independentUnit         
     |   ( ('[' ID (',' ID)? ']')? '=' expression)  #dependantUnit
+    |   ('=' expression)                           #derivedUnit
+    ; */
+
+unit
+    : 'dimension' dataType ID ('[' ID (',' ID)? ']')                     #independentUnit         
+    | 'dimension' dataType ID ( ('[' ID (',' ID)? ']')? '=' expression)  #dependantUnit
 ;
 
 // unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
