@@ -37,7 +37,7 @@ public class DimensionVar  {
     }
 
 
-    public DimensionVar(String dimension_unit, int inicial_value){
+    public DimensionVar(String dimension_unit, int inicial_value ){
         this.dimension_unit = dimension_unit; 
         this.value_int = inicial_value; 
     }

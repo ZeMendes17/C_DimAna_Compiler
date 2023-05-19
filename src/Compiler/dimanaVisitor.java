@@ -169,13 +169,6 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringLiteral(dimanaParser.StringLiteralContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code AddListExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAddListExpression(dimanaParser.AddListExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code IdExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -197,6 +190,13 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntLiteral(dimanaParser.IntLiteralContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code InputTypeExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code MulDivExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -209,4 +209,10 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDataType(dimanaParser.DataTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link dimanaParser#castTypes}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCastTypes(dimanaParser.CastTypesContext ctx);
 }

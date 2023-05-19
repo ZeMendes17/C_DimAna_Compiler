@@ -275,18 +275,6 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitStringLiteral(dimanaParser.StringLiteralContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code AddListExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAddListExpression(dimanaParser.AddListExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code AddListExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAddListExpression(dimanaParser.AddListExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code IdExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -323,6 +311,18 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitIntLiteral(dimanaParser.IntLiteralContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code InputTypeExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code InputTypeExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code MulDivExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -344,4 +344,14 @@ public interface dimanaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDataType(dimanaParser.DataTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link dimanaParser#castTypes}.
+	 * @param ctx the parse tree
+	 */
+	void enterCastTypes(dimanaParser.CastTypesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#castTypes}.
+	 * @param ctx the parse tree
+	 */
+	void exitCastTypes(dimanaParser.CastTypesContext ctx);
 }
