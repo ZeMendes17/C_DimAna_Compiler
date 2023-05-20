@@ -88,10 +88,18 @@ typeValue ::= [
    default:"null"
 ]
 
-read_and_cast(type,var,temp,dimension) ::= <<
+setValue::= [
+   "real" : "double",
+   "integer" : "integer",
+   "string" : "string",
+   "int":"integer",
+   default:"null"
+] 
+
+read_and_cast(type,var,temp) ::= <<
 System.out.print("Insert value into variable <var> (<typeValue.(type)>)  : ");
 <typeValue.(type)> <temp> = sc.next<typeValue.(typeValue.(type))>();
-<var>.setValue_<typeValue.(type)>(<temp>);
+<var>.setValue_<setValue.(type)>(<temp>);
 >>
 
 read_and_cast_toArray(type,var,temp,dimension,temp2) ::= <<

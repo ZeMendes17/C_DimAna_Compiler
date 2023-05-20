@@ -26,6 +26,7 @@ statement:
     | headerFile
     | prefixUnit
     | unit
+    //| dimension
     | alternativeUnit
     | listDeclaration
     ;
