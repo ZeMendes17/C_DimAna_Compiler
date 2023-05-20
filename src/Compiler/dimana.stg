@@ -152,6 +152,12 @@ assign(stat,var,value) ::= <<
 
 binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
    
+declString(var, value) ::= <<
+   String <var> = "<value>";
+>>
 
+declStringPlus(var, value1, value2, value3) ::= <<
+   String <var> = <value1> + "<value2>" + <value3>;
+>>
 
 

@@ -51,9 +51,9 @@ headerFile: 'use' STRING;
 
 prefixUnit: 'prefix' dataType ID '=' (INT |  '1e' minus='-'? INT);
 
-unit: 'dimension' dataType ID 
-        ('[' ID (',' ID)? ']')                     #independentUnit         
-    |   ( ('[' ID (',' ID)? ']')? '=' expression)  #dependantUnit
+unit: 
+        'dimension' dataType ID    ('[' ID (',' ID)? ']')                       #independentUnit         
+    |   'dimension' dataType ID   ( ('[' ID (',' ID)? ']')? '=' expression)     #dependantUnit
 ;
 
 // unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
@@ -63,7 +63,7 @@ alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
 
-expression
+expression returns[String varName]
     : 'read' STRING                                         # InputExpression
     | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID    # InputTypeExpression
     | 'string' '(' (STRING | ID) ',' INT ')'                # StringAssignExpression

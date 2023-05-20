@@ -23,6 +23,12 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    HashMap<String, String> declared_vars = new HashMap<String, String>();
    int temp_var_counter = 1;
 
+   // used for unit
+   HashMap<String, String> dimension_type = new HashMap<>();
+   HashMap<String, List<String>> SI_dimension = new HashMap<>();
+   HashMap<String, List<String>> var_dimension = new HashMap<>();
+   HashMap<String, String> conv = new HashMap<>();
+
    ArrayList<String> default_types = new ArrayList<String>() {
       {
          add("integer");
@@ -79,14 +85,95 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             add("integer");
          }
       });
+
+
+      // System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA -----> " + dataType);
+      dimension_type.put(dimension_name, dataType);
+
+      // try --> tem ter virgula e por isso sufixo; catch --> nao tem virgula nem sufixo
+      try {
+         String suffix = ctx.ID(2).getText();
+         // System.out.println("YEEEEEEEEEEEEEEEEEEEEEEES");
+         List<String> temp = new ArrayList<>();
+         temp.add(dimension_name);
+         temp.add(suffix);
+
+         SI_dimension.put(dimension_unit, temp);
+
+      } catch (NullPointerException e) {
+         // System.out.println("NOOOOOOOOOOOOOOOOOOO");
+         List<String> temp = new ArrayList<>();
+         temp.add(dimension_name);
+         temp.add(null);
+
+         SI_dimension.put(dimension_unit, temp);
+      }
+
+      // for(String s : SI_dimension.keySet()) {
+      //    System.out.println(s + " --> " + SI_dimension.get(s));
+      // }
+      // System.out.println();
+
       return visitChildren(ctx);
       // return res;
    }
 
    @Override
    public ST visitDependantUnit(dimanaParser.DependantUnitContext ctx) {
-      // aqui vao ser as unidades dependentes
-      ST res = null;
+      ST res = templates.getInstanceOf("stats");
+      String dimension_name = ctx.ID(0).getText();
+      String dataType = ctx.dataType().getText();
+
+      dimension_type.put(dimension_name, dataType);
+
+      res.add("stat", visit(ctx.expression()));
+      List<String> temp = new ArrayList<>();
+      temp.add(dimension_name);
+      try {
+         String dimension_unit = ctx.ID(1).getText();
+         try {
+            String suffix = ctx.ID(2).getText();
+            temp.add(suffix);
+            SI_dimension.put(dimension_unit, temp);
+         } catch (NullPointerException e) {
+            temp.add(null);
+            SI_dimension.put(dimension_unit, temp);
+         }
+         
+      } catch (NullPointerException e) {}
+
+      // para substituir no caso Length*Length*Length --> Area*Length
+      String type = declared_vars.get(ctx.expression().varName);
+      for(String s : SI_dimension.keySet()) {
+         if(type.contains(s)){
+            type = type.replace(s, SI_dimension.get(s).get(0));
+            // System.out.println("AAAAAAAAAAAAAAAA --> " + type);
+         }
+      }
+      String[] dimParts = type.split("[*/]");
+      String operator = type.replace(dimParts[0], "").replace(dimParts[1], "");
+      String first = null;
+      String second = null;
+      for(String s : SI_dimension.keySet()) {
+         if(SI_dimension.get(s).get(0).equals(dimParts[0]))
+            first = SI_dimension.get(s).get(1);
+         
+         if(SI_dimension.get(s).get(0).equals(dimParts[1]))
+            second = SI_dimension.get(s).get(1);
+      }
+
+      temp = new ArrayList<>();
+      temp.add(dimension_name);
+      temp.add(first + operator + second);
+      SI_dimension.put(type, temp);
+
+      
+      // System.out.println(ctx.ID(0).getText() + " ---> " + declared_vars.get(ctx.expression().varName));
+      // for(String s : SI_dimension.keySet())
+      //    System.out.println(s + " -----> " + SI_dimension.get(s));
+
+      // System.out.println();
+
       return visitChildren(ctx);
    }
 
@@ -432,12 +519,12 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       /*
        * REFAZER ESTA VERIFICAÇÃO, NAO PODE SER FEITA ASSIM, PORQUE ALGUM DESTES
        * VALORES PODE SER UMA VARIAVEL
-       * 
+       *
        * if ( Integer.parseInt(initial_value) > Integer.parseInt(final_value)) {
        * System.out.println("Initial value of for loop is bigger than final value");
        * System.exit(0);
        * }
-       * 
+       *
        */
       loop_statement.add("initial_value", initial_value);
       loop_statement.add("end_value", final_value);
@@ -457,9 +544,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
     * System.out.println(value);
     * add_list.add("listname", list_name);
     * add_list.add("value", value);
-    * 
-    * 
-    * 
+    *
+    *
+    *
     * return add_list;
     * // return res;
     * }
@@ -545,19 +632,19 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    // nada
    /*
     * @Override
-    * public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
-    * 
-    * 
-    * 
+    * public ST visitAssignment(dimanaParser.AssignmentContext        dim = SI_dimension.get(e2)[0]; ctx) {
+    *
+    *
+    *
     * String expression1 = ctx.expression().getText();
     * String expression2 = ctx.expression().getText();
     * String expression3 = ctx.expression().getText();
     * System.out.println (expression1 + " " + expression2 + " " + expression3);
-    * 
-    * 
-    * 
+    *
+    *
+    *
     * return null;
-    * 
+    *
     * }
     */
 
@@ -640,9 +727,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitIdExpression(dimanaParser.IdExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("declString");;
+      ctx.varName = newVar();
+      res.add("var", ctx.varName);
+      res.add("value", ctx.ID().getText());
+      return res;
    }
 
    @Override
@@ -661,47 +750,66 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx) {
-      System.out.println("Dies of muldiv");
-      return null;
-      /*
-       * ST res = templates.getInstanceOf("binaryOperation");
-       * // if the dimensions are the same, then do the operation
-       * 
-       * // getDimension() iria buscar a dimension
-       * // getUnit() iria buscar a unidade
-       * 
-       * if ( varMapvisit(ctx.expression(0)) && visit(ctx.expression(1))) {
-       * if (visit(ctx.expression(0)).getUnit() == visit(ctx.expression(1)).getUnit())
-       * {
-       * // fazer a operação
-       * res.add("type", ctx.expression(0).getDimension());
-       * res.add("var", newVar());
-       * res.add("e1", visit(ctx.expression(0)));
-       * res.add("e2", visit(ctx.expression(1)));
-       * res.add("op", ctx.op.getText());
-       * 
-       * 
-       * // if not the same unit, convert to the unit defined in the dimension
-       * } else {
-       * // converter para a unidade da esquerda
-       * }
-       * }
-       * 
-       * // if the dimensions are not the same, then if the operations between
-       * // the two dimensions doesnt give a dimension the operation is not valid
-       * else if (visit(ctx.expression(0)).getDimension() !=
-       * visit(ctx.expression(1)).getDimension()) {
-       * if (visit(ctx.expression(0)).getDimension()
-       * visit(ctx.expression(1)).getDimension() == "t" ) {
-       * // fazer a operação
-       * } else {
-       * // throw error
-       * }
-       * }
-       * 
-       * 
-       * // return res;
-       */
+      // ta a funcionar para os exemplos do physics (tirar o Unit para nao dar erro para ja)
+      ST res = templates.getInstanceOf("stats");
+      // System.out.println(ctx.expression(0).getText());
+      res.add("stat", visit(ctx.expression(0)).render());
+      res.add("stat", visit(ctx.expression(1)).render());
+
+      ctx.varName = newVar();
+
+      // ST bop = templates.getInstanceOf("declStringPlus");
+      // bop.add("var", ctx.varName);
+      // bop.add("value1", ctx.expression(0).varName);
+      // bop.add("value2", ctx.op.getText());
+      // bop.add("value3", ctx.expression(1).varName);
+
+      String temp = ctx.expression(0).getText() + ctx.op.getText() + ctx.expression(1).getText();
+      // System.out.println(temp);
+      declared_vars.put(ctx.varName, temp);
+      // for(String s : declared_vars.keySet())
+      //    System.out.println(s + " ---> " + declared_vars.get(s));
+      // System.out.println();
+      // res.add("stat", bop.render());
+      return res;
+
+
+   //    ST res = templates.getInstanceOf("binaryOperation");
+
+   //    dimension dim;
+   //    String e1 = visit(ctx.expression(0)).getText();
+   //    String e2 = visit(ctx.expression(1)).getText();
+   //    String op = ctx.op.getText();
+
+   //    // Se e1 for um numero, vai ser uma transformacao (e2 tem de ser unit)
+
+   //    // PRIMEIRO : VERIFICAR A DIMENSAO
+   //    // pseudo-codigo
+   //    if (e1.type == Integer || e1.type == Real) {
+   //       if (e1.type == e2.type) {
+   //          dim = e1.type;
+   //       }
+
+   //       else if (SI_dimension.containsKey(e2)) {
+   //          dim = SI_dimension.get(e2)[0];
+   //       }
+   //    }
+
+   //    else if (var_dimension.containsKey(e1) && var_dimension.containsKey(e2)) {
+   //       String temp = new StringBuilder().append(var_dimension.get(e1)[0]).append(op).append(var_dimension.get(e1)[0]).toString();
+   //       System.out.println(temp);
+   //       if (SI_dimension.containsKey(temp)) {
+   //          dim = SI_dimension.get(temp)[0];
+   //       }
+   //    }
+
+   //    else {
+   //       System.err.println("ERROR: Incompatible dimensions");
+   //       System.exit(0); // 0 ou 1 ??
+   //    }
+
+
+   //    // return res;
    }
 
    @Override
