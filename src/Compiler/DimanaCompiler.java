@@ -672,59 +672,68 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitExprListExpression(dimanaParser.ExprListExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST expr1 = visit(ctx.expression(0));
+      ST expr2 = visit(ctx.expression(1));
+      ST res = templates.getInstanceOf("binaryOperation");
+      res.add("e1", expr1);
+      res.add("e2", expr2);
+      return res;
    }
 
    @Override
    public ST visitIndexExpression(dimanaParser.IndexExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("print_array_idx");
+      res.add("list", visit(ctx.ID(0)));
+      res.add("idx", visit(ctx.ID(1)));
+      return res;
    }
 
    @Override
    public ST visitInputExpression(dimanaParser.InputExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("read_and_cast");
+      res.add("type", visit(ctx.dataType()));
+      res.add("var", visit(ctx.ID()));
+      return res;
    }
 
    @Override
    public ST visitAddSubExpression(dimanaParser.AddSubExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("binaryOperation");
+      res.add("e1", visit(ctx.expression(0)));
+      res.add("e2", visit(ctx.expression(1)));
+      res.add("op", ctx.op.getText());
+      return res;
    }
 
    @Override
    public ST visitRealLiteral(dimanaParser.RealLiteralContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("decl_value");
+      res.add("type", "real");
+      res.add("value", ctx.getText());
+      return res;
    }
 
    @Override
    public ST visitStringAssignExpression(dimanaParser.StringAssignExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("decl_string");
+      res.add("var", visit(ctx.ID()));
+      res.add("value", ctx.STRING().getText());
+      return res;
    }
 
    @Override
    public ST visitTypeConversion(dimanaParser.TypeConversionContext ctx) {
-      ST res = null;
       return visitChildren(ctx);
-      // return res;
    }
 
    @Override
    public ST visitStringLiteral(dimanaParser.StringLiteralContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      ST res = templates.getInstanceOf("decl_string");
+      res.add("var", "");
+      res.add("value", ctx.getText());
+      return res;
    }
+
 
    @Override
    public ST visitIdExpression(dimanaParser.IdExpressionContext ctx) {
@@ -737,16 +746,20 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitParenExpression(dimanaParser.ParenExpressionContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      // Since the expression is inside parentheses, you just need to visit the inner expression.
+      // There's no need for a separate template.
+      ST res = visit(ctx.expression());
+      return res;
    }
 
    @Override
    public ST visitIntLiteral(dimanaParser.IntLiteralContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      // Assuming you want to declare an integer variable with this literal value.
+      // If this is not the case, you might need to adjust this or provide a new template.
+      ST res = templates.getInstanceOf("decl_value");
+      res.add("type", "integer");
+      res.add("value", ctx.getText());
+      return res;
    }
 
    @Override
