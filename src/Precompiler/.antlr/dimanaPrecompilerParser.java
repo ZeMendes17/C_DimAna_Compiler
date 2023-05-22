@@ -1,4 +1,4 @@
-// Generated from c:\Users\Alex\Desktop\Uni\2_Ano\2_Semestre\C\comp-2023-dimana-01\src\Precompiler\dimanaPrecompiler.g4 by ANTLR 4.9.2
+// Generated from /Users/andreoliveira/Documents/GitHub/comp-2023-dimana-01/src/Precompiler/dimanaPrecompiler.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
