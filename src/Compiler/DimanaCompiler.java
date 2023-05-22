@@ -665,9 +665,26 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitAlternativeUnit(dimanaParser.AlternativeUnitContext ctx) {
-      ST res = null;
-      return visitChildren(ctx);
-      // return res;
+      String dimension_name = ctx.ID(0).getText();
+      String dimension_unit = ctx.ID(1).getText();
+      String unit_suffix = null, SI_unit;
+      
+      try {
+         SI_unit = ctx.ID(3).getText();
+         unit_suffix = ctx.ID(2).getText();
+      }
+      catch (NullPointerException e) {
+         SI_unit = ctx.ID(2).getText();
+      }
+
+      String convValue = ctx.NUMBER().getText();
+      //String convValue = ctx.REAL().getText();
+      conv.put(dimension_unit, convValue + '*' + SI_unit);
+      if (unit_suffix != null) {
+         conv.put(unit_suffix, convValue + '*' + SI_unit);
+      }
+      
+      return null;
    }
 
    @Override
