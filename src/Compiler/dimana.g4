@@ -54,7 +54,7 @@ prefixUnit: 'prefix' dataType ID '=' (INT |  '1e' minus='-'? INT);
 
 unit: 
         'dimension' dataType ID    ('[' ID (',' ID)? ']')                       #independentUnit         
-    |   'dimension' dataType ID   ( ('[' ID (',' ID)? ']')? '=' expression)     #dependantUnit
+    |   'dimension' dataType ID   ( ('[' ID (',' ID) ']')? '=' expression)     #dependantUnit
 ;
 
 // unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
