@@ -59,10 +59,7 @@ unit:
 
 // unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
 
-// alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
-
-alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' NUMBER '*' ID;
-//alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' REAL '*' ID;
+alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
@@ -87,7 +84,6 @@ expression returns[String varName]
 dataType: 'integer' | 'real' | 'string' | 'list' '[' ID ']' | ID;
 castTypes : 'integer' | 'real';
 
-NUMBER: REAL|INT;
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 INT: [0-9]+;
 REAL: [0-9]* '.' [0-9]+;
