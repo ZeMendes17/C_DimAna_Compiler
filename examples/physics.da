@@ -12,7 +12,7 @@ dimension real LuminousIntensity [candela,cd];
 ## alternative Length unit:
 
 # unit <dimension-name> [<unit-name>,<suffix-name>]
-unit Length [inch,in] = 0.0254*meter;
+# unit Length [inch,in] = 0.0254*meter;
 
 ## dependant units:
 

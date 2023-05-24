@@ -29,7 +29,7 @@ scanner_next(var) ::= <<
 >>
 
 filler(bruh) ::= "Filler <bruh>;"
-/* write incompleto secalhar.Nos comboios tem que dar print normal ate chegar ao ultimo que da println */
+
 
 print_string(value,length) ::= <<
 System.out.print(String.format(%<length>s, <value> ));
@@ -137,25 +137,31 @@ add_list(listname,value) ::= <<
 \<<listname>\>.add(<value>);
 >>
 
-
+return(value) ::= <<
+<value>;
+>>
 
 // unit = unidade da dimensão (ex: m, kg, s, etc)
 // name = nome da variável
 // value = quando tem valor inicial
-declare_var(unit,name) ::= <<
+declare_var(unit,name,suffix) ::= <<
 DimensionVar <name> = new DimensionVar("<unit>");
+<name>.setSuffix("<suffix>");
 >>
 
-declare_var_with_value(unit,name,value) ::= <<
+declare_var_with_value(unit,name,value,suffix) ::= <<
 DimensionVar <name> = new DimensionVar("<unit>",<value>);
+<name>.setSuffix("<suffix>");
 >>
 
 
-assign(stat,var,value) ::= <<
-<stats(stat)>
+assign(var,value) ::= <<
 <var> = <value>;
 >>
 
+assign_dvar(var_name,operando1,operando2,dataType,operacao) ::= <<
+<typeValue.(dataType)> <var_name> = <operando1>.getValue_<typeValue.(dataType)>() <operacao> <operando2>.getValue_<typeValue.(dataType)>();
+>>
 
 
 binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
@@ -167,5 +173,10 @@ declString(var, value) ::= <<
 declStringPlus(var, value1, value2, value3) ::= <<
    String <var> = <value1> + "<value2>" + <value3>;
 >>
+
+var_setValue(var,value,type) ::= <<
+<var>.setValue_<typeValue.(type)>(<value>);
+>>
+
 
 

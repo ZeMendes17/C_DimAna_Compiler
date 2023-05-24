@@ -6,6 +6,7 @@ public class DimensionVar  {
     private int value_int;
     private double value_real;
     private String value_string;
+    private String suffix;
 
 
 
@@ -13,27 +14,10 @@ public class DimensionVar  {
         this.type = type;
     }
  
-    public DimensionVar(String type, String dimension_unit) {
+    public DimensionVar(String type, String dimension_unit, String suffix) {
         this.type = type; // tipo da variavel , (real ou integer)
         this.dimension_unit = dimension_unit; // dimensão da variável ( metros, kg etc...)
-    }
-
-    public DimensionVar(String type, String dimension_unit, int inicial_value) {
-        this.type = type; // tipo da variavel , (real ou integer)
-        this.dimension_unit = dimension_unit; // dimensão da variável ( metros, kg etc...)
-        this.value_int = inicial_value; // para casos em que a expression é dada, tipo NMEC n = 5
-    }
-
-    public DimensionVar(String type, String dimension_unit, String inicial_value) {
-        this.type = type; // tipo da variavel , (real ou integer)
-        this.dimension_unit = dimension_unit; // dimensão da variável ( metros, kg etc...)
-        this.value_string = inicial_value; // para casos em que a expression é dada, tipo NMEC n = 5
-    }
-
-    public DimensionVar(String type, String dimension_unit, double inicial_value) {
-        this.type = type; // tipo da variavel , (real ou integer)
-        this.dimension_unit = dimension_unit; // dimensão da variável ( metros, kg etc...)
-        this.value_real = inicial_value; // para casos em que a expression é dada, tipo NMEC n = 5
+        this.suffix = suffix; // para casos em que a expression é dada, tipo NMEC n = 5
     }
 
 
@@ -65,6 +49,14 @@ public class DimensionVar  {
 
     public double getValue_double() {
         return value_real;
+    }
+
+        public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     public void setValue_double(double value_real) {
