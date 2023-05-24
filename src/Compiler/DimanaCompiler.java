@@ -137,7 +137,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       String dimension_name = ctx.ID(0).getText();
       String dataType = ctx.dataType().getText();
       String expression = visit(ctx.expression()).render();
-      //ST decl_value = templates.getInstanceOf("declare_var");
+      // ST decl_value = templates.getInstanceOf("declare_var");
 
       if (ctx.ID(1) != null) { // é definido uma unidade base e um sufixo
          StringBuilder sb = new StringBuilder();
@@ -145,7 +145,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          String unit_dependency = declared_vars.get(ctx.expression().varName);
          // dimension_type.put(dimension_name, dataType);
          if (ctx.ID(2) != null) { // se houver um sufixo
-            
+
             String suffix = ctx.ID(2).getText();
             varMap.put(dimension_name, new ArrayList<String>() {
                {
@@ -168,10 +168,12 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       }
 
       else { // não é definida unidade base nem sufixo
-         visit(ctx.expression());
-         String unit_dependency = declared_vars.get(ctx.expression().varName);
+
+         String expressao_variavel = expression;
+         String unit_dependency = expressao_variavel.replace(";", "");
          // System.out.println("Full dependent expression -> " + unit_dependency);
          String[] dimParts = unit_dependency.split("(?<=[*|/|+|-])|(?=[*|/|+|-])");
+         // remove ; from dimParts
          // System.out.println("dimParts -> " + dimParts);
          dependent_units.put(dimension_name, new ArrayList<String>() {
             {
@@ -179,15 +181,18 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          });
          StringBuilder sb = new StringBuilder();
+         System.out.println("Dimensão a ser declarada -> " + dimension_name);
          for (int i = 0; i < dimParts.length; i++) {
             // System.out.println("dimParts[i] -> " + dimParts[i]);
+            // System.out.println("Varmap = " + varMap);
             if (dimParts[i].equals("*") || dimParts[i].equals("/") || dimParts[i].equals("+")
                   || dimParts[i].equals("-"))
                sb.append(dimParts[i]);
-            else
+            else {
                sb.append(varMap.get(dimParts[i]).get(2));
-
+            }
          }
+
          varMap.put(dimension_name, new ArrayList<String>() {
             {
                add(dataType);
@@ -197,18 +202,21 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          });
 
-        // get the key corresponding to the value of unit_dependency in the unit_dependency hashmap
-        /* 
-         for (String key : dependent_units.keySet()) {
-            if (dependent_units.get(key).get(0).equals(unit_dependency)) {
-               decl_value.add("unit", key);
-               break;
-            }
-         }
-         decl_value.add("name", dimension_name);
-         //decl_value.add("unit",dependent_units.get(expression).get(0));
-         decl_value.add("suffix",sb.toString());
-         */
+         //System.out.println("Added " + dimension_name + " to varMap");
+
+         // get the key corresponding to the value of unit_dependency in the
+         // unit_dependency hashmap
+         /*
+          * for (String key : dependent_units.keySet()) {
+          * if (dependent_units.get(key).get(0).equals(unit_dependency)) {
+          * decl_value.add("unit", key);
+          * break;
+          * }
+          * }
+          * decl_value.add("name", dimension_name);
+          * //decl_value.add("unit",dependent_units.get(expression).get(0));
+          * decl_value.add("suffix",sb.toString());
+          */
          /*
           * for (int i = 0 ; i< dimParts.length ; i++){
           * verificar se o dataType de ambas as variaveis é o mesmo
@@ -293,7 +301,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // simplesmente metam a expression a retornar um ST que crie uma variavel com o
       // resultado do calculo
 
-
       // String[] dimParts = type.split("[*/]");
       /*
        * String operator = type.replace(dimParts[0], "").replace(dimParts[1], "");
@@ -360,13 +367,14 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             variable_declaration = templates.getInstanceOf("declare_var");
             variable_declaration.add("unit", dataType);
             variable_declaration.add("name", id);
-            //System.out.println("Variavel  + " + id + " declarada com sucesso" + " do tipo " + dataType);
+            // System.out.println("Variavel + " + id + " declarada com sucesso" + " do tipo
+            // " + dataType);
 
             if (varMap.get(dataType).size() == 3) {
                String suffix = varMap.get(dataType).get(2);
                variable_declaration.add("suffix", suffix);
 
-            } 
+            }
 
          } else { // é dado um valor inicial ( expression )
             variable_declaration = templates.getInstanceOf("declare_var_with_value");
@@ -377,8 +385,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
             if (varMap.get(dataType).size() == 3) {
                String suffix = varMap.get(dataType).get(2);
-                  variable_declaration.add("suffix", suffix);
-            } 
+               variable_declaration.add("suffix", suffix);
+            }
          }
       }
 
@@ -605,7 +613,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          } else { // write just a variable or a string , variable -> here is the case when we dont
                   // need right aligned strings
-            //System.out.println("Velocity entrou aqui");
+            // System.out.println("Velocity entrou aqui");
 
             if (ctx.outputFormat(i).STRING() == null) { // é so write variavel, nunca deve entrar aqui pelos exemplos
                String var_name = ctx.outputFormat(i).ID().getText();
@@ -636,7 +644,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                if (var_type.equals("string"))
                   sb.append(var_name);
                else
-                  sb.append(var_name + ".getValue_" + var_type + "()+ " + var_name + ".getSuffix()");
+                  sb.append(print_string +"+"+ var_name + ".getValue_" + var_type + "()+ " + var_name + ".getSuffix()");
                if (i == print_amount - 1) // if its the last one
                {
                   print.add("value", sb.toString());
@@ -801,17 +809,21 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return input;
    }
 
-
-    @Override
-    public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
+   @Override
+   public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
 
       ST res = templates.getInstanceOf("assign");
       String nome_var = ctx.ID().getText();
+      String var_dimension = declared_vars.get(nome_var);
+      String var_type = varMap.get(var_dimension).get(0);
+      res.add("initial_var", visit(ctx.expression()).render());
+      res.add("type", var_type);
       res.add("var", nome_var);
-      res.add("value", visit(ctx.expression()).render());
+      res.add("varName",ctx.expression().varName);
+      //res.add("var", nome_var);
+      //res.add("value" );
       return res;
    }
-   
 
    @Override
    public ST visitOutputFormat(dimanaParser.OutputFormatContext ctx) {
@@ -964,10 +976,10 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    }
 
    @Override
-   public ST visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx ) {
+   public ST visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx) {
       // ta a funcionar para os exemplos do physics (tirar o Unit para nao dar erro
       // para ja)
-      //ST res = templates.getInstanceOf("filler");
+      // ST res = templates.getInstanceOf("filler");
 
       // System.out.println(ctx.expression(0).getText());
       // res.add("stat", visit(ctx.expression(0)).render());
@@ -982,63 +994,73 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // bop.add("value3", ctx.expression(1).varName);
 
       String temp = ctx.expression(0).getText() + ctx.op.getText() + ctx.expression(1).getText();
-      //res.add("bruh", temp);
+      // res.add("bruh", temp);
       // System.out.println(temp);
-
 
       String operando1 = ctx.expression(0).getText();
       String operando2 = ctx.expression(1).getText();
-      /* 
-      if (!(varMap.get(declared_vars.get(operando1)).get(0).equals(varMap.get(declared_vars.get(operando2)).get(0)))) 
-         // variables are not from the same dimension
-         System.out.println("ERROR: variables are not from the same dimension" + operando1 + " " + operando2 );
-         */
-      System.out.println(declared_vars.toString());
-      //System.out.println("Operandos pra serem usados " + operando1 + " " + operando2);
+      /*
+       * if (!(varMap.get(declared_vars.get(operando1)).get(0).equals(varMap.get(
+       * declared_vars.get(operando2)).get(0))))
+       * // variables are not from the same dimension
+       * System.out.println("ERROR: variables are not from the same dimension" +
+       * operando1 + " " + operando2 );
+       */
+      //System.out.println(declared_vars.toString());
+      // System.out.println("Operandos pra serem usados " + operando1 + " " +
+      // operando2);
       if (declared_vars.containsKey(operando1) && declared_vars.containsKey(operando2)) { // operação entre variaveis
-         System.out.println(operando1 + ctx.op.getText() + operando2);
+         //System.out.println(operando1 + ctx.op.getText() + operando2);
          String var_type = varMap.get(declared_vars.get(operando1)).get(0);
-         ST assign_dvar = templates.getInstanceOf("assign_dvar"); 
+         ST assign_dvar = templates.getInstanceOf("assign_dvar");
          assign_dvar.add("var_name", ctx.varName);
-         assign_dvar.add("operando1",operando1);
-         assign_dvar.add("operando2",operando2);
-         assign_dvar.add("dataType" , var_type);
-         assign_dvar.add("operacao",ctx.op.getText());
+         assign_dvar.add("operando1", operando1);
+         assign_dvar.add("operando2", operando2);
+         assign_dvar.add("dataType", var_type);
+         assign_dvar.add("operacao", ctx.op.getText());
+         declared_vars.put(ctx.varName, temp);
+         System.out.println("Return value from assign_dvar \n" + assign_dvar.render());
          return assign_dvar;
       }
-      
+
       if (bothAreStrings(operando1, operando2)) { // operação entre dimensões
          ST Return = templates.getInstanceOf("return");
-         //System.out.println("TEMP TEST -> " + temp);
-         declared_vars.put(ctx.varName, temp);
-         Return.add("value",temp);
-         //System.out.println("Return value from Muldiv  ->" + Return.render());
+         // System.out.println("TEMP TEST -> " + temp);
+         Return.add("value", temp);
+         System.out.println("Return value from Muldiv  ->" + Return.render());
          return Return;
-       
+
       } else { // assign de uma variável a um escalar * dimensão
 
          ST var_setValue = templates.getInstanceOf("var_setValue");
          var_setValue.add("var", ctx.varName);
          var_setValue.add("value", operando1); // tou a assumir que é tipo sempre 3*meter e nunca meter*3
-         System.out.println(ctx.varName);
-         System.out.println(declared_vars.toString());
-         String var_type = varMap.get(declared_vars.get(ctx.varName)).get(0);
+         // System.out.println(ctx.varName);
+         //System.out.println("Variaveis declaradas " + declared_vars.toString());
+         //System.out.println("Full expression " + temp + " varname " + ctx.varName);
+         // String var_type = varMap.get(declared_vars.get(ctx.varName)).get(0);
+         String var_type = "";
+         //System.out.println("VarMap = " + varMap.toString());
+         for (String s : varMap.keySet()) {
+            if (varMap.get(s).size() == 3) {
+               if (varMap.get(s).get(1).equals(operando2))
+                  var_type = varMap.get(s).get(0);
+            }
+         }
+
          var_setValue.add("type", var_type);
          return var_setValue;
 
-
-         // 
-         /* 
-         if (declared_vars.get(operando1) != null)
-         var_type = varMap.get(declared_vars.get(operando1)).get(0);
-         else 
-         var_type = varMap.get(declared_vars.get(operando2)).get(0);
-         */
+         //
+         /*
+          * if (declared_vars.get(operando1) != null)
+          * var_type = varMap.get(declared_vars.get(operando1)).get(0);
+          * else
+          * var_type = varMap.get(declared_vars.get(operando2)).get(0);
+          */
 
       }
 
-
-      
       // for(String s : declared_vars.keySet())
       // System.out.println(s + " ---> " + declared_vars.get(s));
       // System.out.println();
@@ -1083,25 +1105,22 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    }
 
    public boolean bothAreStrings(String operand1, String operand2) {
-    try {
-        if ( (Double)Double.parseDouble(operand1) instanceof Double) // parseDouble can parse integers aswell
-        return false;
-    } 
-    catch (NumberFormatException e) {
-      return true;
-    }
-
-    try { 
-      if ( (Double)Double.parseDouble(operand1) instanceof Double) // parseDouble can parse integers aswell
-        return false;
-      } 
-      catch (NumberFormatException e) {
+      try {
+         if ((Double) Double.parseDouble(operand1) instanceof Double) // parseDouble can parse integers aswell
+            return false;
+      } catch (NumberFormatException e) {
          return true;
-    }
-    return false;
-   
-}
+      }
 
+      try {
+         if ((Double) Double.parseDouble(operand1) instanceof Double) // parseDouble can parse integers aswell
+            return false;
+      } catch (NumberFormatException e) {
+         return true;
+      }
+      return false;
+
+   }
 
    @Override
    public ST visitDataType(dimanaParser.DataTypeContext ctx) {

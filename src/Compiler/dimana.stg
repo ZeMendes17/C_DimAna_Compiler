@@ -155,12 +155,14 @@ DimensionVar <name> = new DimensionVar("<unit>",<value>);
 >>
 
 
-assign(var,value) ::= <<
-<var> = <value>;
+assign(initial_var,type,var,varName) ::= <<
+<initial_var>
+<var>.setValue_<typeValue.(type)>(<varName>);
 >>
 
 assign_dvar(var_name,operando1,operando2,dataType,operacao) ::= <<
-<typeValue.(dataType)> <var_name> = <operando1>.getValue_<typeValue.(dataType)>() <operacao> <operando2>.getValue_<typeValue.(dataType)>();
+<typeValue.(dataType)> <var_name> ;
+<var_name> = <operando1>.getValue_<typeValue.(dataType)>() <operacao> <operando2>.getValue_<typeValue.(dataType)>();
 >>
 
 
@@ -175,7 +177,8 @@ declStringPlus(var, value1, value2, value3) ::= <<
 >>
 
 var_setValue(var,value,type) ::= <<
-<var>.setValue_<typeValue.(type)>(<value>);
+<typeValue.(type)> <var>;
+<var> = <value>;
 >>
 
 
