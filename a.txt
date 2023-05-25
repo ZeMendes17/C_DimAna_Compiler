@@ -1,7 +1,13 @@
-Length l; 
-
-l = l1 + l2 
 
 
-valor da expression
-l.setvalue_<typeValue.(<type>) = valor 
+Velocity v1;
+
+v1 = 3.0 m/s
+
+Velocity v3 = 3.0m/s
+
+Velocity v2 = v1 + 3 -> não deve dar
+
+Velocity v2 = v1 + 3.0m/s -> deve dar????????
+
+Velocity v2 = v1 + v3 -> deve dar
