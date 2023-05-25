@@ -27,6 +27,7 @@ public class dimanaMain {
             // print LISP-style tree:
             // System.out.println(tree.toStringTree(parser));
             //DimanaSemanticChecker checker = new SemanticAnalyser();
+            dadosGuardados dados = new dadosGuardados();
             DimanaCompiler compiler = new DimanaCompiler();
             //checker.visit(tree);
 

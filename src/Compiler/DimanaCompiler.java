@@ -7,7 +7,7 @@ import org.stringtemplate.v4.*;
 public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
-   private int varCount = 0; // variable counter
+   /* private int varCount = 0; // variable counter
    HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
    // usem este array para guardar as coisas sobre variaveis/dimensoes
    // por exemplo --> {Length : [real, meter, m], ...}
@@ -21,9 +21,14 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    HashMap<String, ArrayList<String>> dependent_units = new HashMap<String, ArrayList<String>>();
    // guardar dependencias das unidades dependentes
    // p.ex Volume -> [Length, Length, Length]
-   int temp_var_counter = 1;
+   int temp_var_counter = 1; */
 
-
+   varCount = dadosGuardados.getVarCount();
+   varMap = dadosGuardados.getVarMap();
+   conversions = dadosGuardados.getConversions();
+   declared_vars = dadosGuardados.getDeclared_vars();
+   dependent_units = dadosGuardados.getDependent_units();
+   temp_var_counter = dadosGuardados.getTemp_var_counter();
 
    ArrayList<String> default_types = new ArrayList<String>() {
       {

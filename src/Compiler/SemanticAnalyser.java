@@ -3,22 +3,12 @@
 import java.util.*;
 @SuppressWarnings("CheckReturnValue")
 public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
-
-   private int varCount = 0; // variable counter
-   HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
-   // usem este array para guardar as coisas sobre variaveis/dimensoes
-   // por exemplo --> {Length : [real, meter, m], ...}
-
-   HashMap<String, ArrayList<String>> conversions = new HashMap<>();
-   // vai guardar por exemplo --> {inch : ["0.0254", "meter"], ...}
-
-   HashMap<String, String> declared_vars = new HashMap<String, String>();
-   // guardar as variaveis -----> {l : Length}
-   
-   HashMap<String, ArrayList<String>> dependent_units = new HashMap<String, ArrayList<String>>();
-   // guardar dependencias das unidades dependentes
-   // p.ex Volume -> [Length, Length, Length]
-   int temp_var_counter = 1;
+   varCount = dadosGuardados.getVarCount();
+   varMap = dadosGuardados.getVarMap();
+   conversions = dadosGuardados.getConversions();
+   declared_vars = dadosGuardados.getDeclared_vars();
+   dependent_units = dadosGuardados.getDependent_units();
+   temp_var_counter = dadosGuardados.getTemp_var_counter();
    
 
    ArrayList<String> default_types = new ArrayList<String>() {
