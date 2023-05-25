@@ -20,16 +20,22 @@ public class dimanaMain {
          dimanaParser parser = new dimanaParser(tokens);
          // replace error listener:
          //parser.removeErrorListeners(); // remove ConsoleErrorListener
-         //parser.addErrorListener(new ErrorHandlingListener());
+         //parser.addErrorListener(new ErrorHandling());
          // begin parsing at program rule:
          ParseTree tree = parser.program();
          if (parser.getNumberOfSyntaxErrors() == 0) {
             // print LISP-style tree:
             // System.out.println(tree.toStringTree(parser));
+            //DimanaSemanticChecker checker = new SemanticAnalyser();
             DimanaCompiler compiler = new DimanaCompiler();
-            ST result = compiler.visit(tree);
-            //result.add("name", "DimanaCompiled"); // not needed, depends on the compiled file name
-            System.out.println(result.render()); // dislays generated code
+            //checker.visit(tree);
+
+            //if (ErrorHandling.error()) {
+               ST result = compiler.visit(tree);
+               //result.add("name", "DimanaCompiled"); // not needed, depends on the compiled file name
+               System.out.println(result.render()); // dislays generated code
+            //}
+            
          }
       }
       catch(IOException e) {
