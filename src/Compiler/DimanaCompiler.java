@@ -7,7 +7,7 @@ import org.stringtemplate.v4.*;
 public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    private STGroup templates = new STGroupFile("dimana.stg"); // stg file to be used
-   /* private int varCount = 0; // variable counter
+   private int varCount = 0; // variable counter
    HashMap<String, ArrayList<String>> varMap = new HashMap<String, ArrayList<String>>();
    // usem este array para guardar as coisas sobre variaveis/dimensoes
    // por exemplo --> {Length : [real, meter, m], ...}
@@ -21,14 +21,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    HashMap<String, ArrayList<String>> dependent_units = new HashMap<String, ArrayList<String>>();
    // guardar dependencias das unidades dependentes
    // p.ex Volume -> [Length, Length, Length]
-   int temp_var_counter = 1; */
+   int temp_var_counter = 1; 
 
-   varCount = dadosGuardados.getVarCount();
-   varMap = dadosGuardados.getVarMap();
-   conversions = dadosGuardados.getConversions();
-   declared_vars = dadosGuardados.getDeclared_vars();
-   dependent_units = dadosGuardados.getDependent_units();
-   temp_var_counter = dadosGuardados.getTemp_var_counter();
 
    ArrayList<String> default_types = new ArrayList<String>() {
       {
@@ -153,7 +147,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          });
          StringBuilder sb = new StringBuilder();
-         System.out.println("Dimensão a ser declarada -> " + dimension_name);
+         //System.out.println("Dimensão a ser declarada -> " + dimension_name);
 
          // calcular a unidade SI da dimensão dependente a partir das unidades SI das dimensões a que está associada
          for (int i = 0; i < dimParts.length; i++) {
@@ -193,7 +187,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       if (ctx.expression() != null) {
          expression = ctx.expression().getText();
       }
-      
+
+      /* ANALISE SEMANTICA 
       if (!varMap.containsKey(dataType)) // se esta dimensão ainda não foi declarada
       {
          if (!default_types.contains(dataType)) {
@@ -201,6 +196,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             System.exit(0);
          }
       }
+      */
 
       ST variable_declaration = null;
 
@@ -236,7 +232,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             variable_declaration.add("unit", dataType);
             variable_declaration.add("name", id);
             variable_declaration.add("value", visit(ctx.expression()).render());
-            System.out.println("Variavel  + " + id + " declarada com sucesso" + " do tipo " + dataType);
+            //System.out.println("Variavel  + " + id + " declarada com sucesso" + " do tipo " + dataType);
 
             // nao teria que ser == 3 ou 4 ou 5....
             if (varMap.get(dataType).size() == 3) {
@@ -261,10 +257,13 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
          // teoricamente este if nunca vai entrar porque é sempre usado real, integer ou
          // string nos casts nos exemplos, mas vou deixar
+
+         /* 
          if (!varMap.containsKey(var_dataType) && !default_types.contains(var_dataType)) {
             System.out.println("Tipo de dados " + var_dataType + " usado antes de ser declarada");
             System.exit(0);
          }
+         */
 
          String var_name = ctx.ID(0).getText();
          String unidade_dimensão = ctx.ID(1).getText();
@@ -276,10 +275,12 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          }
 
+         /*  ANALISE SEMANTICA
          if (!declared_vars.containsKey(var_name)) {
             System.out.println("Variável " + var_name + " usada antes de ser declarada");
             System.exit(0);
          }
+         */
 
          ST read_and_cast = templates.getInstanceOf("read_and_cast");
          read_and_cast.add("type", var_dataType);
@@ -331,11 +332,13 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                if (ctx.outputFormat(i).ID() != null) { // write a ID ( variable )
                   String var_name = ctx.outputFormat(i).ID().getText();
 
+                  /* ANALISE SEMANTICA 
                   if (!declared_vars.containsKey(var_name)) {
                      System.out.println("Variável " + var_name + " usada antes de ser declarada");
                      System.exit(0);
 
                   }
+                  */
 
                   // print id
                   String var_type = varMap.get(declared_vars.get(var_name)).get(0);
@@ -403,10 +406,13 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                if (ctx.outputFormat(i).ID() != null) { // writeln a ID ( variable )
 
                   String var_name = ctx.outputFormat(i).ID().getText();
+
+                  /* -> ANALISE SEMANTICA
                   if (!declared_vars.containsKey(var_name)) {
                      System.out.println("Variável " + var_name + " usada antes de ser declarada");
                      System.exit(0);
                   }
+                  */
 
                   String var_type = varMap.get(declared_vars.get(var_name)).get(0);
                   if (var_type.equals("real"))
@@ -474,10 +480,13 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
             if (ctx.outputFormat(i).STRING() == null) { // é so write variavel, nunca deve entrar aqui pelos exemplos
                String var_name = ctx.outputFormat(i).ID().getText();
+
+               /* ANALISE SEMANTICA 
                if (!declared_vars.containsKey(var_name)) {
-                  System.out.println("Variável " + var_name + " usada antes de ser declarada");
+                  //System.out.println("Variável " + var_name + " usada antes de ser declarada");
                   System.exit(0);
                }
+               */
 
                String var_type = varMap.get(declared_vars.get(var_name)).get(0);
                if (var_type.equals("real"))
@@ -513,9 +522,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
          }
       }
-      System.out.println("Declared vars -> " + declared_vars.toString());
-      System.out.println("VarMap -> " + varMap.toString());
-      System.out.println("Dependent units -> " + dependent_units.toString());
+      //System.out.println("Declared vars -> " + declared_vars.toString());
+      //System.out.println("VarMap -> " + varMap.toString());
+      //System.out.println("Dependent units -> " + dependent_units.toString());
       return print;
 
    }
@@ -534,7 +543,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
       String datatype = ctx.dataType(0).getText();
       if (!varMap.containsKey(datatype)) {
-         System.out.println("Tipo " + datatype + " não existe ou não foi declarado");
+         //System.out.println("Tipo " + datatype + " não existe ou não foi declarado");
          System.exit(0);
       }
       ST list = null;
@@ -781,7 +790,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       if (declared_vars.containsKey(expression1) && declared_vars.containsKey(expression2)) {
          
       } else {
-         System.out.println("ERRO: Alguma variável não declarada");
+         //System.out.println("ERRO: Alguma variável não declarada");
          System.exit(0);
       }
       return visitChildren(ctx);
@@ -872,7 +881,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          assign_dvar.add("dataType", var_type);
          assign_dvar.add("operacao", ctx.op.getText());
          declared_vars.put(ctx.varName, temp);
-         System.out.println("Return value from assign_dvar \n" + assign_dvar.render());
+         //System.out.println("Return value from assign_dvar \n" + assign_dvar.render());
          return assign_dvar;
       }
 
@@ -880,7 +889,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          ST Return = templates.getInstanceOf("return");
          // System.out.println("TEMP TEST -> " + temp);
          Return.add("value", temp);
-         System.out.println("Return value from Muldiv  ->" + Return.render());
+         //System.out.println("Return value from Muldiv  ->" + Return.render());
          return Return;
 
       } else { // assign de uma variável a um escalar * dimensão

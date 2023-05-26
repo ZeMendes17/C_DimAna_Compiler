@@ -14,7 +14,7 @@ public class dadosGuardados {
     
     private static HashMap<String, ArrayList<String>> dependent_units = new HashMap<String, ArrayList<String>>();
     // guardar dependencias das unidades dependentes
-    // p.ex Volume -> [Length, Length, Length]
+    // p.ex Volume -> [Length*Length*Length]
     private static int temp_var_counter = 1; 
 
     public static int getVarCount() {

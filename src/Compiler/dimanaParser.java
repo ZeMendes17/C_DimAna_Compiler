@@ -1419,6 +1419,8 @@ public class dimanaParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionContext extends ParserRuleContext {
 		public String varName;
+		public String dimension;
+		public String type;
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1428,6 +1430,8 @@ public class dimanaParser extends Parser {
 		public void copyFrom(ExpressionContext ctx) {
 			super.copyFrom(ctx);
 			this.varName = ctx.varName;
+			this.dimension = ctx.dimension;
+			this.type = ctx.type;
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2013,6 +2017,7 @@ public class dimanaParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class DataTypeContext extends ParserRuleContext {
+		public String type;
 		public TerminalNode ID() { return getToken(dimanaParser.ID, 0); }
 		public DataTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);

@@ -64,7 +64,7 @@ alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
 
-expression returns[String varName]
+expression returns[String varName, String dimension, String type]
     : 'read' STRING                                         # InputExpression
     | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID    # InputTypeExpression
     | 'string' '(' (STRING | ID) ',' INT ')'                # StringAssignExpression
@@ -81,7 +81,13 @@ expression returns[String varName]
     | STRING                                                # StringLiteral
     ;
 
-dataType: 'integer' | 'real' | 'string' | 'list' '[' ID ']' | ID;
+dataType  returns [String type] : 
+'integer' 
+| 'real' 
+| 'string' 
+| 'list' '[' ID ']' 
+| ID ;
+
 castTypes : 'integer' | 'real';
 
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
