@@ -806,13 +806,14 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
-
+   /* 
    @Override
    public ST visitStringAssignExpression(dimanaParser.StringAssignExpressionContext ctx) {
       ST res = null;
       return visitChildren(ctx);
       // return res;
    }
+   */
 
    @Override
    public ST visitTypeConversion(dimanaParser.TypeConversionContext ctx) {

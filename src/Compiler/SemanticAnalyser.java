@@ -3,6 +3,9 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.math.BigInteger;
 
 @SuppressWarnings("CheckReturnValue")
 public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
@@ -46,7 +49,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    @Override
    public Boolean visitIndependentUnit(dimanaParser.IndependentUnitContext ctx) {
 
-      Boolean res = true;
+      Boolean res = visit(ctx.dataType());
 
       if (res != false) {
 
@@ -76,10 +79,11 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                }
             });
 
-            System.out.println("Added dimension" + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText()
+            System.out.println("Added dimension " + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText()
                   + " and suffix " + ctx.ID(2).getText());
 
          } else {
+
             // independent units without suffix given
             varMap.put(ctx.ID(0).getText(), new ArrayList<String>() {
                {
@@ -90,6 +94,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
             System.out.println("Added dimension" + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText());
 
          }
+
       }
       System.out.println("Passed IndependentUnit check");
       System.out.flush();
@@ -99,7 +104,21 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
    @Override
    public Boolean visitDependantUnit(dimanaParser.DependantUnitContext ctx) {
-      Boolean res = true;
+
+      Boolean res = visit(ctx.expression()) && visit(ctx.dataType());
+
+      // System.out.println("New unit " + ctx.ID(0).getText() + " with dimension " +
+      // ctx.expression().dimension);
+
+      varMap.put(ctx.ID(0).getText(), new ArrayList<String>() {
+         {
+            add(ctx.dataType().type);
+            add(ctx.expression().dimension);
+         }
+      });
+
+      System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
+
       return res;
       // return res;
    }
@@ -394,12 +413,14 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       String list_type = ctx.dataType(0).type;
 
       if (!varMap.containsKey(list_type)) {
-         ErrorHandling.printError(ctx, "Trying to declare a list {" + ctx.ID().getText() + "} with an invalid ( not declared ) dimension " + list_type + " is not a valid dimension type");
+         ErrorHandling.printError(ctx, "Trying to declare a list {" + ctx.ID().getText()
+               + "} with an invalid ( not declared ) dimension " + list_type + " is not a valid dimension type");
          return false;
       }
 
       if (!list_type.equals(ctx.dataType(1).type)) {
-         ErrorHandling.printError(ctx, "Trying to declare a List {" + ctx.ID().getText() + "} with type {" + list_type + "} that is not the same as the type of the list elements -> " + ctx.dataType(1).type);
+         ErrorHandling.printError(ctx, "Trying to declare a List {" + ctx.ID().getText() + "} with type {" + list_type
+               + "} that is not the same as the type of the list elements -> " + ctx.dataType(1).type);
          return false;
       }
 
@@ -414,15 +435,17 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // return res;
    }
 
-     /* -> Removed from grammar for now
-     @Override
-     public Boolean visitExprListExpression(dimanaParser.ExprListExpressionContext ctx) {
-     Boolean res = true;
-     return res;
-     // return res;
-     }
-     */
-    
+   /*
+    * -> Removed from grammar for now
+    * 
+    * @Override
+    * public Boolean visitExprListExpression(dimanaParser.ExprListExpressionContext
+    * ctx) {
+    * Boolean res = true;
+    * return res;
+    * // return res;
+    * }
+    */
 
    /*
     * not being used i think
@@ -449,8 +472,14 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // return res;
    }
 
+   // not being used at the moment
    @Override
    public Boolean visitInputExpression(dimanaParser.InputExpressionContext ctx) {
+
+      if (isReservedName(ctx.STRING().getText())) {
+         ErrorHandling.printError(ctx, "Can't use a Java reserved name as a string");
+         return false;
+      }
       Boolean res = true;
       return res;
       // return res;
@@ -459,33 +488,42 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    @Override
    public Boolean visitAddSubExpression(dimanaParser.AddSubExpressionContext ctx) {
       Boolean res = true;
+
+      if (!(ctx.expression(0).type.equals(ctx.expression(1).type))) {
+         ErrorHandling.printError(ctx, "Trying to add/subtract variables of different types");
+         return false;
+      }
       return res;
       // return res;
    }
 
    @Override
    public Boolean visitRealLiteral(dimanaParser.RealLiteralContext ctx) {
+      ctx.dimension = "real";
       Boolean res = true;
       return res;
       // return res;
    }
-
-   @Override
-   public Boolean visitStringAssignExpression(dimanaParser.StringAssignExpressionContext ctx) {
-      Boolean res = true;
-      return res;
-      // return res;
-   }
+   /*
+    * @Override
+    * public Boolean
+    * visitStringAssignExpression(dimanaParser.StringAssignExpressionContext ctx) {
+    * Boolean res = true;
+    * return res;
+    * // return res;
+    * }
+    */
 
    @Override
    public Boolean visitTypeConversion(dimanaParser.TypeConversionContext ctx) {
-      Boolean res = true;
+      Boolean res = visit(ctx.expression());
       return res;
       // return res;
    }
 
    @Override
    public Boolean visitStringLiteral(dimanaParser.StringLiteralContext ctx) {
+      ctx.dimension = "string";
       Boolean res = true;
       return res;
       // return res;
@@ -494,19 +532,51 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    @Override
    public Boolean visitIdExpression(dimanaParser.IdExpressionContext ctx) {
       Boolean res = true;
+
+      /*
+       * 
+       * if (isReservedName(ctx.ID().getText())) {
+       * ErrorHandling.printError(ctx,
+       * "Can't use a Java reserved name as a variable name");
+       * return false;
+       * }
+       * try {
+       * ctx.dimension = declared_vars.get(ctx.ID().getText()); // its a variable
+       * } catch (Exception e) {
+       * ctx.dimension = declared_lists.get(ctx.ID().getText()); // its a list
+       * }
+       */
+
+      ctx.dimension = ctx.ID().getText();
+
+      // System.out.println("Varmap " + varMap );
+      // System.out.println("Checking for decomposal with unit " + ctx.dimension + " ,
+      // does varMap have it? " + varMap.containsKey(ctx.dimension));
+      if (varMap.containsKey(ctx.dimension)) {
+         if (varMap.get(ctx.dimension).get(1).contains("*") || varMap.get(ctx.dimension).get(1).contains("/")) {
+            // System.out.print("Entered unit replacement with " + ctx.dimension );
+             //System.out.println("Replaced " + ctx.dimension + " for " +
+             //varMap.get(ctx.dimension).get(1);
+            ctx.dimension = "(" + varMap.get(ctx.dimension).get(1) + ")";
+         }
+
+      }
+
       return res;
       // return res;
    }
 
    @Override
    public Boolean visitParenExpression(dimanaParser.ParenExpressionContext ctx) {
-      Boolean res = true;
+      Boolean res = visit(ctx.expression());
+      ctx.dimension = ctx.expression().type;
       return res;
       // return res;
    }
 
    @Override
    public Boolean visitIntLiteral(dimanaParser.IntLiteralContext ctx) {
+      ctx.dimension = "integer";
       Boolean res = true;
       return res;
       // return res;
@@ -515,20 +585,71 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    @Override
    public Boolean visitInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx) {
       Boolean res = true;
+
+      if (ctx.castTypes() != null) {
+
+         if (!ctx.castTypes().getText().equals("real") && !ctx.castTypes().getText().equals("integer")) {
+            ErrorHandling.printError(ctx,
+                  "Trying to cast input expression to an invalid type, valid types ->" + "real" + " or " + "integer");
+            return false;
+         }
+
+      }
+
+      ctx.dimension = "invalid";
+      // "invalid" type will be used to signify that this expression cannot be used in
+      // an
+      // assignment or with another expression
       return res;
-      // return res;
    }
 
    @Override
    public Boolean visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx) {
-      Boolean res = true;
+
+      Boolean res = visit(ctx.expression(0)) && visit(ctx.expression(1));
+
+      String dimension_1 = ctx.expression(0).dimension;
+      String dimension_2 = ctx.expression(1).dimension;
+
+      String operator = ctx.op.getText();
+
+      if (dimension_1.equals("invalid") || dimension_2.equals("invalid")) {
+         ErrorHandling.printError(ctx, "Trying to multiply/divide an invalid expression");
+         return false;
+      }
+
+      // tentar calcular recursivamente a expressão mais low-end possivel para cada
+      // dimensão
+
+      String full_dim = dimension_1 + operator + dimension_2;
+      full_dim = full_dim.replaceAll("[()]", "");
+
+      String[] split_dim = full_dim.split("[/*]");
+
+      for (String dim : split_dim) {
+
+         if (!varMap.containsKey(dim)) {
+            ErrorHandling.printError(ctx, "Dimension {" + dim + "} is trying to be used but does not exist");
+         }
+      }
+
+      ctx.dimension = dimension_1 + operator + dimension_2;
+
+      //System.out.println("Normal Fraction " + ctx.dimension);
+
       return res;
       // return res;
    }
 
+
+
+
+
+   
    @Override
    public Boolean visitDataType(dimanaParser.DataTypeContext ctx) {
       ctx.type = ctx.getText();
+      // System.out.println("VISIT DATATYPE " + ctx.type);
       return true;
       // return res;
    }
