@@ -110,6 +110,21 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // System.out.println("New unit " + ctx.ID(0).getText() + " with dimension " +
       // ctx.expression().dimension);
 
+      if (varMap.containsKey(ctx.ID(0).getText())) {
+         ErrorHandling.printError(ctx, "Unit " + ctx.ID(0).getText() + " already exists");
+         return false;
+      }
+
+      for (String key : varMap.keySet()) {
+         if (varMap.get(key).size() == 3) {
+            if (varMap.get(key).get(1).equals(ctx.expression().dimension)) {
+               ErrorHandling.printError(ctx,
+                     "A unit with the same representation of " + ctx.ID(0).getText() + " already exists");
+               return false;
+            }
+         }
+      }
+
       varMap.put(ctx.ID(0).getText(), new ArrayList<String>() {
          {
             add(ctx.dataType().type);
@@ -117,7 +132,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
       });
 
-      //System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
+      System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
 
       return res;
       // return res;
@@ -157,23 +172,24 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
             String expr_dataType = ctx.expression().dimension;
 
-            /*
-             * -> COMENTADO POR CAUSA DO CTX.EXPRESSION() , DESCOMENTAR DPS
-             * 
-             * 
-             * if (var_dataType.equals(expr_dataType)) { // verificar se a dimensão da
-             * variável é igual à resultante da
-             * // expressão
-             * declared_vars.put(varName, var_dataType);
-             * return true;
-             * } else {
-             * ErrorHandling.printError(ctx, "Cant assign expression of dimension -> " +
-             * var_dataType + " to variable "
-             * + varName + " of dimension -> " + expr_dataType);
-             * return false;
-             * }
-             * 
-             */
+            if (varMap.get(var_dataType).size() > 1 && varMap.get(expr_dataType).size() > 1) {
+
+               System.out.println("CRL FODA ISTO TEM DE DAR LENGTH * LENGTH " + varMap.get(expr_dataType).get(1));
+
+               if (var_dataType.equals(expr_dataType) || varMap.get(var_dataType).get(1).equals(expr_dataType)
+                     || varMap.get(expr_dataType).get(1).equals(var_dataType)) { // verificar se a dimensão da variável
+                                                                                 // é igual à resultante da
+                  // expressão
+                  declared_vars.put(varName, var_dataType);
+                  return true;
+               } else {
+                  ErrorHandling.printError(ctx, "Cant assign expression of dimension -> " +
+                        var_dataType + " to variable "
+                        + varName + " of dimension -> " + expr_dataType);
+                  return false;
+               }
+            }
+
          }
 
          declared_vars.put(varName, var_dataType);
@@ -196,26 +212,31 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // System.out.println("variable dimension -> " + var);
 
       if (res != false) { // if there are no problems with the expression or the name of the variable
+         System.out.println("Visit assignment for variable " + ctx.ID().getText() + " expression dimension  -> "
+               + ctx.expression().dimension);
+         // System.out.println("CTX.ID() -> " + ctx.ID().getText());
+         // System.out.println("Declared vars -> " + declared_vars.toString());
 
-         /*
-          * -> COMENTADO POR CAUSA DO CTX.EXPRESSION() , DESCOMENTAR DPS
-          * 
-          * 
-          * if (!(declared_vars.get(ctx.ID()).equals(ctx.expression().dimension))) {
-          * // check if the dimension of the
-          * // variable is equal to the dimension
-          * // of the expression
-          * res = false;
-          * ErrorHandling.printError(ctx,
-          * "Cant assign expression of dimension -> " + ctx.expression().dimension +
-          * " to variable "
-          * + ctx.ID().getText() + " of dimension -> " +
-          * declared_vars.get(ctx.ID().getText()));
-          * return res;
-          * }
-          * 
-          * 
-          */
+         String var_dim = declared_vars.get(ctx.ID().getText());
+
+         //System.out.println(ctx.expression().dimension);
+         //System.out.println(var_dim);
+
+        
+         if (!(var_dim.equals(ctx.expression().dimension)) && !(varMap.get(var_dim).get(1)
+               .equals(ctx.expression().dimension)) ) {
+            // check if the dimension of the
+            // variable is equal to the dimension
+            // of the expression
+            res = false;
+            ErrorHandling.printError(ctx,
+                  "Cant assign expression of dimension -> " + ctx.expression().dimension +
+                        " to variable "
+                        + ctx.ID().getText() + " of dimension -> " +
+                        declared_vars.get(ctx.ID().getText()));
+            return res;
+         }
+
          System.out.println("Passed Assignment check");
          System.out.flush();
       }
@@ -533,19 +554,21 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    public Boolean visitIdExpression(dimanaParser.IdExpressionContext ctx) {
       Boolean res = true;
 
-      /*
-       * 
-       * if (isReservedName(ctx.ID().getText())) {
-       * ErrorHandling.printError(ctx,
-       * "Can't use a Java reserved name as a variable name");
-       * return false;
-       * }
-       * try {
-       * ctx.dimension = declared_vars.get(ctx.ID().getText()); // its a variable
-       * } catch (Exception e) {
-       * ctx.dimension = declared_lists.get(ctx.ID().getText()); // its a list
-       * }
-       */
+      if (isReservedName(ctx.ID().getText())) {
+         ErrorHandling.printError(ctx,
+               "Can't use a Java reserved name as a variable name");
+         return false;
+      }
+
+      System.out.println(declared_vars);
+      if (declared_vars.containsKey(ctx.ID().getText())) {
+         try {
+            ctx.dimension = declared_vars.get(ctx.ID().getText()); // its a variable
+         } catch (Exception e) {
+            ctx.dimension = declared_lists.get(ctx.ID().getText()); // its a list
+         }
+         return res;
+      }
 
       ctx.dimension = ctx.ID().getText();
 
@@ -555,12 +578,14 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       if (varMap.containsKey(ctx.dimension)) {
          if (varMap.get(ctx.dimension).get(1).contains("*") || varMap.get(ctx.dimension).get(1).contains("/")) {
             // System.out.print("Entered unit replacement with " + ctx.dimension );
-             //System.out.println("Replaced " + ctx.dimension + " for " +
-             //varMap.get(ctx.dimension).get(1);
+            // System.out.println("Replaced " + ctx.dimension + " for " +
+            // varMap.get(ctx.dimension).get(1);
             ctx.dimension = "(" + varMap.get(ctx.dimension).get(1) + ")";
          }
 
       }
+
+      System.out.println("Dimension of " + ctx.ID().getText() + " is " + ctx.dimension);
 
       return res;
       // return res;
@@ -611,33 +636,104 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       String dimension_1 = ctx.expression(0).dimension;
       String dimension_2 = ctx.expression(1).dimension;
 
+      System.out.println("Dimensão 1 no muldiv " + dimension_1 + " dimensão 2 " + dimension_2);
+
       String operator = ctx.op.getText();
+
+      // System.out.println("VARMAP " + varMap);
+      // System.out.println("DECLARED VARS " + declared_vars);
 
       if (dimension_1.equals("invalid") || dimension_2.equals("invalid")) {
          ErrorHandling.printError(ctx, "Trying to multiply/divide an invalid expression");
          return false;
       }
 
-      // tentar calcular recursivamente a expressão mais low-end possivel para cada
-      // dimensão
+      if (dimension_1.equals("integer") || dimension_1.equals("real")) {
+         // operation between a number and a unit , will return to visitAssignment or
+         // visitAlternativeUnit
+         // such as 2 * meter , or for the alternative units , 0.2345 * meter
 
-      String full_dim = dimension_1 + operator + dimension_2;
-      full_dim = full_dim.replaceAll("[()]", "");
+         for (String s : varMap.keySet()) {
 
-      String[] split_dim = full_dim.split("[/*]");
+            String expr_dim = "";
+            // find the dimension of the 2nd expression , for example, find dimension Length
+            // for unit meter
 
-      for (String dim : split_dim) {
-
-         if (!varMap.containsKey(dim)) {
-            ErrorHandling.printError(ctx, "Dimension {" + dim + "} is trying to be used but does not exist");
+            if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid
+                                             // those
+               if (varMap.get(s).get(1).equals(dimension_2)) {
+                  ctx.dimension = s;
+               }
+            }
          }
+
       }
 
-      ctx.dimension = dimension_1 + operator + dimension_2;
+      else if (declared_vars.containsKey(dimension_1) || declared_vars.containsKey(dimension_2)) {
+         // operation that involves a variable and a unit, will return to visitAssignment
+         // in this case the dimension variables may be the naem of the variables being
+         // used
 
+         dimension_1 = declared_vars.get(dimension_1);
+         dimension_2 = declared_vars.get(dimension_2);
+         String resulting_dimension = null;
 
-      System.out.println("Normal Fraction " + ctx.dimension);
-      System.out.println("Reduced fraction " + dimensionDivision(ctx.dimension));
+         for (String dim : varMap.keySet()) {
+            if (varMap.get(dim).size() != 1) { // skip real integer string default types, they have size 1
+               if (varMap.get(dim).get(1).equals(dimension_1 + operator + dimension_2)) {
+                  resulting_dimension = dim;
+               }
+            }
+         }
+
+         if (!dimension_1.equals(dimension_2)) {
+
+            if (resulting_dimension == null) {
+               // multiplications/divisions between variables of different dimensions will only
+               // be allowed
+               // if the resulting dimension is already defined
+
+               ErrorHandling.printError(ctx,
+                     "Trying to multiply/divide variables of different dimensions " + "{" + dimension_1 + "}" + " and "
+                           + "{" + dimension_2 + "}\nThe resulting dimension would be " + "{" + dimension_1 + operator
+                           + dimension_2 + "}" + " but it is not defined");
+
+            }
+
+            else {
+               ctx.dimension = resulting_dimension;
+            }
+
+         }
+
+      } else { // assign of a new
+         // dependant unit,
+         // will return to
+         // visitDependantUnit
+
+         String full_dim = dimension_1 + operator + dimension_2;
+         full_dim = full_dim.replaceAll("[()]", "");
+
+         String[] split_dim = full_dim.split("[/*]");
+
+         for (String dim : split_dim) {
+
+            if (!varMap.containsKey(dim)) {
+               ErrorHandling.printError(ctx, "Dimension {" + dim + "} is trying to be used but does not exist");
+            }
+         }
+
+         ctx.dimension = dimension_1 + operator + dimension_2;
+         // System.out.println("Normal Fraction " + ctx.dimension);
+
+         System.out.println("Reduced fraction " + dimensionDivision(ctx.dimension));
+
+      }
+      // não removam este print, por alguma razão so faz a redução direito se estiver
+      // dentro do print
+
+      // System.out.println("New ctx.dimension -> " + ctx.dimension);
+      // ctx.dimension = dimensionDivision(full_dim).toString();
 
       return res;
       // return res;
@@ -648,36 +744,39 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       List<String> denominador = new ArrayList<String>();
       List<String> dimensions = new ArrayList<String>();
       List<String> operations = new ArrayList<String>();
-      
-      dimensions.addAll(Arrays.asList(equation.split("[/*()]"))); dimensions.removeAll(Arrays.asList("", null));
-      operations.addAll(Arrays.asList(equation.split("[0-9a-zA-Z]+"))); operations.removeAll(Arrays.asList("", null));
+
+      dimensions.addAll(Arrays.asList(equation.split("[/*()]")));
+      dimensions.removeAll(Arrays.asList("", null));
+      operations.addAll(Arrays.asList(equation.split("[0-9a-zA-Z]+")));
+      operations.removeAll(Arrays.asList("", null));
       boolean inverted = false;
 
       numerador.add(dimensions.get(0));
       int dim_index = 1;
       for (String op : operations) {
-         if (op.matches("[)]{0,}[/]")){
+         if (op.matches("[)]{0,}[/]")) {
             if (!inverted) {
                denominador.add(dimensions.get(dim_index));
-            }
-            else {
+            } else {
                numerador.add(dimensions.get(dim_index));
             }
             dim_index++;
-          } else if (op.matches("[)]{0,}[*][(]{0,}")) {
+         } else if (op.matches("[)]{0,}[*][(]{0,}")) {
             if (!inverted) {
                numerador.add(dimensions.get(dim_index));
-            }
-            else {
+            } else {
                denominador.add(dimensions.get(dim_index));
             }
             dim_index++;
          } else if (op.matches("[\\\\][(]{0,}")) {
-            if (inverted) { inverted = false; } else { inverted = true; }
+            if (inverted) {
+               inverted = false;
+            } else {
+               inverted = true;
+            }
             if (!inverted) {
                numerador.add(dimensions.get(dim_index));
-            }
-            else {
+            } else {
                denominador.add(dimensions.get(dim_index));
             }
             dim_index++;
@@ -700,22 +799,27 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       final_str.deleteCharAt(final_str.length() - 1);
       if (denominador.size() > 0) {
          final_str.append("/");
-         if (denominador.size() > 1) { final_str.append("("); }
+         if (denominador.size() > 1) {
+            final_str.append("(");
+         }
          for (String dim : denominador) {
             final_str.append(dim);
             final_str.append("*");
          }
          final_str.deleteCharAt(final_str.length() - 1);
-         if (denominador.size() > 1) { final_str.append(")"); }
+         if (denominador.size() > 1) {
+            final_str.append(")");
+         }
       }
+      // clear all arrays
+      numerador.clear();
+      denominador.clear();
+      dimensions.clear();
+      operations.clear();
+
       return final_str.toString();
    }
 
-
-
-
-
-   
    @Override
    public Boolean visitDataType(dimanaParser.DataTypeContext ctx) {
       ctx.type = ctx.getText();
