@@ -117,7 +117,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
       });
 
-      System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
+      //System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
 
       return res;
       // return res;
@@ -635,11 +635,15 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
       ctx.dimension = dimension_1 + operator + dimension_2;
 
-      //System.out.println("Normal Fraction " + ctx.dimension);
+
+      System.out.println("Normal Fraction " + ctx.dimension);
+      System.out.println("Reduced fraction " + dimensionDivision(ctx.dimension));
 
       return res;
       // return res;
    }
+
+   
 
 
 
