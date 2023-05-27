@@ -34,6 +34,12 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableDeclaration(dimanaParser.VariableDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link dimanaParser#readToArray}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReadToArray(dimanaParser.ReadToArrayContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link dimanaParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -113,13 +119,6 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitListDeclaration(dimanaParser.ListDeclarationContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprListExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprListExpression(dimanaParser.ExprListExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code OutputExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.

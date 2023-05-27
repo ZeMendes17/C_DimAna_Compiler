@@ -1,0 +1,6 @@
+# line comment
+
+use "grades.da"; # Processed in compile time!
+
+list[NMEC] nmecs = new list[NMEC]; # dynamic list of NMEC (first element has index 1)
+integer(read "NMEC: ")*nmec >> nmecs; # add element to the end of list

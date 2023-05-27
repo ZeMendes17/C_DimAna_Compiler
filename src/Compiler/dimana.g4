@@ -20,6 +20,7 @@ statList: (statement? ';')*;
 statement: 
      inputStatement
     | assignment
+    | readToArray
     | variableDeclaration
     | outputStatement
     | loopStatement
@@ -28,10 +29,12 @@ statement:
     | unit
     //| dimension
     | alternativeUnit
-    | listDeclaration
+    | listDeclaration  
     ;
 
 variableDeclaration: dataType ID ('=' expression)?;
+
+readToArray: castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID ;
 
 assignment: ID '=' expression;
 
@@ -72,8 +75,8 @@ expression returns[String varName, String dimension, String type]
     | expression op=('+' | '-') expression                  # AddSubExpression
     | '(' expression ')'                                    # ParenExpression
     | outputStatement                                       # OutputExpression
-    | expression ',' expression                             # ExprListExpression
-    | ID '[' ID ']'                                         # IndexExpression
+    //| expression ',' expression                             # ExprListExpression
+    | ID '[' (ID | INT) ']'                                 # IndexExpression
     | ID                                                    # IdExpression
     | dataType '(' expression ')'                           # TypeConversion
     | REAL                                                  # RealLiteral

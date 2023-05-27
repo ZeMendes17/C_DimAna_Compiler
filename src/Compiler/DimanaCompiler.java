@@ -141,6 +141,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          String expressao_variavel = expression;
          String unit_dependency = expressao_variavel.replace(";", "");
          String[] dimParts = unit_dependency.split("(?<=[*|/|+|-])|(?=[*|/|+|-])"); 
+         
          dependent_units.put(dimension_name, new ArrayList<String>() {
             {
                add(unit_dependency);
@@ -243,7 +244,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       }
 
       declared_vars.put(id, dataType); // keep track of declared variables
-      System.out.print("Added entry to declared_vars: " + id + " --->" + dataType + "\n");
+      //System.out.print("Added entry to declared_vars: " + id + " --->" + dataType + "\n");
       // este dataType aqui é a dimensão
 
       return variable_declaration;
@@ -758,13 +759,15 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return visitChildren(ctx);
       // return res;
    }
-
+   
+   /* 
    @Override
    public ST visitExprListExpression(dimanaParser.ExprListExpressionContext ctx) {
       ST res = null;
       return visitChildren(ctx);
       // return res;
    }
+   */
 
    @Override
    public ST visitIndexExpression(dimanaParser.IndexExpressionContext ctx) {
