@@ -643,7 +643,73 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // return res;
    }
 
-   
+   private static String dimensionDivision(String equation) {
+      List<String> numerador = new ArrayList<String>();
+      List<String> denominador = new ArrayList<String>();
+      List<String> dimensions = new ArrayList<String>();
+      List<String> operations = new ArrayList<String>();
+      
+      dimensions.addAll(Arrays.asList(equation.split("[/*()]"))); dimensions.removeAll(Arrays.asList("", null));
+      operations.addAll(Arrays.asList(equation.split("[0-9a-zA-Z]+"))); operations.removeAll(Arrays.asList("", null));
+      boolean inverted = false;
+
+      numerador.add(dimensions.get(0));
+      int dim_index = 1;
+      for (String op : operations) {
+         if (op.matches("[)]{0,}[/]")){
+            if (!inverted) {
+               denominador.add(dimensions.get(dim_index));
+            }
+            else {
+               numerador.add(dimensions.get(dim_index));
+            }
+            dim_index++;
+          } else if (op.matches("[)]{0,}[*][(]{0,}")) {
+            if (!inverted) {
+               numerador.add(dimensions.get(dim_index));
+            }
+            else {
+               denominador.add(dimensions.get(dim_index));
+            }
+            dim_index++;
+         } else if (op.matches("[\\\\][(]{0,}")) {
+            if (inverted) { inverted = false; } else { inverted = true; }
+            if (!inverted) {
+               numerador.add(dimensions.get(dim_index));
+            }
+            else {
+               denominador.add(dimensions.get(dim_index));
+            }
+            dim_index++;
+         }
+      }
+
+      List<String> temp = new ArrayList<String>(denominador);
+      for (String dim : temp) {
+         if (numerador.contains(dim)) {
+            numerador.remove(dim);
+            denominador.remove(dim);
+         }
+      }
+
+      StringBuilder final_str = new StringBuilder();
+      for (String dim : numerador) {
+         final_str.append(dim);
+         final_str.append("*");
+      }
+      final_str.deleteCharAt(final_str.length() - 1);
+      if (denominador.size() > 0) {
+         final_str.append("/");
+         if (denominador.size() > 1) { final_str.append("("); }
+         for (String dim : denominador) {
+            final_str.append(dim);
+            final_str.append("*");
+         }
+         final_str.deleteCharAt(final_str.length() - 1);
+         if (denominador.size() > 1) { final_str.append(")"); }
+      }
+      return final_str.toString();
+   }
 
 
 
