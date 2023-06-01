@@ -62,16 +62,6 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       return varMap;
    }
 
-   // qualquer cena que envolva ctx.expression() por enquanto vai tar a dar erro
-   // até se fazer as várias funções, por isso vai tar comentado
-   // qualquer cena que envolva ctx.expression() por enquanto vai tar a dar erro
-   // até se fazer as várias funções, por isso vai tar comentado
-   // qualquer cena que envolva ctx.expression() por enquanto vai tar a dar erro
-   // até se fazer as várias funções, por isso vai tar comentado
-   // qualquer cena que envolva ctx.expression() por enquanto vai tar a dar erro
-   // até se fazer as várias funções, por isso vai tar comentado
-   // qualquer cena que envolva ctx.expression() por enquanto vai tar a dar erro
-   // até se fazer as várias funções, por isso vai tar comentado
 
    @Override
    public Boolean visitIndependentUnit(dimanaParser.IndependentUnitContext ctx) {
@@ -121,6 +111,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
             //System.out.println("Added dimension " + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText());
 
          }
+
+         //conversions.put(ctx.ID(1).getText(),1.0);
 
       }
       //System.out.println("Passed IndependentUnit check");
@@ -425,6 +417,16 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
       }
 
+
+      if (ctx.INT(0)!= null && ctx.INT(1)!= null){
+
+         if (Integer.parseInt(ctx.INT(0).getText()) > Integer.parseInt(ctx.INT(1).getText())){
+            ErrorHandling.printError(ctx,
+                 " End value is smaller than start value in loop statement");
+            return false;
+         }
+      }
+
       // check if start value is smaller than end value??
       // check if start value is smaller than end value??
       // check if start value is smaller than end value??
@@ -447,9 +449,44 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
    @Override
    public Boolean visitAlternativeUnit(dimanaParser.AlternativeUnitContext ctx) {
-      Boolean res = true;
+      
+      Boolean res = visit(ctx.expression());
+      String type = ctx.expression().dimension;
+
+      if (isReservedName(ctx.ID(0).getText())) {
+         ErrorHandling.printError(ctx, "Unit " + ctx.ID(0) + " cant use a Java reserved name");
+         return false;
+      }
+
+      if (isReservedName(ctx.ID(1).getText())) {
+         ErrorHandling.printError(ctx, "Unit " + ctx.ID(0) + " cannot use a base unit thats a Java reserved name");
+         return false;
+      }
+
+
+      if (!type.equals(ctx.ID(0).getText())){
+         ErrorHandling.printError(ctx, "Trying to define a alternative unit of dimension" + type + " for a unit of a different dimension " + ctx.ID(0).getText());
+         return false;
+      }
+
+      if (!varMap.containsKey(ctx.ID(0).getText())) {
+         ErrorHandling.printError(ctx, "Trying to define a alternative unit " + ctx.ID(1).getText() + " for a dimension that is not declared -> " + ctx.ID(0).getText());
+         return false;
+      }
+
+      String unit = ctx.ID(1).getText();
+      String[] exprs = ctx.expression().getText().split("[/*]");
+      
+      conversions.put(unit, new ArrayList<String>(){{ // save the conversion with the following format {inch : ["0.0254", "meter", "m"], ...}
+         add(exprs[0]);
+         add(exprs[1]);
+      }});
+
+      if (ctx.ID(2)!=null){ // add the suffix if it exists
+         conversions.get(unit).add(ctx.ID(2).getText());
+      }
+      
       return res;
-      // return res;
    }
 
    @Override
@@ -563,7 +600,27 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
    @Override
    public Boolean visitTypeConversion(dimanaParser.TypeConversionContext ctx) {
-      Boolean res = visit(ctx.expression());
+      Boolean res = visit(ctx.expression()) && visit(ctx.dataType());
+      String convert_type = ctx.dataType().type;
+      if (convert_type.equals("real")){
+         try { 
+            Double.parseDouble(ctx.expression().getText());
+         } catch (NumberFormatException e) {
+            ErrorHandling.printError(ctx, "Trying to convert a non-numeric value to real");
+            return false;
+
+         }
+      }
+      else if ( convert_type.equals("string"))
+         return true; // any value can be converted to a string 
+      else {
+         try {
+            Integer.parseInt(ctx.expression().getText());
+         } catch (NumberFormatException e) {
+            ErrorHandling.printError(ctx, "Trying to convert a non-numeric value to integer");
+            return false;
+         }
+      }
       return res;
       // return res;
    }
@@ -662,6 +719,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       String dimension_1 = ctx.expression(0).dimension;
       String dimension_2 = ctx.expression(1).dimension;
 
+
       //System.out.println("Dimensão 1 no muldiv " + dimension_1 + " dimensão 2 " + dimension_2);
 
       String operator = ctx.op.getText();
@@ -674,28 +732,59 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          return false;
       }
 
+      if (dimension_1.equals("integer") && dimension_2.equals("integer")){
+         ctx.dimension = "integer";
+         return res;
+      }
+
+      if (dimension_1.equals("real") && dimension_2.equals("real")){
+         ctx.dimension = "real";
+         return res;
+      }
+
       if (dimension_1.equals("integer") || dimension_1.equals("real")) {
          // operation between a number and a unit , will return to visitAssignment or
          // visitAlternativeUnit
          // such as 2 * meter , or for the alternative units , 0.2345 * meter
 
+         System.out.println("Dimensão 1 no muldiv " + dimension_1 + " dimensão 2 " + dimension_2);
+
          for (String s : varMap.keySet()) {
 
-            String expr_dim = "";
             // find the dimension of the 2nd expression , for example, find dimension Length
             // for unit meter
 
             if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid
                                              // those
-               if (varMap.get(s).get(1).equals(dimension_2)) {
+
+            // 3*inch 
+           
+              if (varMap.get(s).get(1).equals(dimension_2))  // normal units
+                {
+
                   ctx.dimension = s;
                }
             }
          }
+         if (ctx.dimension.isEmpty() || ctx.dimension == null){
 
-      }
+            for (String s : varMap.keySet()) {
 
-      else if (declared_vars.containsKey(dimension_1) || declared_vars.containsKey(dimension_2)) {
+               // find the dimension of the 2nd expression , for example, find dimension Length
+               // for unit meter
+   
+               if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid
+                                                // those
+   
+                  // 3*inch 
+              
+                  if (varMap.get(s).get(1).equals(conversions.get(dimension_2).get(1))) { // normal units
+                     ctx.dimension = s;
+                  }
+               }
+            }
+         }  
+      } else if (declared_vars.containsKey(dimension_1) || declared_vars.containsKey(dimension_2)) {
          // operation that involves a variable and a unit, will return to visitAssignment
          // in this case the dimension variables may be the naem of the variables being
          // used
@@ -856,6 +945,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    @Override
    public Boolean visitProgram(dimanaParser.ProgramContext ctx) {
       // add the default types/dimensions for verification purposes
+      
       varMap.put("string", new ArrayList<String>() {
          {
             add("string");
@@ -872,6 +962,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
 
       });
+      
       return visitChildren(ctx);
       // return res;
    }
