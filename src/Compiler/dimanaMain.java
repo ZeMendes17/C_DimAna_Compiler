@@ -9,7 +9,7 @@ import org.stringtemplate.v4.*;
 public class dimanaMain {
    public static void main(String[] args) {
       try {
-         //System.out.println("NOME DO ARGUMENTO -> " + args[0]);
+         // System.out.println("NOME DO ARGUMENTO -> " + args[0]);
          // create a CharStream that reads from standard input:
          CharStream input = CharStreams.fromFileName(args[0]);
          // create a lexer that feeds off of input CharStream:
@@ -24,8 +24,8 @@ public class dimanaMain {
          // begin parsing at program rule:
          ParseTree tree = parser.program();
          if (parser.getNumberOfSyntaxErrors() == 0) {
-            
-            // print LISP-style tree: 
+
+            // print LISP-style tree:
             // System.out.println(tree.toStringTree(parser));
 
             // DimanaSemanticChecker checker = new SemanticAnalyser();
@@ -37,25 +37,32 @@ public class dimanaMain {
             checker.visit(tree); // run semantic analysis
 
             if (!ErrorHandling.error()) { // if there are no errors, run code generation
-               DimanaCompiler compiler = new DimanaCompiler(checker.getDependent_units(),checker.getVarMap(),checker.getConversions(),checker.getDeclared_vars(),checker.getDeclared_lists());
+               DimanaCompiler compiler = new DimanaCompiler(checker.getDependent_units(), checker.getVarMap(),
+                     checker.getConversions(), checker.getDeclared_vars(), checker.getDeclared_lists());
                ST result = compiler.visit(tree);
-               String filename = args[1].replace(".da","") + "Compiled";
-               result.add("name", filename );
+               String filename = args[1].replace(".da", "") + "Compiled";
+               result.add("name", filename);
 
                // manda o result para um ficheiro .java
                try {
                   File directory = new File("../../Results");
                   File file = new File(directory, filename + ".java");
 
-                  if (file.createNewFile()) {
-                     System.out.println("File created: " + file.getName());
-                  } else {
-                     System.out.println("File already exists.");
-                  }
+                  /*
+                   * if (file.exists()) {
+                   * System.out.println("File already exists. Overwriting...");
+                   * }
+                   */
 
-                  FileWriter writer = new FileWriter(file);
-                  writer.write(result.render());
-                  writer.close();
+                  try (FileWriter writer = new FileWriter(file, false)) {
+                     writer.write(result.render());
+                     System.out.println("File created/overwritten -> " + file.getName());
+                     System.out.println("Execute the bash script to test the code generated -> ./run.sh "
+                           + file.getName().replace(".java", ""));
+                  } catch (IOException e) {
+                     System.out.println("An error occurred while writing to the file.");
+                     e.printStackTrace();
+                  }
 
                } catch (Exception e) {
                   System.out.println("An error occurred.");

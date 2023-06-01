@@ -1,0 +1,8 @@
+dimension real Grade [val];
+
+Grade g;
+dimension real Length [meter,m];
+dimension real Time [second,s];
+
+Length l;
+l = 3*meter;

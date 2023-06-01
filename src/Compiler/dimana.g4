@@ -57,7 +57,7 @@ prefixUnit: 'prefix' dataType ID '=' (INT |  '1e' minus='-'? INT);
 
 unit: 
         'dimension' dataType ID    ('[' ID (',' ID)? ']')                       #independentUnit         
-    |   'dimension' dataType ID   ( ('[' ID (',' ID) ']')? '=' expression)     #dependantUnit
+    |   'dimension' dataType ID   ( ('[' ID (',' ID) ']')? '=' expression)      #dependantUnit
 ;
 
 // unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
@@ -70,12 +70,12 @@ listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?
 expression returns[String varName, String dimension, String type]
     : 'read' STRING                                         # InputExpression
     | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID    # InputTypeExpression
-    //| 'string' '(' (STRING | ID) ',' INT ')'                # StringAssignExpression
+    //| 'string' '(' (STRING | ID) ',' INT ')'              # StringAssignExpression
     | expression op=('*' | '/') expression                  # MulDivExpression
     | expression op=('+' | '-') expression                  # AddSubExpression
     | '(' expression ')'                                    # ParenExpression
     | outputStatement                                       # OutputExpression
-    //| expression ',' expression                             # ExprListExpression
+    //| expression ',' expression                           # ExprListExpression
     | ID '[' (ID | INT) ']'                                 # IndexExpression
     | ID                                                    # IdExpression
     | dataType '(' expression ')'                           # TypeConversion

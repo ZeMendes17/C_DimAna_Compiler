@@ -1,6 +1,6 @@
 module(name,stat) ::= <<
 import java.util.*;
-import java.io.*;
+//import java.io.*;
 
 public class <name> {
 
@@ -181,5 +181,14 @@ var_setValue(var,value,type) ::= <<
 <var> = <value>;
 >>
 
+conversionToInt(name,value) ::= <<
+int <name> = Integer.parseInt(<value>);
+>>
 
+conversionToDouble(name,value) ::= <<
+double <name> = Double.parseDouble(<value>);
+>>
 
+conversionToString(name,value) ::= <<
+String <name> = String.valueOf(<value>);
+>>
