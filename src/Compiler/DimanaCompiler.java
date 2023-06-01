@@ -19,9 +19,19 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    // guardar as variaveis -----> {l : Length}
    
    HashMap<String, ArrayList<String>> dependent_units = new HashMap<String, ArrayList<String>>();
+   private static HashMap<String, String> declared_lists = new HashMap<String, String>();
    // guardar dependencias das unidades dependentes
    // p.ex Volume -> [Length, Length, Length]
    int temp_var_counter = 1; 
+
+
+   public DimanaCompiler(HashMap<String, ArrayList<String>> dependent_units, HashMap<String, ArrayList<String>> varMap, HashMap<String, ArrayList<String>> conversions, HashMap<String, String> declared_vars, HashMap<String, String> declared_lists){
+      this.varMap = varMap;
+      this.conversions = conversions;
+      this.declared_vars = declared_vars;
+      this.dependent_units = dependent_units;
+      this.declared_lists = declared_lists;
+   }
 
 
    ArrayList<String> default_types = new ArrayList<String>() {
@@ -36,7 +46,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitProgram(dimanaParser.ProgramContext ctx) {
       ST res = templates.getInstanceOf("module");
       res.add("stat", visit(ctx.statList()));
-      res.add("name", "DimanaCompiled");
+      //res.add("name", "DimanaCompiled");
       return res;
    }
 
@@ -48,95 +58,28 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       return res;
    }
 
-   // agora aqui vao ser as independentes
+  /* 
    @Override
    public ST visitIndependentUnit(dimanaParser.IndependentUnitContext ctx) {
-      // usado para declaração das dimensões
-      String dimension_name = ctx.ID(0).getText();
-      String dataType = ctx.dataType().getText();
-      String dimension_unit = ctx.ID(1).getText();
-
-      if (ctx.ID(2) != null) { // se houver um sufixo
-         String suffix = ctx.ID(2).getText();
-         varMap.put(dimension_name, new ArrayList<String>() {
-            {
-               add(dataType);
-               add(dimension_unit);
-               add(suffix);
-               // Length -> [real, meter, m] p.ex
-            }
-         });
-      } else {
-         varMap.put(dimension_name, new ArrayList<String>() {
-            {
-               add(dataType);
-               add(dimension_unit);
-               // Length -> [real, meter] p.ex
-            }
-         });
-      }
-
-      // add the default types for verification purposes
-      varMap.put("string", new ArrayList<String>() {
-         {
-            add("string");
-         }
-      });
-      varMap.put("real", new ArrayList<String>() {
-         {
-            add("real");
-         }
-      });
-      varMap.put("integer", new ArrayList<String>() {
-         {
-            add("integer");
-         }
-
-      });
-
-      
-
+     // as variaveis independentes já sao definidas na análise semantica e estão presentes no array associativo varMap
       return visitChildren(ctx);
       // return res;
    }
+   */
+  
 
    @Override
    public ST visitDependantUnit(dimanaParser.DependantUnitContext ctx) {
 
       String dimension_name = ctx.ID(0).getText();
       String dataType = ctx.dataType().getText();
+
       String expression = visit(ctx.expression()).render();
-      // ST decl_value = templates.getInstanceOf("declare_var");
 
-      if (ctx.ID(1) != null) { // é definido uma unidade base e um sufixo
-         StringBuilder sb = new StringBuilder();
-         String dimension_unit = ctx.ID(1).getText();
-         String unit_dependency = declared_vars.get(ctx.expression().varName);
-         // dimension_type.put(dimension_name, dataType);
-         if (ctx.ID(2) != null) { // se houver um sufixo
+      // dependant units that have suffix provided are already defined in the semantic analysis
 
-            String suffix = ctx.ID(2).getText();
-            varMap.put(dimension_name, new ArrayList<String>() {
-               {
-                  add(dataType);
-                  add(dimension_unit);
-                  add(suffix);
-                  // Length -> [real, meter, m] p.ex
-               }
-            });
-         } else {
-            varMap.put(dimension_name, new ArrayList<String>() {
-               {
-                  add(dataType);
-                  add(dimension_unit);
-                  // Length -> [real, meter] p.ex
-               }
-            });
-         }
-
-      }
-
-      else { // não é definida unidade base nem sufixo
+      // when there is no suffix provided, we will calculate it ourselves based on the units that the dimension is dependent on
+      if (ctx.ID(2) == null) { 
 
          String expressao_variavel = expression;
          String unit_dependency = expressao_variavel.replace(";", "");
@@ -147,8 +90,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                add(unit_dependency);
             }
          });
+
          StringBuilder sb = new StringBuilder();
-         //System.out.println("Dimensão a ser declarada -> " + dimension_name);
 
          // calcular a unidade SI da dimensão dependente a partir das unidades SI das dimensões a que está associada
          for (int i = 0; i < dimParts.length; i++) {
@@ -160,12 +103,12 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             }
          }
 
+         // add the unit with the suffix created to the hashmap
          varMap.put(dimension_name, new ArrayList<String>() {
             {
                add(dataType);
                add(unit_dependency);
                add(sb.toString());
-               // Length -> [real, meter] p.ex
             }
          });
 
@@ -173,43 +116,33 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
       }
       return null;
-
-     
-
    }
 
    @Override
    public ST visitVariableDeclaration(dimanaParser.VariableDeclarationContext ctx) {
       // NMEC n (dataType ID )
-      String dataType = ctx.dataType().getText();
+      visit(ctx.dataType());
       String id = ctx.ID().getText();
       String expression = "";
       // so se tem dataType e id garantidos, a expression é opcional
+
       if (ctx.expression() != null) {
-         expression = ctx.expression().getText();
+         expression = ctx.expression().getText(); // expressions mal feitas são verificadas na semantica
       }
 
-      /* ANALISE SEMANTICA 
-      if (!varMap.containsKey(dataType)) // se esta dimensão ainda não foi declarada
-      {
-         if (!default_types.contains(dataType)) {
-            System.out.println("Dimensão " + dataType + " usada antes de ser declarada");
-            System.exit(0);
-         }
-      }
-      */
+      //System.out.println(visit(ctx.expression()));
 
       ST variable_declaration = null;
 
-      if (dataType.equals("string") || dataType.equals("real") || dataType.equals("integer")) {
+      if (ctx.dataType().type.equals("string") || ctx.dataType().type.equals("real") || ctx.dataType().type.equals("integer")) {
          if (ctx.expression() != null) {
             variable_declaration = templates.getInstanceOf("decl_value");
-            variable_declaration.add("type", dataType);
+            variable_declaration.add("type", ctx.dataType().type);
             variable_declaration.add("var", id);
             variable_declaration.add("value", expression);
          } else {
             variable_declaration = templates.getInstanceOf("decl");
-            variable_declaration.add("type", dataType);
+            variable_declaration.add("type", ctx.dataType().type);
             variable_declaration.add("var", id);
          }
 
@@ -217,54 +150,39 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
          if (expression.isEmpty()) { // não é dado um valor inicial
             variable_declaration = templates.getInstanceOf("declare_var");
-            variable_declaration.add("unit", dataType);
+            variable_declaration.add("unit", ctx.dataType().type);
             variable_declaration.add("name", id);
-            // System.out.println("Variavel + " + id + " declarada com sucesso" + " do tipo
-            // " + dataType);
 
-            if (varMap.get(dataType).size() == 3) {
-               String suffix = varMap.get(dataType).get(2);
+            // avoid the default variables in varMap, string real or integer, that only have size 1
+            if (varMap.get(ctx.dataType().type).size() == 3) {
+               String suffix = varMap.get(ctx.dataType().type).get(2);
                variable_declaration.add("suffix", suffix);
 
             }
 
          } else { // é dado um valor inicial ( expression )
             variable_declaration = templates.getInstanceOf("declare_var_with_value");
-            variable_declaration.add("unit", dataType);
+            variable_declaration.add("unit", ctx.dataType().type);
             variable_declaration.add("name", id);
             variable_declaration.add("value", visit(ctx.expression()).render());
             //System.out.println("Variavel  + " + id + " declarada com sucesso" + " do tipo " + dataType);
 
-            // nao teria que ser == 3 ou 4 ou 5....
-            if (varMap.get(dataType).size() == 3) {
-               String suffix = varMap.get(dataType).get(2);
+            if (varMap.get(ctx.dataType().type).size() != 1) {
+               String suffix = varMap.get(ctx.dataType().type).get(2);
                variable_declaration.add("suffix", suffix);
             }
          }
       }
-
-      declared_vars.put(id, dataType); // keep track of declared variables
-      //System.out.print("Added entry to declared_vars: " + id + " --->" + dataType + "\n");
-      // este dataType aqui é a dimensão
-
       return variable_declaration;
-
    }
 
    @Override
    public ST visitInputStatement(dimanaParser.InputStatementContext ctx) {
       if (ctx.dataType() != null) { // vai ser feito cast
-         String var_dataType = ctx.dataType().getText();
+         visit(ctx.dataType());
+         String var_dataType = ctx.dataType().type;
 
-         // teoricamente este if nunca vai entrar porque é sempre usado real, integer ou
-         // string nos casts nos exemplos, mas vou deixar
 
-         /* 
-         if (!varMap.containsKey(var_dataType) && !default_types.contains(var_dataType)) {
-            System.out.println("Tipo de dados " + var_dataType + " usado antes de ser declarada");
-            System.exit(0);
-         }
-         */
 
          String var_name = ctx.ID(0).getText();
          String unidade_dimensão = ctx.ID(1).getText();
@@ -275,13 +193,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                break;
             }
          }
-
-         /*  ANALISE SEMANTICA
-         if (!declared_vars.containsKey(var_name)) {
-            System.out.println("Variável " + var_name + " usada antes de ser declarada");
-            System.exit(0);
-         }
-         */
 
          ST read_and_cast = templates.getInstanceOf("read_and_cast");
          read_and_cast.add("type", var_dataType);
@@ -853,6 +764,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // return res;
    }
 
+   
    @Override
    public ST visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx) {
       
@@ -962,7 +874,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    @Override
    public ST visitDataType(dimanaParser.DataTypeContext ctx) {
-      ST res = null;
+      ctx.type = ctx.getText();
       return visitChildren(ctx);
       // return res;
    }

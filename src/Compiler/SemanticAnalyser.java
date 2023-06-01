@@ -15,14 +15,20 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    // usem este array para guardar as coisas sobre variaveis/dimensoes
    // por exemplo --> {Length : [real, meter, m], ...}
 
+
    private static HashMap<String, ArrayList<String>> conversions = new HashMap<>();
    // vai guardar por exemplo --> {inch : ["0.0254", "meter"], ...}
 
+
    private static HashMap<String, String> declared_vars = new HashMap<String, String>();
+
    // guardar as variaveis -----> {l : Length}
    private static HashMap<String, String> declared_lists = new HashMap<String, String>();
 
    private static HashMap<String, ArrayList<String>> dependent_units = new HashMap<String, ArrayList<String>>();
+  
+
+
    // guardar dependencias das unidades dependentes
    // p.ex Volume -> [Length*Length*Length]
    private static int temp_var_counter = 1;
@@ -34,6 +40,27 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          add("string");
       }
    };
+
+
+   public  HashMap<String, ArrayList<String>> getDependent_units() {
+      return dependent_units;
+   }
+
+   public  HashMap<String, String> getDeclared_lists() {
+      return declared_lists;
+   }
+
+   public  HashMap<String, String> getDeclared_vars() {
+      return declared_vars;
+   }
+
+   public  HashMap<String, ArrayList<String>> getConversions() {
+      return conversions;
+   }
+
+   public  HashMap<String, ArrayList<String>> getVarMap() {
+      return varMap;
+   }
 
    // qualquer cena que envolva ctx.expression() por enquanto vai tar a dar erro
    // até se fazer as várias funções, por isso vai tar comentado
@@ -79,8 +106,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                }
             });
 
-            System.out.println("Added dimension " + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText()
-                  + " and suffix " + ctx.ID(2).getText());
+            //System.out.println("Added dimension " + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText()
+              //    + " and suffix " + ctx.ID(2).getText());
 
          } else {
 
@@ -91,13 +118,13 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                   add(ctx.ID(1).getText()); // base unit -> meter, second
                }
             });
-            System.out.println("Added dimension" + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText());
+            //System.out.println("Added dimension " + ctx.ID(0).getText() + " with base unit " + ctx.ID(1).getText());
 
          }
 
       }
-      System.out.println("Passed IndependentUnit check");
-      System.out.flush();
+      //System.out.println("Passed IndependentUnit check");
+      //System.out.flush();
 
       return res;
    }
@@ -174,7 +201,6 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
             if (varMap.get(var_dataType).size() > 1 && varMap.get(expr_dataType).size() > 1) {
 
-               System.out.println("CRL FODA ISTO TEM DE DAR LENGTH * LENGTH " + varMap.get(expr_dataType).get(1));
 
                if (var_dataType.equals(expr_dataType) || varMap.get(var_dataType).get(1).equals(expr_dataType)
                      || varMap.get(expr_dataType).get(1).equals(var_dataType)) { // verificar se a dimensão da variável
@@ -195,8 +221,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          declared_vars.put(varName, var_dataType);
 
       }
-      System.out.println("Passed Variable Declaration check");
-      System.out.flush();
+      //System.out.println("Passed Variable Declaration check");
+      //System.out.flush();
       return res;
    }
 
@@ -212,8 +238,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // System.out.println("variable dimension -> " + var);
 
       if (res != false) { // if there are no problems with the expression or the name of the variable
-         System.out.println("Visit assignment for variable " + ctx.ID().getText() + " expression dimension  -> "
-               + ctx.expression().dimension);
+         //System.out.println("Visit assignment for variable " + ctx.ID().getText() + " expression dimension  -> "
+           //    + ctx.expression().dimension);
          // System.out.println("CTX.ID() -> " + ctx.ID().getText());
          // System.out.println("Declared vars -> " + declared_vars.toString());
 
@@ -237,8 +263,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
             return res;
          }
 
-         System.out.println("Passed Assignment check");
-         System.out.flush();
+         //System.out.println("Passed Assignment check");
+         //System.out.flush();
       }
       return res;
    }
@@ -295,8 +321,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
       }
 
-      System.out.println("Passed inputStatement verification");
-      System.out.flush();
+      //System.out.println("Passed inputStatement verification");
+      //System.out.flush();
 
       return res;
    }
@@ -315,8 +341,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
       }
 
-      System.out.println("Passed outputStatement verification");
-      System.out.flush();
+      //System.out.println("Passed outputStatement verification");
+      //System.out.flush();
 
       return res;
       // return res;
@@ -371,8 +397,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
       }
 
-      System.out.println("Passed outputFormat verification");
-      System.out.flush();
+      //System.out.println("Passed outputFormat verification");
+      //System.out.flush();
       return res;
       // return res;
    }
@@ -405,8 +431,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // check if start value is smaller than end value??
       // cant do this unless i store the value of the variable in somewhere
 
-      System.out.println("Passed loopStatement verification");
-      System.out.flush();
+      //ystem.out.println("Passed loopStatement verification");
+      //System.out.flush();
 
       return res;
       // return res;
@@ -560,7 +586,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          return false;
       }
 
-      System.out.println(declared_vars);
+     //System.out.println(decla red_vars);
       if (declared_vars.containsKey(ctx.ID().getText())) {
          try {
             ctx.dimension = declared_vars.get(ctx.ID().getText()); // its a variable
@@ -585,7 +611,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
       }
 
-      System.out.println("Dimension of " + ctx.ID().getText() + " is " + ctx.dimension);
+      //System.out.println("Dimension of " + ctx.ID().getText() + " is " + ctx.dimension);
 
       return res;
       // return res;
@@ -636,7 +662,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       String dimension_1 = ctx.expression(0).dimension;
       String dimension_2 = ctx.expression(1).dimension;
 
-      System.out.println("Dimensão 1 no muldiv " + dimension_1 + " dimensão 2 " + dimension_2);
+      //System.out.println("Dimensão 1 no muldiv " + dimension_1 + " dimensão 2 " + dimension_2);
 
       String operator = ctx.op.getText();
 
@@ -697,7 +723,6 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                      "Trying to multiply/divide variables of different dimensions " + "{" + dimension_1 + "}" + " and "
                            + "{" + dimension_2 + "}\nThe resulting dimension would be " + "{" + dimension_1 + operator
                            + dimension_2 + "}" + " but it is not defined");
-
             }
 
             else {
@@ -719,24 +744,17 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          for (String dim : split_dim) {
 
             if (!varMap.containsKey(dim)) {
-               ErrorHandling.printError(ctx, "Dimension {" + dim + "} is trying to be used but does not exist");
+               ErrorHandling.printError(ctx, "Dimension {" + dim + "} is trying to be used but does not exist ( not declared )");
             }
          }
 
          ctx.dimension = dimension_1 + operator + dimension_2;
-         // System.out.println("Normal Fraction " + ctx.dimension);
 
-         System.out.println("Reduced fraction " + dimensionDivision(ctx.dimension));
+         ctx.dimension = dimensionDivision(ctx.dimension).toString(); // reduce the fraction of dimensions
+
 
       }
-      // não removam este print, por alguma razão so faz a redução direito se estiver
-      // dentro do print
-
-      // System.out.println("New ctx.dimension -> " + ctx.dimension);
-      // ctx.dimension = dimensionDivision(full_dim).toString();
-
       return res;
-      // return res;
    }
 
    private static String dimensionDivision(String equation) {
@@ -768,7 +786,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                denominador.add(dimensions.get(dim_index));
             }
             dim_index++;
-         } else if (op.matches("[\\\\][(]{0,}")) {
+         } else if (op.matches("[/][(]{0,}")) {
             if (inverted) {
                inverted = false;
             } else {

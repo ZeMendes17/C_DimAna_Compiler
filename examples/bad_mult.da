@@ -11,7 +11,7 @@ l = 10*meter;
 v = 5*meter;
 a = 2*meter;
 
-# attempt at assigning a value from a dimension ( that in this case, doesnt exist , would be Volume = Length*Length*Length) 
+# attempt at assigning a expression from a dimension ( that in this case, doesnt exist , would be Volume = Length*Length*Length) 
 # to a variable of a different dimension (Area)
 
 c = l*v*a;

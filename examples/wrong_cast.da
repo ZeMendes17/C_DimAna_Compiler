@@ -3,6 +3,6 @@ dimension real Length [meter,m];
 Length g;
 
 
-# attempt at casting g ( a Length ) to a base unit thats not a Length
+# attempt at casting g ( a Length ) to a base unit thats not a Length ( metro, should be meter )
 
 g = real(read "OLA TESTE:")*metro;

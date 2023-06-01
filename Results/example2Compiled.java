@@ -1,12 +1,12 @@
 import java.util.*;
 import java.io.*;
 
-public class DimanaCompiled {
+public class example2Compiled {
 
    public static void main(String[] args) {
       Scanner sc = new Scanner(System.in); /*para depois usar nos READS*/
       int N = 4;
-      ArrayList<DimensionVar> nmecs = new ArrayList<DimensionVar>(); // List of NMEC ;  
+      ArrayList<DimensionVar> nmecs = new ArrayList<DimensionVar>(); // List of NMEC ;
       nmecs.add(null); // fill index 0 so it starts at 1
       ArrayList<String> names = new ArrayList<String>(); // List of string ;
       names.add(null); // fill index 0 so it starts at 1
@@ -29,7 +29,7 @@ public class DimanaCompiled {
       }
       System.out.println(String.format("%10s","NMEC:") + String.format("%30s","Name") + String.format("%10s","Grade:"));
       for (i = 1; i <= nmecs.size()-1; i++) {
-         System.out.println(String.format("%10s",nmecs.get(i).getValue_integer()) + String.format("%30s",names.get(i)) + String.format("%10s",grades.get(i).getValue_double())); 
+         System.out.println(String.format("%10s",nmecs.get(i).getValue_integer()) + String.format("%30s",names.get(i)) + String.format("%10s",grades.get(i).getValue_double()));
 
       }
       sc.close(); /*tem de fechar*/
