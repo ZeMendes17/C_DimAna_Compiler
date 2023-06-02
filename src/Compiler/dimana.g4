@@ -75,7 +75,7 @@ expression returns[String varName, String dimension, String type]
     //| 'string' '(' (STRING | ID) ',' INT ')'                                  # StringAssignExpression
     | expression op=('*' | '/') expression                                      # MulDivExpression
     | expression op=('+' | '-') expression                                      # AddSubExpression
-    | e1=expression op=('==' | '!=' | '<' | '>' | '>=' | '<=') e2=expression    #conditionalExpression
+    | e1=expression op=('==' | '!=' | '<' | '>' | '>=' | '<=') e2=expression    # ConditionalExpression
     | '(' expression ')'                                                        # ParenExpression
     | outputStatement                                                           # OutputExpression
     //| expression ',' expression                                               # ExprListExpression

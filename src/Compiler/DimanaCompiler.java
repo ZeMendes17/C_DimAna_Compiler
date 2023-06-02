@@ -745,6 +745,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       // return res;
    }
 
+   @Override
+   public ST visitConditionalExpression(dimanaParser.ConditionalExpressionContext ctx) {
+      ST res = templates.getInstanceOf("binaryOperation");
+   }
+
    
    @Override
    public ST visitMulDivExpression(dimanaParser.MulDivExpressionContext ctx) {
