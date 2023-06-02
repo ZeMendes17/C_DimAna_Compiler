@@ -232,6 +232,66 @@ public class dimanaBaseListener implements dimanaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCondicional(dimanaParser.CondicionalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCondicional(dimanaParser.CondicionalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOutputExpression(dimanaParser.OutputExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOutputExpression(dimanaParser.OutputExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConditionalExpression(dimanaParser.ConditionalExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConditionalExpression(dimanaParser.ConditionalExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIndexExpression(dimanaParser.IndexExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIndexExpression(dimanaParser.IndexExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInputExpression(dimanaParser.InputExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInputExpression(dimanaParser.InputExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAddSubExpression(dimanaParser.AddSubExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -280,13 +340,13 @@ public class dimanaBaseListener implements dimanaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOutputExpression(dimanaParser.OutputExpressionContext ctx) { }
+	@Override public void enterBoolLiteral(dimanaParser.BoolLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOutputExpression(dimanaParser.OutputExpressionContext ctx) { }
+	@Override public void exitBoolLiteral(dimanaParser.BoolLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -316,18 +376,6 @@ public class dimanaBaseListener implements dimanaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIndexExpression(dimanaParser.IndexExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIndexExpression(dimanaParser.IndexExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterIntLiteral(dimanaParser.IntLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -335,18 +383,6 @@ public class dimanaBaseListener implements dimanaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIntLiteral(dimanaParser.IntLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInputExpression(dimanaParser.InputExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInputExpression(dimanaParser.InputExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

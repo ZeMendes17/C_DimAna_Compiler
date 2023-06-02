@@ -66,22 +66,26 @@ alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
+condicional: 'if' '(' expression ')' '{' trueBlock=statList '}' ('else' '{' falseBlock=statList '}')?;
+
 
 expression returns[String varName, String dimension, String type]
-    : 'read' STRING                                         # InputExpression
-    | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID    # InputTypeExpression
-    //| 'string' '(' (STRING | ID) ',' INT ')'              # StringAssignExpression
-    | expression op=('*' | '/') expression                  # MulDivExpression
-    | expression op=('+' | '-') expression                  # AddSubExpression
-    | '(' expression ')'                                    # ParenExpression
-    | outputStatement                                       # OutputExpression
-    //| expression ',' expression                           # ExprListExpression
-    | ID '[' (ID | INT) ']'                                 # IndexExpression
-    | ID                                                    # IdExpression
-    | dataType '(' expression ')'                           # TypeConversion
-    | REAL                                                  # RealLiteral
-    | INT                                                   # IntLiteral
-    | STRING                                                # StringLiteral
+    : 'read' STRING                                                             # InputExpression
+    | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID                        # InputTypeExpression
+    //| 'string' '(' (STRING | ID) ',' INT ')'                                  # StringAssignExpression
+    | expression op=('*' | '/') expression                                      # MulDivExpression
+    | expression op=('+' | '-') expression                                      # AddSubExpression
+    | e1=expression op=('==' | '!=' | '<' | '>' | '>=' | '<=') e2=expression    #conditionalExpression
+    | '(' expression ')'                                                        # ParenExpression
+    | outputStatement                                                           # OutputExpression
+    //| expression ',' expression                                               # ExprListExpression
+    | ID '[' (ID | INT) ']'                                                     # IndexExpression
+    | ID                                                                        # IdExpression
+    | dataType '(' expression ')'                                               # TypeConversion
+    | REAL                                                                      # RealLiteral
+    | INT                                                                       # IntLiteral
+    | STRING                                                                    # StringLiteral
+    | BOOL                                                                      # BoolLiteral
     ;
 
 dataType  returns [String type] : 
@@ -89,6 +93,7 @@ dataType  returns [String type] :
 | 'real' 
 | 'string' 
 | 'list' '[' ID ']' 
+| 'bool'
 | ID ;
 
 castTypes : 'integer' | 'real';
@@ -97,6 +102,7 @@ ID: [a-zA-Z_][a-zA-Z0-9_]*;
 INT: [0-9]+;
 REAL: [0-9]* '.' [0-9]+;
 STRING: '"' .*? '"';
+BOOL: 'true' | 'false';
 
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '#' ~[\r\n]* -> skip;
