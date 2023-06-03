@@ -167,11 +167,11 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
          if (ctx.dataType().type == null) {
             ErrorHandling.printError(ctx,
-                  "Attempt at using a undeclared dimension when declaring the variable -> " + ctx.ID().getText());
+                  "Attempt at using a undeclared dimension when declaring the variable -> " + ctx.ID(0).getText());
             return false;
          }
 
-         String varName = ctx.ID().getText();
+         String varName = ctx.ID(0).getText();
 
          if (isReservedName(varName)) {
             ErrorHandling.printError(ctx, "Variable " + varName + " cant use a Java reserved name");

@@ -37,7 +37,7 @@ statement:
     | continueStatement
     ;
 
-variableDeclaration: dataType ID ('=' expression)?;
+variableDeclaration: dataType ID ('=' expression ID?)?;
 
 readToArray: castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID ;
 

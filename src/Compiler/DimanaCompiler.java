@@ -123,7 +123,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitVariableDeclaration(dimanaParser.VariableDeclarationContext ctx) {
       // NMEC n (dataType ID )
       visit(ctx.dataType());
-      String id = ctx.ID().getText();
+      String id = ctx.ID(0).getText();
       String expression = "";
       // so se tem dataType e id garantidos, a expression é opcional
 
