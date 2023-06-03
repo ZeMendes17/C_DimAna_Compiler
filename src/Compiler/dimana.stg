@@ -207,9 +207,9 @@ ifcondicion(assign1,assign2,cond,statementsTrue,statementsFalse) ::= <<
 <assign2>
 if (<cond>) {
    <statementsTrue>
-} else {
-   <statementsFalse>
-}
+} <#if statementsFalse?exists>else {</#if>
+   <#if statementsFalse?exists><statementsFalse></#if>
+<#if statementsFalse?exists>}
 >>
 elseifcondicion (cond,statements) ::= <<
 else if (<cond>) {

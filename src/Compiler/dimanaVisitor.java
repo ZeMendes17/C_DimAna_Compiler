@@ -156,12 +156,6 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfBlock(dimanaParser.IfBlockContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link dimanaParser#elseIfBlock}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitElseIfBlock(dimanaParser.ElseIfBlockContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link dimanaParser#elseBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

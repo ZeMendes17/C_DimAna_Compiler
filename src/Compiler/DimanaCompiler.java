@@ -783,6 +783,48 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    }
 
    @Override
+   public ST visitIfBlock(dimanaParser.IfBlockContext ctx) {
+      
+      return visitChildren(ctx);
+   }
+
+   @Override
+   public ST visitElseBlock(dimanaParser.ElseBlockContext ctx) {
+      
+      return visitChildren(ctx);
+   }
+
+   @Override
+   public ST visitConditional(dimanaParser.ConditionalContext ctx) {
+      ST res = templates.getInstanceOf("ifcondition");
+      String condition = visit(ctx.ifBlock().expression()).render();
+      int ifblock_amount = ctx.ifBlock().statement().size();
+      int elseblock_amount = ctx.elseBlock().statement().size();
+      String if_statements = "";
+      String else_statements = "";
+
+      for (int i = 0; i < ifblock_amount; i++) {
+         if_statements += visit(ctx.ifBlock().statement(i)).render() + "\n";
+      }
+
+      if (elseblock_amount > 0) {
+         for (int i = 0; i < elseblock_amount; i++) {
+            else_statements += visit(ctx.elseBlock().statement(i)).render() + "\n";
+         }
+         res.add("statementsFalse", else_statements);
+      }
+
+      String[] split_conds = condition.split(";");
+
+      res.add("assign1", split_conds[0]);
+      res.add("assign2", split_conds[1]);
+      res.add("cond", split_conds[2]);
+      res.add("statementsTrue", if_statements);
+
+      return res;
+   }
+
+   @Override
    public ST visitAndOrExpression(dimanaParser.AndOrExpressionContext ctx) {
       ST res = templates.getInstanceOf("");
 

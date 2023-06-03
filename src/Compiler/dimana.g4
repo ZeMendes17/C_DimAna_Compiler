@@ -78,19 +78,19 @@ alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
 conditional
-    : ifBlock+ (elseIfBlock)? (elseBlock)?
+    : ifBlock+ /*(elseIfBlock)?*/ (elseBlock)?
     ;
 
 ifBlock
-    : 'if' '(' expression ')' '{' statements+=statement ';'+ '}'
+    : 'if' '(' expression ')' '{' (statement ';')+ '}'
     ;
-
+/*
 elseIfBlock
     : ('else if' '(' expression ')' '{' statements+=statement ';'+ '}')+
     ;
-
+*/
 elseBlock
-    : 'else' '{' statements+=statement ';'+ '}'
+    : 'else' '{' (statement ';')+ '}'
     ;
 
 expression returns[String varName, String dimension, String type]

@@ -251,16 +251,6 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitIfBlock(dimanaParser.IfBlockContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link dimanaParser#elseIfBlock}.
-	 * @param ctx the parse tree
-	 */
-	void enterElseIfBlock(dimanaParser.ElseIfBlockContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link dimanaParser#elseIfBlock}.
-	 * @param ctx the parse tree
-	 */
-	void exitElseIfBlock(dimanaParser.ElseIfBlockContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link dimanaParser#elseBlock}.
 	 * @param ctx the parse tree
 	 */
