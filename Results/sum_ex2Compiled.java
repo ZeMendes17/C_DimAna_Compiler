@@ -9,8 +9,10 @@ public class sum_ex2Compiled {
       int m = 3;
       int x = 4;
       int y = 5;
-      double m*y*x = Double.parseDouble(m*y*x;);
-      n = ;
+      int v1 ;
+      v1 = m+y + x;
+      double v6 = Double.parseDouble(String.valueOf(v1 ));
+      n = v6;
       System.out.print(n);
       sc.close(); /*tem de fechar*/
    }

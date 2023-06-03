@@ -1,9 +1,0 @@
-dimension real Length [meter,m];
-unit Length [inch,in] = 0.0254*meter;
-dimension real Area = Length*Length;
-
-
-Length x = 3.0*meter;
-Length y = 5.0*meter;
-Area a = x*y;
-write a;

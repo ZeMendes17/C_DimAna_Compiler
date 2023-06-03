@@ -194,15 +194,21 @@ var_setValue(var,value,type) ::= <<
 <var> = <value>;
 >>
 
-conversionToInt(name,value) ::= <<
-int <name> = Integer.parseInt(<value>);
+conversionToInt(assign1,assign2,name,value) ::= <<
+<assign1>
+<assign2>
+int <name> = Integer.parseInt(String.valueOf(<value>));
 >>
 
-conversionToDouble(name,value) ::= <<
-double <name> = Double.parseDouble(<value>);
+conversionToDouble(assign1,assign2,name,value) ::= <<
+<assign1>
+<assign2>
+double <name> = Double.parseDouble(String.valueOf(<value>));
 >>
 
-conversionToString(name,value) ::= <<
+conversionToString(assign1,assign2,name,value) ::= <<
+<assign1>
+<assign2>
 String <name> = String.valueOf(<value>);
 >>
 

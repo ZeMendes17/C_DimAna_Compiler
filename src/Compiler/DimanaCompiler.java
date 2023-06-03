@@ -600,7 +600,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       res = templates.getInstanceOf("assign_dvar");
       res.add("var_name", ctx.varName);
 
-      System.out.println ( "DIMENSAO 1 NO ADDSUB " + ctx.expression(0).dimension + " DIMENSAO 2 NO ADDSUB " + ctx.expression(1).dimension);
+      System.out.println("DIMENSAO 1 NO ADDSUB " + ctx.expression(0).dimension + " DIMENSAO 2 NO ADDSUB "
+            + ctx.expression(1).dimension);
       if (ctx.expression(0).dimension.equals("string") || ctx.expression(0).dimension.equals("real")
             || ctx.expression(0).dimension.equals("integer")) {
          res.add("operando1", operando1);
@@ -671,9 +672,18 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
       String varName = ctx.expression().getText();
       String value = visit(ctx.expression()).render();
-      String type = ctx.dataType().type;
 
-      System.out.println("CONVERSION DATATYPE " + type);
+      System.out.println("Value do type conversion \n "+ value);
+
+      // deal with sums and other operations in the name of the variable
+      if (varName.split("[/*+-]").length > 1) {
+         varName = value.split(";")[1];
+         varName = varName.split("=")[0];
+         varName = varName.replace("\n","");
+      }
+
+      //System.out.println("VARNAME CONVERTIDO " + varName);
+      String type = ctx.dataType().type;
 
       switch (type) {
          case "integer":
@@ -686,9 +696,11 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             res = templates.getInstanceOf("conversionToString");
             break;
       }
-
-      res.add("name", varName);
-      res.add("value", value);
+      res.add("assign1", value.split("\n")[0]);
+      res.add("assign2", value.split("\n")[1]);
+      ctx.varName = newVar();
+      res.add("name", ctx.varName);
+      res.add("value", varName);
 
       return res;
    }
@@ -967,7 +979,6 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       String operando2 = ctx.expression(1).getText();
 
       if (declared_vars.containsKey(operando1) && declared_vars.containsKey(operando2)) { // operação entre variaveis
-         // System.out.println("VARMAP -> " + varMap);
          String var_type = varMap.get(declared_vars.get(operando1)).get(0);
          ST assign_dvar = templates.getInstanceOf("assign_dvar");
          assign_dvar.add("var_name", ctx.varName);
@@ -975,6 +986,15 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          assign_dvar.add("operando2", operando2);
          assign_dvar.add("dataType", var_type);
          assign_dvar.add("operacao", ctx.op.getText());
+
+
+         // flags are used to see when its a dimension_var ( that needs method getValue<type> ) or a normal datatype ( real/integer ), which doesnt need this method.
+         if (!(declared_vars.get(operando1).equals("integer") && declared_vars.get(operando1).equals("real")))
+            assign_dvar.add("flag1", "true");
+
+         if (!(declared_vars.get(operando2).equals("integer") && declared_vars.get(operando2).equals("real")))
+            assign_dvar.add("flag2", "true");
+
          declared_vars.put(ctx.varName, temp);
          // System.out.println("Return value from assign_dvar \n" +
          // assign_dvar.render());

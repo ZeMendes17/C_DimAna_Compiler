@@ -194,7 +194,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
             if (expr_dataType.equals("String"))
                expr_dataType = "string";
 
-            //System.out.println("DATATYPES " + var_dataType + " " + expr_dataType);
+            System.out.println("DATATYPES " + var_dataType + " " + expr_dataType);
 
             if (varMap.get(var_dataType).size() == 1 && varMap.get(expr_dataType).size() == 1) { // when both are type
                                                                                                  // string/integer/real
@@ -210,6 +210,14 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                }
 
             }
+            if (varMap.containsKey(expr_dataType) && varMap.containsKey(var_dataType)){
+            if (varMap.get(var_dataType).size() != 1 && varMap.get(expr_dataType).size() == 1 ){
+               ErrorHandling.printError(ctx, "Cant assign expression of dimension -> " +
+                     expr_dataType + " to variable "
+                     + varName + " of dimension -> " + var_dataType);
+               return false;
+            }
+         }
 
             if (var_dataType.equals(expr_dataType) || varMap.get(var_dataType).get(1).equals(expr_dataType)
                   || varMap.get(expr_dataType).get(1).equals(var_dataType)) { // verificar se a dimensão da variável
@@ -227,7 +235,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
 
          declared_vars.put(varName, var_dataType);
-         System.out.println("Added variable " + varName + " with dimension " + var_dataType);
+         //System.out.println("Added variable " + varName + " with dimension " + var_dataType);
 
       }
       // System.out.println("Passed Variable Declaration check");
@@ -258,8 +266,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          // System.out.println(ctx.expression().dimension);
          // System.out.println(var_dim);
 
-         System.out.println("VAR DIM " + var_dim);
-         System.out.println("EXPR DIM " + ctx.expression().dimension);
+         //System.out.println("VAR DIM " + var_dim);
+         //System.out.println("EXPR DIM " + ctx.expression().dimension);
          if (!(var_dim.equals(ctx.expression().dimension)) && !(varMap.get(var_dim).get(1)
                .equals(ctx.expression().dimension))) {
             // check if the dimension of the

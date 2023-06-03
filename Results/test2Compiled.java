@@ -17,7 +17,7 @@ public class test2Compiled {
       v5 = x.getValue_double() * y.getValue_double();;
       DimensionVar a = new DimensionVar("Area",v5);
       a.setSuffix("m*m");
-      System.out.print(a.getValue_double() + a.getSuffix());
+      System.out.print(a.getValue_double() + " " + a.getSuffix());
       sc.close(); /*tem de fechar*/
    }
 }

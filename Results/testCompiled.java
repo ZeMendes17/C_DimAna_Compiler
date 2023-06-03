@@ -37,6 +37,5 @@ public class testCompiled {
       } else {
       }
       sc.close(); /*tem de fechar*/
-
    }
 }
