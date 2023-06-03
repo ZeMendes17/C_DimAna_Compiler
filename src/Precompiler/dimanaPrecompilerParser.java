@@ -16,7 +16,7 @@ public class dimanaPrecompilerParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, STRING=2, SYMBOLS=3, LETTER=4, SPACE=5, NEWLINE=6;
+		T__0=1, T__1=2, STRING=3, SYMBOLS=4, LETTER=5, SPACE=6, NEWLINE=7, LINE_COMMENT=8;
 	public static final int
 		RULE_program = 0, RULE_statement = 1, RULE_preprocessorDirective = 2, 
 		RULE_code = 3, RULE_filename = 4;
@@ -29,13 +29,14 @@ public class dimanaPrecompilerParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'use'"
+			null, "'use'", "';'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, "STRING", "SYMBOLS", "LETTER", "SPACE", "NEWLINE"
+			null, null, null, "STRING", "SYMBOLS", "LETTER", "SPACE", "NEWLINE", 
+			"LINE_COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -127,7 +128,7 @@ public class dimanaPrecompilerParser extends Parser {
 			setState(13);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 126L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 510L) != 0)) {
 				{
 				{
 				setState(10);
@@ -194,11 +195,13 @@ public class dimanaPrecompilerParser extends Parser {
 				preprocessorDirective();
 				}
 				break;
+			case T__1:
 			case STRING:
 			case SYMBOLS:
 			case LETTER:
 			case SPACE:
 			case NEWLINE:
+			case LINE_COMMENT:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(19);
@@ -225,14 +228,9 @@ public class dimanaPrecompilerParser extends Parser {
 		public FilenameContext filename() {
 			return getRuleContext(FilenameContext.class,0);
 		}
-		public TerminalNode NEWLINE() { return getToken(dimanaPrecompilerParser.NEWLINE, 0); }
 		public List<TerminalNode> SPACE() { return getTokens(dimanaPrecompilerParser.SPACE); }
 		public TerminalNode SPACE(int i) {
 			return getToken(dimanaPrecompilerParser.SPACE, i);
-		}
-		public List<TerminalNode> SYMBOLS() { return getTokens(dimanaPrecompilerParser.SYMBOLS); }
-		public TerminalNode SYMBOLS(int i) {
-			return getToken(dimanaPrecompilerParser.SYMBOLS, i);
 		}
 		public PreprocessorDirectiveContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -262,42 +260,24 @@ public class dimanaPrecompilerParser extends Parser {
 			{
 			setState(22);
 			match(T__0);
-			setState(24);
+			setState(26);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==SPACE) {
+			while (_la==SPACE) {
+				{
 				{
 				setState(23);
 				match(SPACE);
 				}
-			}
-
-			setState(26);
-			filename();
-			setState(30);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==SYMBOLS || _la==SPACE) {
-				{
-				{
-				setState(27);
-				_la = _input.LA(1);
-				if ( !(_la==SYMBOLS || _la==SPACE) ) {
-				_errHandler.recoverInline(this);
 				}
-				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-					_errHandler.reportMatch(this);
-					consume();
-				}
-				}
-				}
-				setState(32);
+				setState(28);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(33);
-			match(NEWLINE);
+			setState(29);
+			filename();
+			setState(30);
+			match(T__1);
 			}
 		}
 		catch (RecognitionException re) {
@@ -313,6 +293,7 @@ public class dimanaPrecompilerParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CodeContext extends ParserRuleContext {
+		public TerminalNode LINE_COMMENT() { return getToken(dimanaPrecompilerParser.LINE_COMMENT, 0); }
 		public TerminalNode LETTER() { return getToken(dimanaPrecompilerParser.LETTER, 0); }
 		public TerminalNode SYMBOLS() { return getToken(dimanaPrecompilerParser.SYMBOLS, 0); }
 		public TerminalNode STRING() { return getToken(dimanaPrecompilerParser.STRING, 0); }
@@ -344,9 +325,9 @@ public class dimanaPrecompilerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(35);
+			setState(32);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 124L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 508L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -395,7 +376,7 @@ public class dimanaPrecompilerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(37);
+			setState(34);
 			match(STRING);
 			}
 		}
@@ -411,33 +392,30 @@ public class dimanaPrecompilerParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0006(\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\b%\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0001"+
 		"\u0000\u0005\u0000\f\b\u0000\n\u0000\f\u0000\u000f\t\u0000\u0001\u0000"+
 		"\u0001\u0000\u0001\u0001\u0001\u0001\u0003\u0001\u0015\b\u0001\u0001\u0002"+
-		"\u0001\u0002\u0003\u0002\u0019\b\u0002\u0001\u0002\u0001\u0002\u0005\u0002"+
-		"\u001d\b\u0002\n\u0002\f\u0002 \t\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0000\u0000\u0005"+
-		"\u0000\u0002\u0004\u0006\b\u0000\u0002\u0002\u0000\u0003\u0003\u0005\u0005"+
-		"\u0001\u0000\u0002\u0006&\u0000\r\u0001\u0000\u0000\u0000\u0002\u0014"+
-		"\u0001\u0000\u0000\u0000\u0004\u0016\u0001\u0000\u0000\u0000\u0006#\u0001"+
-		"\u0000\u0000\u0000\b%\u0001\u0000\u0000\u0000\n\f\u0003\u0002\u0001\u0000"+
-		"\u000b\n\u0001\u0000\u0000\u0000\f\u000f\u0001\u0000\u0000\u0000\r\u000b"+
-		"\u0001\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000\u0000\u000e\u0010\u0001"+
-		"\u0000\u0000\u0000\u000f\r\u0001\u0000\u0000\u0000\u0010\u0011\u0005\u0000"+
-		"\u0000\u0001\u0011\u0001\u0001\u0000\u0000\u0000\u0012\u0015\u0003\u0004"+
-		"\u0002\u0000\u0013\u0015\u0003\u0006\u0003\u0000\u0014\u0012\u0001\u0000"+
-		"\u0000\u0000\u0014\u0013\u0001\u0000\u0000\u0000\u0015\u0003\u0001\u0000"+
-		"\u0000\u0000\u0016\u0018\u0005\u0001\u0000\u0000\u0017\u0019\u0005\u0005"+
-		"\u0000\u0000\u0018\u0017\u0001\u0000\u0000\u0000\u0018\u0019\u0001\u0000"+
-		"\u0000\u0000\u0019\u001a\u0001\u0000\u0000\u0000\u001a\u001e\u0003\b\u0004"+
-		"\u0000\u001b\u001d\u0007\u0000\u0000\u0000\u001c\u001b\u0001\u0000\u0000"+
-		"\u0000\u001d \u0001\u0000\u0000\u0000\u001e\u001c\u0001\u0000\u0000\u0000"+
-		"\u001e\u001f\u0001\u0000\u0000\u0000\u001f!\u0001\u0000\u0000\u0000 \u001e"+
-		"\u0001\u0000\u0000\u0000!\"\u0005\u0006\u0000\u0000\"\u0005\u0001\u0000"+
-		"\u0000\u0000#$\u0007\u0001\u0000\u0000$\u0007\u0001\u0000\u0000\u0000"+
-		"%&\u0005\u0002\u0000\u0000&\t\u0001\u0000\u0000\u0000\u0004\r\u0014\u0018"+
-		"\u001e";
+		"\u0001\u0002\u0005\u0002\u0019\b\u0002\n\u0002\f\u0002\u001c\t\u0002\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0004\u0001"+
+		"\u0004\u0001\u0004\u0000\u0000\u0005\u0000\u0002\u0004\u0006\b\u0000\u0001"+
+		"\u0001\u0000\u0002\b\"\u0000\r\u0001\u0000\u0000\u0000\u0002\u0014\u0001"+
+		"\u0000\u0000\u0000\u0004\u0016\u0001\u0000\u0000\u0000\u0006 \u0001\u0000"+
+		"\u0000\u0000\b\"\u0001\u0000\u0000\u0000\n\f\u0003\u0002\u0001\u0000\u000b"+
+		"\n\u0001\u0000\u0000\u0000\f\u000f\u0001\u0000\u0000\u0000\r\u000b\u0001"+
+		"\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000\u0000\u000e\u0010\u0001\u0000"+
+		"\u0000\u0000\u000f\r\u0001\u0000\u0000\u0000\u0010\u0011\u0005\u0000\u0000"+
+		"\u0001\u0011\u0001\u0001\u0000\u0000\u0000\u0012\u0015\u0003\u0004\u0002"+
+		"\u0000\u0013\u0015\u0003\u0006\u0003\u0000\u0014\u0012\u0001\u0000\u0000"+
+		"\u0000\u0014\u0013\u0001\u0000\u0000\u0000\u0015\u0003\u0001\u0000\u0000"+
+		"\u0000\u0016\u001a\u0005\u0001\u0000\u0000\u0017\u0019\u0005\u0006\u0000"+
+		"\u0000\u0018\u0017\u0001\u0000\u0000\u0000\u0019\u001c\u0001\u0000\u0000"+
+		"\u0000\u001a\u0018\u0001\u0000\u0000\u0000\u001a\u001b\u0001\u0000\u0000"+
+		"\u0000\u001b\u001d\u0001\u0000\u0000\u0000\u001c\u001a\u0001\u0000\u0000"+
+		"\u0000\u001d\u001e\u0003\b\u0004\u0000\u001e\u001f\u0005\u0002\u0000\u0000"+
+		"\u001f\u0005\u0001\u0000\u0000\u0000 !\u0007\u0000\u0000\u0000!\u0007"+
+		"\u0001\u0000\u0000\u0000\"#\u0005\u0003\u0000\u0000#\t\u0001\u0000\u0000"+
+		"\u0000\u0003\r\u0014\u001a";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

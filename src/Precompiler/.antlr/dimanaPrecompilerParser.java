@@ -1,4 +1,4 @@
-// Generated from c:\Users\rodri\OneDrive\Ambiente de Trabalho\Uni\ano2-sem2\C\comp-2023-dimana-01\src\Precompiler\dimanaPrecompiler.g4 by ANTLR 4.9.2
+// Generated from /home/mendes/Desktop/C/comp-2023-dimana-01/src/Precompiler/dimanaPrecompiler.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -16,7 +16,7 @@ public class dimanaPrecompilerParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, STRING=2, SYMBOLS=3, LETTER=4, SPACE=5, NEWLINE=6;
+		T__0=1, T__1=2, STRING=3, SYMBOLS=4, LETTER=5, SPACE=6, NEWLINE=7, LINE_COMMENT=8;
 	public static final int
 		RULE_program = 0, RULE_statement = 1, RULE_preprocessorDirective = 2, 
 		RULE_code = 3, RULE_filename = 4;
@@ -29,13 +29,14 @@ public class dimanaPrecompilerParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'use'"
+			null, "'use'", "';'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, "STRING", "SYMBOLS", "LETTER", "SPACE", "NEWLINE"
+			null, null, null, "STRING", "SYMBOLS", "LETTER", "SPACE", "NEWLINE", 
+			"LINE_COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -113,7 +114,7 @@ public class dimanaPrecompilerParser extends Parser {
 			setState(13);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE) | (1L << LINE_COMMENT))) != 0)) {
 				{
 				{
 				setState(10);
@@ -166,11 +167,13 @@ public class dimanaPrecompilerParser extends Parser {
 				preprocessorDirective();
 				}
 				break;
+			case T__1:
 			case STRING:
 			case SYMBOLS:
 			case LETTER:
 			case SPACE:
 			case NEWLINE:
+			case LINE_COMMENT:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(19);
@@ -196,14 +199,9 @@ public class dimanaPrecompilerParser extends Parser {
 		public FilenameContext filename() {
 			return getRuleContext(FilenameContext.class,0);
 		}
-		public TerminalNode NEWLINE() { return getToken(dimanaPrecompilerParser.NEWLINE, 0); }
 		public List<TerminalNode> SPACE() { return getTokens(dimanaPrecompilerParser.SPACE); }
 		public TerminalNode SPACE(int i) {
 			return getToken(dimanaPrecompilerParser.SPACE, i);
-		}
-		public List<TerminalNode> SYMBOLS() { return getTokens(dimanaPrecompilerParser.SYMBOLS); }
-		public TerminalNode SYMBOLS(int i) {
-			return getToken(dimanaPrecompilerParser.SYMBOLS, i);
 		}
 		public PreprocessorDirectiveContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -220,42 +218,24 @@ public class dimanaPrecompilerParser extends Parser {
 			{
 			setState(22);
 			match(T__0);
-			setState(24);
+			setState(26);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==SPACE) {
+			while (_la==SPACE) {
+				{
 				{
 				setState(23);
 				match(SPACE);
 				}
-			}
-
-			setState(26);
-			filename();
-			setState(30);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==SYMBOLS || _la==SPACE) {
-				{
-				{
-				setState(27);
-				_la = _input.LA(1);
-				if ( !(_la==SYMBOLS || _la==SPACE) ) {
-				_errHandler.recoverInline(this);
 				}
-				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-					_errHandler.reportMatch(this);
-					consume();
-				}
-				}
-				}
-				setState(32);
+				setState(28);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(33);
-			match(NEWLINE);
+			setState(29);
+			filename();
+			setState(30);
+			match(T__1);
 			}
 		}
 		catch (RecognitionException re) {
@@ -270,6 +250,7 @@ public class dimanaPrecompilerParser extends Parser {
 	}
 
 	public static class CodeContext extends ParserRuleContext {
+		public TerminalNode LINE_COMMENT() { return getToken(dimanaPrecompilerParser.LINE_COMMENT, 0); }
 		public TerminalNode LETTER() { return getToken(dimanaPrecompilerParser.LETTER, 0); }
 		public TerminalNode SYMBOLS() { return getToken(dimanaPrecompilerParser.SYMBOLS, 0); }
 		public TerminalNode STRING() { return getToken(dimanaPrecompilerParser.STRING, 0); }
@@ -288,9 +269,9 @@ public class dimanaPrecompilerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(35);
+			setState(32);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE) | (1L << LINE_COMMENT))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -325,7 +306,7 @@ public class dimanaPrecompilerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(37);
+			setState(34);
 			match(STRING);
 			}
 		}
@@ -341,18 +322,17 @@ public class dimanaPrecompilerParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\b*\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\n\'\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\7\2\16\n\2\f\2\16\2\21\13\2\3\2\3\2\3\3"+
-		"\3\3\5\3\27\n\3\3\4\3\4\5\4\33\n\4\3\4\3\4\7\4\37\n\4\f\4\16\4\"\13\4"+
-		"\3\4\3\4\3\5\3\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\4\4\2\5\5\7\7\3\2\4\b\2"+
-		"(\2\17\3\2\2\2\4\26\3\2\2\2\6\30\3\2\2\2\b%\3\2\2\2\n\'\3\2\2\2\f\16\5"+
-		"\4\3\2\r\f\3\2\2\2\16\21\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\22\3\2"+
-		"\2\2\21\17\3\2\2\2\22\23\7\2\2\3\23\3\3\2\2\2\24\27\5\6\4\2\25\27\5\b"+
-		"\5\2\26\24\3\2\2\2\26\25\3\2\2\2\27\5\3\2\2\2\30\32\7\3\2\2\31\33\7\7"+
-		"\2\2\32\31\3\2\2\2\32\33\3\2\2\2\33\34\3\2\2\2\34 \5\n\6\2\35\37\t\2\2"+
-		"\2\36\35\3\2\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!#\3\2\2\2\" \3\2\2"+
-		"\2#$\7\b\2\2$\7\3\2\2\2%&\t\3\2\2&\t\3\2\2\2\'(\7\4\2\2(\13\3\2\2\2\6"+
-		"\17\26\32 ";
+		"\3\3\5\3\27\n\3\3\4\3\4\7\4\33\n\4\f\4\16\4\36\13\4\3\4\3\4\3\4\3\5\3"+
+		"\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\3\2\4\n\2$\2\17\3\2\2\2\4\26\3\2\2"+
+		"\2\6\30\3\2\2\2\b\"\3\2\2\2\n$\3\2\2\2\f\16\5\4\3\2\r\f\3\2\2\2\16\21"+
+		"\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\22\3\2\2\2\21\17\3\2\2\2\22\23"+
+		"\7\2\2\3\23\3\3\2\2\2\24\27\5\6\4\2\25\27\5\b\5\2\26\24\3\2\2\2\26\25"+
+		"\3\2\2\2\27\5\3\2\2\2\30\34\7\3\2\2\31\33\7\b\2\2\32\31\3\2\2\2\33\36"+
+		"\3\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\37\3\2\2\2\36\34\3\2\2\2\37 \5"+
+		"\n\6\2 !\7\4\2\2!\7\3\2\2\2\"#\t\2\2\2#\t\3\2\2\2$%\7\5\2\2%\13\3\2\2"+
+		"\2\5\17\26\34";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

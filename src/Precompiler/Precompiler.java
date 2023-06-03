@@ -55,6 +55,7 @@ public class Precompiler extends dimanaPrecompilerBaseVisitor<Object> {
          Object res3 = ctx.SPACE();
          Object res4 = ctx.STRING();
          Object res5 = ctx.NEWLINE();
+         Object res6 = ctx.LINE_COMMENT();
          if(res != null)
             writer.print(res.toString());
          else if (res2 != null)
@@ -65,6 +66,8 @@ public class Precompiler extends dimanaPrecompilerBaseVisitor<Object> {
             writer.print(res4.toString());
          else if (res5 != null)
             writer.print(res5.toString());
+         else if (res6 != null)
+            writer.print(res6.toString());
 
          writer.close();
       } catch (IOException e) {
