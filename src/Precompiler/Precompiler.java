@@ -69,6 +69,12 @@ public class Precompiler extends dimanaPrecompilerBaseVisitor<Object> {
          else if (res6 != null)
             writer.print(res6.toString());
 
+         try{
+            writer.print(ctx.semicolon.getText());
+         } catch (NullPointerException e) {
+         }
+   
+
          writer.close();
       } catch (IOException e) {
          System.out.println("# File was not found");

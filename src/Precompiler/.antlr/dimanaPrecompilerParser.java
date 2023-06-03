@@ -114,7 +114,7 @@ public class dimanaPrecompilerParser extends Parser {
 			setState(13);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE) | (1L << LINE_COMMENT))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE) | (1L << LINE_COMMENT))) != 0)) {
 				{
 				{
 				setState(10);
@@ -167,7 +167,6 @@ public class dimanaPrecompilerParser extends Parser {
 				preprocessorDirective();
 				}
 				break;
-			case T__1:
 			case STRING:
 			case SYMBOLS:
 			case LETTER:
@@ -250,6 +249,7 @@ public class dimanaPrecompilerParser extends Parser {
 	}
 
 	public static class CodeContext extends ParserRuleContext {
+		public Token semicolon;
 		public TerminalNode LINE_COMMENT() { return getToken(dimanaPrecompilerParser.LINE_COMMENT, 0); }
 		public TerminalNode LETTER() { return getToken(dimanaPrecompilerParser.LETTER, 0); }
 		public TerminalNode SYMBOLS() { return getToken(dimanaPrecompilerParser.SYMBOLS, 0); }
@@ -271,7 +271,7 @@ public class dimanaPrecompilerParser extends Parser {
 			{
 			setState(32);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE) | (1L << LINE_COMMENT))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << STRING) | (1L << SYMBOLS) | (1L << LETTER) | (1L << SPACE) | (1L << NEWLINE) | (1L << LINE_COMMENT))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -279,6 +279,16 @@ public class dimanaPrecompilerParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
+			setState(34);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__1) {
+				{
+				setState(33);
+				((CodeContext)_localctx).semicolon = match(T__1);
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -306,7 +316,7 @@ public class dimanaPrecompilerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(34);
+			setState(36);
 			match(STRING);
 			}
 		}
@@ -322,17 +332,17 @@ public class dimanaPrecompilerParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\n\'\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\n)\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\7\2\16\n\2\f\2\16\2\21\13\2\3\2\3\2\3\3"+
 		"\3\3\5\3\27\n\3\3\4\3\4\7\4\33\n\4\f\4\16\4\36\13\4\3\4\3\4\3\4\3\5\3"+
-		"\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\3\2\4\n\2$\2\17\3\2\2\2\4\26\3\2\2"+
-		"\2\6\30\3\2\2\2\b\"\3\2\2\2\n$\3\2\2\2\f\16\5\4\3\2\r\f\3\2\2\2\16\21"+
-		"\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\22\3\2\2\2\21\17\3\2\2\2\22\23"+
-		"\7\2\2\3\23\3\3\2\2\2\24\27\5\6\4\2\25\27\5\b\5\2\26\24\3\2\2\2\26\25"+
-		"\3\2\2\2\27\5\3\2\2\2\30\34\7\3\2\2\31\33\7\b\2\2\32\31\3\2\2\2\33\36"+
-		"\3\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\37\3\2\2\2\36\34\3\2\2\2\37 \5"+
-		"\n\6\2 !\7\4\2\2!\7\3\2\2\2\"#\t\2\2\2#\t\3\2\2\2$%\7\5\2\2%\13\3\2\2"+
-		"\2\5\17\26\34";
+		"\5\5\5%\n\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2\3\3\2\5\n\2\'\2\17\3\2\2\2\4"+
+		"\26\3\2\2\2\6\30\3\2\2\2\b\"\3\2\2\2\n&\3\2\2\2\f\16\5\4\3\2\r\f\3\2\2"+
+		"\2\16\21\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\22\3\2\2\2\21\17\3\2\2"+
+		"\2\22\23\7\2\2\3\23\3\3\2\2\2\24\27\5\6\4\2\25\27\5\b\5\2\26\24\3\2\2"+
+		"\2\26\25\3\2\2\2\27\5\3\2\2\2\30\34\7\3\2\2\31\33\7\b\2\2\32\31\3\2\2"+
+		"\2\33\36\3\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\37\3\2\2\2\36\34\3\2\2"+
+		"\2\37 \5\n\6\2 !\7\4\2\2!\7\3\2\2\2\"$\t\2\2\2#%\7\4\2\2$#\3\2\2\2$%\3"+
+		"\2\2\2%\t\3\2\2\2&\'\7\5\2\2\'\13\3\2\2\2\6\17\26\34$";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

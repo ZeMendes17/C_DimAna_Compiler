@@ -6,7 +6,7 @@ program: statement* EOF;
 statement: preprocessorDirective | code;
 
 preprocessorDirective: 'use' SPACE* filename ';';
-code: LINE_COMMENT | LETTER | SYMBOLS | STRING | SPACE | NEWLINE | ';';
+code: (LINE_COMMENT | LETTER | SYMBOLS | STRING | SPACE | NEWLINE ) semicolon=';'?;
 
 filename: STRING;
 

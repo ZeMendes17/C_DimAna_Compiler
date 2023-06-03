@@ -128,7 +128,7 @@ public class dimanaPrecompilerParser extends Parser {
 			setState(13);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 510L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 506L) != 0)) {
 				{
 				{
 				setState(10);
@@ -195,7 +195,6 @@ public class dimanaPrecompilerParser extends Parser {
 				preprocessorDirective();
 				}
 				break;
-			case T__1:
 			case STRING:
 			case SYMBOLS:
 			case LETTER:
@@ -293,6 +292,7 @@ public class dimanaPrecompilerParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CodeContext extends ParserRuleContext {
+		public Token semicolon;
 		public TerminalNode LINE_COMMENT() { return getToken(dimanaPrecompilerParser.LINE_COMMENT, 0); }
 		public TerminalNode LETTER() { return getToken(dimanaPrecompilerParser.LETTER, 0); }
 		public TerminalNode SYMBOLS() { return getToken(dimanaPrecompilerParser.SYMBOLS, 0); }
@@ -327,7 +327,7 @@ public class dimanaPrecompilerParser extends Parser {
 			{
 			setState(32);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 508L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 504L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -335,6 +335,16 @@ public class dimanaPrecompilerParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
+			setState(34);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__1) {
+				{
+				setState(33);
+				((CodeContext)_localctx).semicolon = match(T__1);
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -376,7 +386,7 @@ public class dimanaPrecompilerParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(34);
+			setState(36);
 			match(STRING);
 			}
 		}
@@ -392,30 +402,31 @@ public class dimanaPrecompilerParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\b%\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\b\'\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0001"+
 		"\u0000\u0005\u0000\f\b\u0000\n\u0000\f\u0000\u000f\t\u0000\u0001\u0000"+
 		"\u0001\u0000\u0001\u0001\u0001\u0001\u0003\u0001\u0015\b\u0001\u0001\u0002"+
 		"\u0001\u0002\u0005\u0002\u0019\b\u0002\n\u0002\f\u0002\u001c\t\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0004\u0001"+
-		"\u0004\u0001\u0004\u0000\u0000\u0005\u0000\u0002\u0004\u0006\b\u0000\u0001"+
-		"\u0001\u0000\u0002\b\"\u0000\r\u0001\u0000\u0000\u0000\u0002\u0014\u0001"+
-		"\u0000\u0000\u0000\u0004\u0016\u0001\u0000\u0000\u0000\u0006 \u0001\u0000"+
-		"\u0000\u0000\b\"\u0001\u0000\u0000\u0000\n\f\u0003\u0002\u0001\u0000\u000b"+
-		"\n\u0001\u0000\u0000\u0000\f\u000f\u0001\u0000\u0000\u0000\r\u000b\u0001"+
-		"\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000\u0000\u000e\u0010\u0001\u0000"+
-		"\u0000\u0000\u000f\r\u0001\u0000\u0000\u0000\u0010\u0011\u0005\u0000\u0000"+
-		"\u0001\u0011\u0001\u0001\u0000\u0000\u0000\u0012\u0015\u0003\u0004\u0002"+
-		"\u0000\u0013\u0015\u0003\u0006\u0003\u0000\u0014\u0012\u0001\u0000\u0000"+
-		"\u0000\u0014\u0013\u0001\u0000\u0000\u0000\u0015\u0003\u0001\u0000\u0000"+
-		"\u0000\u0016\u001a\u0005\u0001\u0000\u0000\u0017\u0019\u0005\u0006\u0000"+
-		"\u0000\u0018\u0017\u0001\u0000\u0000\u0000\u0019\u001c\u0001\u0000\u0000"+
-		"\u0000\u001a\u0018\u0001\u0000\u0000\u0000\u001a\u001b\u0001\u0000\u0000"+
-		"\u0000\u001b\u001d\u0001\u0000\u0000\u0000\u001c\u001a\u0001\u0000\u0000"+
-		"\u0000\u001d\u001e\u0003\b\u0004\u0000\u001e\u001f\u0005\u0002\u0000\u0000"+
-		"\u001f\u0005\u0001\u0000\u0000\u0000 !\u0007\u0000\u0000\u0000!\u0007"+
-		"\u0001\u0000\u0000\u0000\"#\u0005\u0003\u0000\u0000#\t\u0001\u0000\u0000"+
-		"\u0000\u0003\r\u0014\u001a";
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0003\u0003#\b"+
+		"\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0000\u0000\u0005\u0000\u0002"+
+		"\u0004\u0006\b\u0000\u0001\u0001\u0000\u0003\b%\u0000\r\u0001\u0000\u0000"+
+		"\u0000\u0002\u0014\u0001\u0000\u0000\u0000\u0004\u0016\u0001\u0000\u0000"+
+		"\u0000\u0006 \u0001\u0000\u0000\u0000\b$\u0001\u0000\u0000\u0000\n\f\u0003"+
+		"\u0002\u0001\u0000\u000b\n\u0001\u0000\u0000\u0000\f\u000f\u0001\u0000"+
+		"\u0000\u0000\r\u000b\u0001\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000"+
+		"\u0000\u000e\u0010\u0001\u0000\u0000\u0000\u000f\r\u0001\u0000\u0000\u0000"+
+		"\u0010\u0011\u0005\u0000\u0000\u0001\u0011\u0001\u0001\u0000\u0000\u0000"+
+		"\u0012\u0015\u0003\u0004\u0002\u0000\u0013\u0015\u0003\u0006\u0003\u0000"+
+		"\u0014\u0012\u0001\u0000\u0000\u0000\u0014\u0013\u0001\u0000\u0000\u0000"+
+		"\u0015\u0003\u0001\u0000\u0000\u0000\u0016\u001a\u0005\u0001\u0000\u0000"+
+		"\u0017\u0019\u0005\u0006\u0000\u0000\u0018\u0017\u0001\u0000\u0000\u0000"+
+		"\u0019\u001c\u0001\u0000\u0000\u0000\u001a\u0018\u0001\u0000\u0000\u0000"+
+		"\u001a\u001b\u0001\u0000\u0000\u0000\u001b\u001d\u0001\u0000\u0000\u0000"+
+		"\u001c\u001a\u0001\u0000\u0000\u0000\u001d\u001e\u0003\b\u0004\u0000\u001e"+
+		"\u001f\u0005\u0002\u0000\u0000\u001f\u0005\u0001\u0000\u0000\u0000 \""+
+		"\u0007\u0000\u0000\u0000!#\u0005\u0002\u0000\u0000\"!\u0001\u0000\u0000"+
+		"\u0000\"#\u0001\u0000\u0000\u0000#\u0007\u0001\u0000\u0000\u0000$%\u0005"+
+		"\u0003\u0000\u0000%\t\u0001\u0000\u0000\u0000\u0004\r\u0014\u001a\"";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
