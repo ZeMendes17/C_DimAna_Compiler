@@ -771,6 +771,31 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    }
 
    @Override
+   public Boolean visitIfBlock(dimanaParser.IfBlockContext ctx) {
+      
+      return visitChildren(ctx);
+   }
+
+   @Override
+   public Boolean visitElseBlock(dimanaParser.ElseBlockContext ctx) {
+      
+      return visitChildren(ctx);
+   }
+
+   @Override
+   public Boolean visitConditional(dimanaParser.ConditionalContext ctx) {
+
+      dimanaParser.IfBlockContext ifblock = ctx.ifBlock();
+
+      if (!(ifblock.expression() instanceof dimanaParser.ConditionalExpressionContext)) {
+         ErrorHandling.printError(ctx, "Conditional expression in if loop must be a boolean expression");
+         return false;
+      }
+
+      return true;
+   }
+
+   @Override
    public Boolean visitAndOrExpression(dimanaParser.AndOrExpressionContext ctx) {
 
       for (dimanaParser.ExpressionContext expr_context : ctx.expression()) {
@@ -803,22 +828,6 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       }
 
       return true;
-   }
-
-   @Override
-   public Boolean visitConditional(dimanaParser.ConditionalContext ctx) {
-      /*
-       * for (dimanaParser.ExpressionContext expr_context :
-       * ctx.ifBlock().expression()) {
-       * if (! ( expr_context instanceof dimanaParser.ConditionalExpressionContext)){
-       * ErrorHandling.printError(ctx,
-       * "Conditional expression must be a boolean expression");
-       * return false;
-       * }
-       * }
-       */
-
-      return visitChildren(ctx);
    }
 
    @Override
@@ -868,30 +877,19 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          // dimension_2);
 
          for (String s : varMap.keySet()) {
-            if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid
-                                             // those
-
-               // 3*inch
-
+            if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid those
                if (varMap.get(s).get(1).equals(dimension_2)) // normal units
                {
-
                   ctx.dimension = s;
                }
             }
          }
+
          if (ctx.dimension == null) {
-
             for (String s : varMap.keySet()) {
-
                // find the dimension of the 2nd expression , for example, find dimension Length
                // for unit meter
-
-               if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid
-                                                // those
-
-                  // 3*inch
-
+               if (varMap.get(s).size() == 3) { // size() of "dimensions" string,real,integer is always 1, need to avoid those
                   if (varMap.get(s).get(1).equals(conversions.get(dimension_2).get(1))) { // normal units
                      ctx.dimension = s;
                   }
@@ -902,7 +900,6 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          // operation that involves a variable and a unit, will return to visitAssignment
          // in this case the dimension variables may be the naem of the variables being
          // used
-
          dimension_1 = declared_vars.get(dimension_1);
          dimension_2 = declared_vars.get(dimension_2);
          String resulting_dimension = null;
@@ -921,14 +918,11 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
                // multiplications/divisions between variables of different dimensions will only
                // be allowed
                // if the resulting dimension is already defined
-
                ErrorHandling.printError(ctx,
                      "Trying to multiply/divide variables of different dimensions " + "{" + dimension_1 + "}" + " and "
                            + "{" + dimension_2 + "}\nThe resulting dimension would be " + "{" + dimension_1 + operator
                            + dimension_2 + "}" + " but it is not defined");
-            }
-
-            else {
+            } else {
                ctx.dimension = resulting_dimension;
             }
 

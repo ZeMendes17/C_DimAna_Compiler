@@ -19,9 +19,11 @@ stats(stat) ::= <<
 print(value) ::= <<
 System.out.print(<value>);
 >>
+
 println(value) ::= <<
 System.out.println(<value>);
 >>
+
 scanner_next(var) ::= <<
 <var> = sc.next();
 >>
@@ -170,10 +172,12 @@ assign_2(initial_var,var,varName) ::= <<
 <var> = <varName>;
 >>
 
-assign_dvar(var_name,operando1,operando2,dataType,operacao) ::= <<
+assign_dvar(var_name, operando1, operando2, dataType, operacao,flag1,flag2) ::= <<
 <typeValue.(dataType)> <var_name> ;
-<var_name> = <operando1>.getValue_<typeValue.(dataType)>() <operacao> <operando2>.getValue_<typeValue.(dataType)>();
+<var_name> = <operando1><if(flag1)>.getValue_<typeValue.(dataType)>()<endif> <operacao> <operando2><if(flag2)>.getValue_<typeValue.(dataType)>()<endif>;
 >>
+
+
 
 binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
    
@@ -207,18 +211,8 @@ ifcondicion(assign1,assign2,cond,statementsTrue,statementsFalse) ::= <<
 <assign2>
 if (<cond>) {
    <statementsTrue>
-} <#if statementsFalse?exists>else {</#if>
-   <#if statementsFalse?exists><statementsFalse></#if>
-<#if statementsFalse?exists>}
->>
-elseifcondicion (cond,statements) ::= <<
-else if (<cond>) {
-   <statements>
-}
->>
-elsecondicion (cond,statements) ::= <<
-else {
-   <statements>
+} else {
+   <statementsFalse>
 }
 >>
 

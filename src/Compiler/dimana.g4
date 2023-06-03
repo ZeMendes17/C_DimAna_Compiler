@@ -31,7 +31,6 @@ statement:
     | headerFile
     | prefixUnit
     | unit
-    //| dimension
     | alternativeUnit
     | listDeclaration  
     | breakStatement
@@ -59,7 +58,9 @@ whileStatement: 'while' '(' expression ')' '{' (statement ';')+ '}';
 doWhileStatement: 'do' '{' (statement ';')+ '}' 'while' '(' expression ')';
 
 length : 'length';
+
 breakStatement: 'stop';
+
 continueStatement: 'procede';
 
 headerFile: 'use' STRING;
@@ -71,24 +72,17 @@ unit:
     |   'dimension' dataType ID   ( ('[' ID (',' ID) ']')? '=' expression)      #dependantUnit
 ;
 
-// unit: 'dimension' dataType ID ('[' ID (',' ID)? ']' ('=' expression)? | '=' expression);
-
 alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
 conditional
-    : ifBlock+ /*(elseIfBlock)?*/ (elseBlock)?
+    : ifBlock (elseBlock)?
     ;
 
 ifBlock
     : 'if' '(' expression ')' '{' (statement ';')+ '}'
     ;
-/*
-elseIfBlock
-    : ('else if' '(' expression ')' '{' statements+=statement ';'+ '}')+
-    ;
-*/
 elseBlock
     : 'else' '{' (statement ';')+ '}'
     ;

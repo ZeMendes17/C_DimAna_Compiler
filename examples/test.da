@@ -13,3 +13,8 @@ do {
     procede;
 } while (N < 6);
 
+if (N < 5) {
+    N = 300 ;
+};
+
+
