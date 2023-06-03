@@ -1,7 +1,7 @@
 import java.util.*;
 //import java.io.*;
 
-public class test2Compiled {
+public class sum_ex1Compiled {
 
    public static void main(String[] args) {
       Scanner sc = new Scanner(System.in); /*para depois usar nos READS*/
@@ -14,10 +14,10 @@ public class test2Compiled {
       DimensionVar y = new DimensionVar("Length",v4);
       y.setSuffix("m");
       double v5 ;
-      v5 = x.getValue_double() * y.getValue_double();;
-      DimensionVar a = new DimensionVar("Area",v5);
-      a.setSuffix("m*m");
-      System.out.print(a.getValue_double() + a.getSuffix());
+      v5 = x.getValue_double() + y.getValue_double();;
+      DimensionVar z = new DimensionVar("Length",v5);
+      z.setSuffix("m");
+      System.out.println(" z = ( should be 8.0 m ) ->  " + z.getValue_double() + " " + z.getSuffix());
       sc.close(); /*tem de fechar*/
    }
 }

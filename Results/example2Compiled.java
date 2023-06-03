@@ -29,7 +29,7 @@ public class example2Compiled {
       }
       System.out.println(String.format("%10s","NMEC:") + String.format("%30s","Name") + String.format("%10s","Grade:"));
       for (i = 1; i <= nmecs.size()-1; i++) {
-         System.out.println(String.format("%10s",nmecs.get(i)) + String.format("%30s",names.get(i)) + String.format("%10s",grades.get(i)));
+         System.out.println(String.format("%10s",nmecs.get(i).getValue_int()) + String.format("%30s",names.get(i)) + String.format("%10s",grades.get(i).getValue_double()));
 
       }
       sc.close(); /*tem de fechar*/

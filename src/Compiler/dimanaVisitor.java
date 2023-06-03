@@ -168,27 +168,6 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitElseBlock(dimanaParser.ElseBlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ConditionalExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code IndexExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIndexExpression(dimanaParser.IndexExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code InputExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInputExpression(dimanaParser.InputExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code AddSubExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -224,6 +203,13 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBoolLiteral(dimanaParser.BoolLiteralContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ConditionalExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code IdExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -237,6 +223,13 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitParenExpression(dimanaParser.ParenExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IndexExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIndexExpression(dimanaParser.IndexExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IntLiteral}
 	 * labeled alternative in {@link dimanaParser#expression}.

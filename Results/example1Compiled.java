@@ -22,7 +22,7 @@ public class example1Compiled {
       System.out.print(String.format("%30s","Name"));
       System.out.println(String.format("%10s","Grade:"));
       System.out.println(
-      String.format("%10s",n.getValue_int()) + name + 
+      String.format("%10s",n.getValue_int()) + String.format("%30s" , name) + 
       String.format("%10s",g.getValue_double()));
       sc.close(); /*tem de fechar*/
    }

@@ -48,7 +48,7 @@ inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
 
 outputStatement: write_expr outputFormat (',' outputFormat)*;
 
-outputFormat: ('string' '(' (  ID | STRING | expression ) ',' INT ')') | (STRING ',' ID) | ID;
+outputFormat: ('string' '(' (  ID | STRING | expression ) ',' INT ')') | (STRING ',' ID) | ID | STRING ;
 
 write_expr: 'write' | 'writeln';
 
@@ -94,16 +94,15 @@ elseBlock
     ;
 
 expression returns[String varName, String dimension, String type]
-    : 'read' STRING                                                             # InputExpression
-    | expression op=('*' | '/') expression                                      # MulDivExpression
+    : expression op=('*' | '/') expression                                      # MulDivExpression
     | expression op=('+' | '-') expression                                      # AddSubExpression
+    | dataType '(' expression ')'                                               # TypeConversion
     | e1=expression op=('==' | '!=' | '<' | '>' | '>=' | '<=') e2=expression    # ConditionalExpression
     | expression op=('and' | 'or') expression                                   # AndOrExpression
     | '(' expression ')'                                                        # ParenExpression
     //| expression ',' expression                                               # ExprListExpression
     | ID '[' (ID | INT) ']'                                                     # IndexExpression
     | ID                                                                        # IdExpression
-    | dataType '(' expression ')'                                               # TypeConversion
     | REAL                                                                      # RealLiteral
     | INT                                                                       # IntLiteral
     | STRING                                                                    # StringLiteral

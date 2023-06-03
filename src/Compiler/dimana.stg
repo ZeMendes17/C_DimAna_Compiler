@@ -26,8 +26,12 @@ scanner_next(var) ::= <<
 <var> = sc.next();
 >>
 
-var_get(var,type) ::= <<
-<var>.getValue_<typeValue.(type)>()
+var_get(str,var,type) ::= <<
+<str> + <var>.getValue_<typeValue.(type)>() + " " + <var>.getSuffix()
+>>
+
+var_get_nostring(var,type) ::= <<
+<var>.getValue_<typeValue.(type)>() + " " + <var>.getSuffix()
 >>
 
 var_get_RA(var,type,length) ::= << 
@@ -42,8 +46,12 @@ string_RA(string,length) ::= <<
 String.format("%<length>s",<string>)
 >>
 
-arrayidx_getRA(var,idx,length) ::= <<
+arrayidx_getRA_nonvar(var,idx,length) ::= <<
 String.format("%<length>s",<var>.get(<idx>))
+>>
+
+arrayidx_getRA_var(var,idx,length,type) ::= <<
+String.format("%<length>s",<var>.get(<idx>).getValue_<typeValue.(type)>())
 >>
 
 expr_getRA(expr,length) ::= <<
@@ -146,7 +154,8 @@ DimensionVar <name> = new DimensionVar("<unit>");
 <name>.setSuffix("<suffix>");
 >>
 
-declare_var_with_value(unit,name,value,suffix) ::= <<
+declare_var_with_value(assign1,unit,name,value,suffix) ::= <<
+<assign1>;
 DimensionVar <name> = new DimensionVar("<unit>",<value>);
 <name>.setSuffix("<suffix>");
 >>
@@ -193,11 +202,13 @@ conversionToString(name,value) ::= <<
 String <name> = String.valueOf(<value>);
 >>
 
-ifcondicion(assign1,assign2,cond,statements) ::= <<
+ifcondicion(assign1,assign2,cond,statementsTrue,statementsFalse) ::= <<
 <assign1>
 <assign2>
 if (<cond>) {
-   <statements>
+   <statementsTrue>
+} else {
+   <statementsFalse>
 }
 >>
 elseifcondicion (cond,statements) ::= <<
@@ -225,8 +236,4 @@ do_while_loop(assign1,assign2,cond,statements) ::= <<
 do {
    <statements>
 } while (<cond>);
->>
-
-sum(var,operando1,operando2,dataType) ::= <<
-<typeValue.(dataType)> <var> = <operando1>.getValue_<typeValue.(dataType)>() + <operando2>.getValue_<typeValue.(dataType)>();
 >>

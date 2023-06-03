@@ -28,3 +28,9 @@ Length y;
 if ( x > y ) -> deve dar 
 
 Só é possível comparações entre variáveis de dimensões diferentes se uma delas for real e a outra integer
+
+-----------------------------------------------------------------
+
+Length x = 1.0*meter
+Length y = 3.0*meter
+Length z = x + y; 
