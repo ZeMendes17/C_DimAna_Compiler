@@ -22,14 +22,20 @@ statement:
     | assignment
     | readToArray
     | variableDeclaration
+    | conditional
     | outputStatement
     | loopStatement
+    | whileStatement
+    | doWhileStatement
+    | whileStatement
     | headerFile
     | prefixUnit
     | unit
     //| dimension
     | alternativeUnit
     | listDeclaration  
+    | breakStatement
+    | continueStatement
     ;
 
 variableDeclaration: dataType ID ('=' expression)?;
@@ -39,17 +45,22 @@ readToArray: castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID ;
 assignment: ID '=' expression;
 
 inputStatement: ID '=' dataType? '('? 'read' STRING ')'? ('*' ID)?;
-// fiz umas alterações aqui, para também apanhar casos deste tipo -> name = read "Name: ";
 
-//outputStatement:  write_expr expression   ;
 outputStatement: write_expr outputFormat (',' outputFormat)*;
+
 outputFormat: ('string' '(' (  ID | STRING | expression ) ',' INT ')') | (STRING ',' ID) | ID;
 
 write_expr: 'write' | 'writeln';
 
-loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | length '(' ID ')') 'do' ((expression ';')* ) 'end';
+loopStatement: 'for' ID '=' (INT | ID) 'to' (INT | ID | length '(' ID ')') 'do' ((statement ';')+ ) 'end';
+
+whileStatement: 'while' '(' expression ')' '{' (statement ';')+ '}';
+
+doWhileStatement: 'do' '{' (statement ';')+ '}' 'while' '(' expression ')';
 
 length : 'length';
+breakStatement: 'stop';
+continueStatement: 'procede';
 
 headerFile: 'use' STRING;
 
@@ -66,18 +77,29 @@ alternativeUnit: 'unit' ID '[' ID (',' ID)? ']' '=' expression;
 
 listDeclaration: 'list' '[' dataType ']' ID ('=' 'new' 'list' '[' dataType ']')?;
 
-condicional: 'if' '(' expression ')' '{' trueBlock=statList '}' ('else' '{' falseBlock=statList '}')?;
+conditional
+    : ifBlock+ (elseIfBlock)? (elseBlock)?
+    ;
 
+ifBlock
+    : 'if' '(' expression ')' '{' statements+=statement ';'+ '}'
+    ;
+
+elseIfBlock
+    : ('else if' '(' expression ')' '{' statements+=statement ';'+ '}')+
+    ;
+
+elseBlock
+    : 'else' '{' statements+=statement ';'+ '}'
+    ;
 
 expression returns[String varName, String dimension, String type]
     : 'read' STRING                                                             # InputExpression
-    | castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID                        # InputTypeExpression
-    //| 'string' '(' (STRING | ID) ',' INT ')'                                  # StringAssignExpression
     | expression op=('*' | '/') expression                                      # MulDivExpression
     | expression op=('+' | '-') expression                                      # AddSubExpression
     | e1=expression op=('==' | '!=' | '<' | '>' | '>=' | '<=') e2=expression    # ConditionalExpression
+    | expression op=('and' | 'or') expression                                   # AndOrExpression
     | '(' expression ')'                                                        # ParenExpression
-    | outputStatement                                                           # OutputExpression
     //| expression ',' expression                                               # ExprListExpression
     | ID '[' (ID | INT) ']'                                                     # IndexExpression
     | ID                                                                        # IdExpression

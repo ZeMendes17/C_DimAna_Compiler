@@ -117,6 +117,26 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitLoopStatement(dimanaParser.LoopStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link dimanaParser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(dimanaParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(dimanaParser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link dimanaParser#doWhileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoWhileStatement(dimanaParser.DoWhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#doWhileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoWhileStatement(dimanaParser.DoWhileStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link dimanaParser#length}.
 	 * @param ctx the parse tree
 	 */
@@ -126,6 +146,26 @@ public interface dimanaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLength(dimanaParser.LengthContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link dimanaParser#breakStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterBreakStatement(dimanaParser.BreakStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#breakStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitBreakStatement(dimanaParser.BreakStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link dimanaParser#continueStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterContinueStatement(dimanaParser.ContinueStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#continueStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitContinueStatement(dimanaParser.ContinueStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link dimanaParser#headerFile}.
 	 * @param ctx the parse tree
@@ -191,35 +231,53 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitListDeclaration(dimanaParser.ListDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link dimanaParser#condicional}.
+	 * Enter a parse tree produced by {@link dimanaParser#conditional}.
 	 * @param ctx the parse tree
 	 */
-	void enterCondicional(dimanaParser.CondicionalContext ctx);
+	void enterConditional(dimanaParser.ConditionalContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link dimanaParser#condicional}.
+	 * Exit a parse tree produced by {@link dimanaParser#conditional}.
 	 * @param ctx the parse tree
 	 */
-	void exitCondicional(dimanaParser.CondicionalContext ctx);
+	void exitConditional(dimanaParser.ConditionalContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code OutputExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
+	 * Enter a parse tree produced by {@link dimanaParser#ifBlock}.
 	 * @param ctx the parse tree
 	 */
-	void enterOutputExpression(dimanaParser.OutputExpressionContext ctx);
+	void enterIfBlock(dimanaParser.IfBlockContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code OutputExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
+	 * Exit a parse tree produced by {@link dimanaParser#ifBlock}.
 	 * @param ctx the parse tree
 	 */
-	void exitOutputExpression(dimanaParser.OutputExpressionContext ctx);
+	void exitIfBlock(dimanaParser.IfBlockContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code conditionalExpression}
+	 * Enter a parse tree produced by {@link dimanaParser#elseIfBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseIfBlock(dimanaParser.ElseIfBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#elseIfBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseIfBlock(dimanaParser.ElseIfBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link dimanaParser#elseBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseBlock(dimanaParser.ElseBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link dimanaParser#elseBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseBlock(dimanaParser.ElseBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ConditionalExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void enterConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code conditionalExpression}
+	 * Exit a parse tree produced by the {@code ConditionalExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -345,17 +403,17 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitIntLiteral(dimanaParser.IntLiteralContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code InputTypeExpression}
+	 * Enter a parse tree produced by the {@code AndOrExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx);
+	void enterAndOrExpression(dimanaParser.AndOrExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code InputTypeExpression}
+	 * Exit a parse tree produced by the {@code AndOrExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx);
+	void exitAndOrExpression(dimanaParser.AndOrExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code MulDivExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.

@@ -9,12 +9,23 @@ public class testCompiled {
       x.setSuffix("m");
       DimensionVar y = new DimensionVar("Length");
       y.setSuffix("m");
+      double v1;
+      v1 = 1.0;
+      x.setValue_double(v1);
       double v2;
-      v2 = 1.0;
-      x.setValue_double(v2);
-      double v3;
-      v3 = 1.0 * 0.0254;
-      y.setValue_double(v3);
+      v2 = 2.0;
+      y.setValue_double(v2);
+      int N = 4;
+      int z = 0;
+      int v3 = N;
+
+      int v4 = 6;
+      do {
+         System.out.print(N);
+         continue;
+
+      } while (
+      v3<v4);
       sc.close(); /*tem de fechar*/
    }
 }

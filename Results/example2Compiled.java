@@ -12,7 +12,7 @@ public class example2Compiled {
       names.add(null); // fill index 0 so it starts at 1
       ArrayList<DimensionVar> grades = new ArrayList<DimensionVar>(); // List of Grade ;
       grades.add(null); // fill index 0 so it starts at 1
-      int i;
+      int i ;
       for (i = 1; i <= N; i++) {
          System.out.print("Insert value into array nmecs (int)  : ");
          int temp1 = sc.nextInt();
@@ -29,7 +29,7 @@ public class example2Compiled {
       }
       System.out.println(String.format("%10s","NMEC:") + String.format("%30s","Name") + String.format("%10s","Grade:"));
       for (i = 1; i <= nmecs.size()-1; i++) {
-         System.out.println(String.format("%10s",nmecs.get(i).getValue_integer()) + String.format("%30s",names.get(i)) + String.format("%10s",grades.get(i).getValue_double()));
+         System.out.println(String.format("%10s",nmecs.get(i)) + String.format("%30s",names.get(i)) + String.format("%10s",grades.get(i)));
 
       }
       sc.close(); /*tem de fechar*/

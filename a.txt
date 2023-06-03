@@ -11,3 +11,20 @@ Velocity v2 = v1 + 3 -> não deve dar
 Velocity v2 = v1 + 3.0m/s -> deve dar????????
 
 Velocity v2 = v1 + v3 -> deve dar
+
+-----------------------------------------------------------------
+
+Expressões booleanas
+
+
+
+Possivel :
+
+if ( 3.0 > 3 ) -> deve dar  ( comparação entre real e integer )
+
+Length x;
+Length y;
+
+if ( x > y ) -> deve dar 
+
+Só é possível comparações entre variáveis de dimensões diferentes se uma delas for real e a outra integer

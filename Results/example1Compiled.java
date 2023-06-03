@@ -7,7 +7,7 @@ public class example1Compiled {
       Scanner sc = new Scanner(System.in); /*para depois usar nos READS*/
       DimensionVar n = new DimensionVar("NMEC");
       n.setSuffix("");
-      String name;
+      String name ;
       DimensionVar g = new DimensionVar("Grade");
       g.setSuffix("");
       System.out.print("Insert value into variable n (int)  : ");
@@ -21,7 +21,9 @@ public class example1Compiled {
       System.out.print(String.format("%10s","NMEC:"));
       System.out.print(String.format("%30s","Name"));
       System.out.println(String.format("%10s","Grade:"));
-      System.out.println(String.format("%10s",n.getValue_integer()) + String.format("%30s",name) + String.format("%10s",g.getValue_double()));
+      System.out.println(
+      String.format("%10s",n.getValue_int()) + name + 
+      String.format("%10s",g.getValue_double()));
       sc.close(); /*tem de fechar*/
    }
 }

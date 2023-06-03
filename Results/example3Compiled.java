@@ -20,7 +20,7 @@ public class example3Compiled {
       double v8 ;
       v8 = l.getValue_double() / t.getValue_double();
       v.setValue_double(v8);
-      System.out.println("Velocity: "+v.getValue_double()+ v.getSuffix());
+      System.out.println("Velocity: " + v.getValue_double());
       System.out.print("Insert value into variable l (double)  : ");
       double temp1 = sc.nextDouble();
       l.setValue_double(temp1);
@@ -30,7 +30,7 @@ public class example3Compiled {
       double v9 ;
       v9 = l.getValue_double() / t.getValue_double();
       v.setValue_double(v9);
-      System.out.println("Velocity: "+v.getValue_double()+ v.getSuffix());
+      System.out.println("Velocity: " + v.getValue_double());
       sc.close(); /*tem de fechar*/
    }
 }

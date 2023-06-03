@@ -76,11 +76,35 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLoopStatement(dimanaParser.LoopStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link dimanaParser#whileStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileStatement(dimanaParser.WhileStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link dimanaParser#doWhileStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoWhileStatement(dimanaParser.DoWhileStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link dimanaParser#length}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLength(dimanaParser.LengthContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link dimanaParser#breakStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBreakStatement(dimanaParser.BreakStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link dimanaParser#continueStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContinueStatement(dimanaParser.ContinueStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link dimanaParser#headerFile}.
 	 * @param ctx the parse tree
@@ -120,20 +144,31 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitListDeclaration(dimanaParser.ListDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link dimanaParser#condicional}.
+	 * Visit a parse tree produced by {@link dimanaParser#conditional}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCondicional(dimanaParser.CondicionalContext ctx);
+	T visitConditional(dimanaParser.ConditionalContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code OutputExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
+	 * Visit a parse tree produced by {@link dimanaParser#ifBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOutputExpression(dimanaParser.OutputExpressionContext ctx);
+	T visitIfBlock(dimanaParser.IfBlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code conditionalExpression}
+	 * Visit a parse tree produced by {@link dimanaParser#elseIfBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseIfBlock(dimanaParser.ElseIfBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link dimanaParser#elseBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseBlock(dimanaParser.ElseBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ConditionalExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -210,12 +245,12 @@ public interface dimanaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntLiteral(dimanaParser.IntLiteralContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code InputTypeExpression}
+	 * Visit a parse tree produced by the {@code AndOrExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInputTypeExpression(dimanaParser.InputTypeExpressionContext ctx);
+	T visitAndOrExpression(dimanaParser.AndOrExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code MulDivExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.

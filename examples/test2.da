@@ -1,0 +1,4 @@
+dimension real Length [meter,m];
+
+
+Length x = 1.0*meter;

@@ -64,7 +64,7 @@ public class DimensionVar  {
     }
 
     
-    public int getValue_integer() {
+    public int getValue_int() {
         return value_int;
     }
 
