@@ -5,7 +5,7 @@ echo "Creating Temporary file"
 antlr4-run "../../examples/$1"
 cd ../Compiler/
 echo "Running Program"
-java -ea dimanaMain ../../examples/temp.da $1
+java  dimanaMain ../../examples/temp.da $1
 echo "Deleting Temporary file"
 rm ../../examples/temp.da
 echo "Closing..."

@@ -37,7 +37,7 @@ statement:
     | continueStatement
     ;
 
-variableDeclaration: dataType ID ('=' expression ID?)?;
+variableDeclaration: dataType ID ('=' expression)?;
 
 readToArray: castTypes? '('?'read' STRING ')'? ('*'ID)? '>>' ID ;
 
@@ -94,11 +94,13 @@ expression returns[String varName, String dimension, String type]
     | e1=expression op=('==' | '!=' | '<' | '>' | '>=' | '<=') e2=expression    # ConditionalExpression
     | expression op=('and' | 'or') expression                                   # AndOrExpression
     | '(' expression ')'                                                        # ParenExpression
-    //| expression ',' expression                                               # ExprListExpression
+    | 'get' ID '[' INT ']'                                                      # Get_array_idx
     | ID '[' (ID | INT) ']'                                                     # IndexExpression
     | ID                                                                        # IdExpression
     | REAL                                                                      # RealLiteral
     | INT                                                                       # IntLiteral
+    | REAL expression                                                           # RealSuffix
+    | INT expression                                                            # IntSuffix
     | STRING                                                                    # StringLiteral
     | BOOL                                                                      # BoolLiteral
     ;

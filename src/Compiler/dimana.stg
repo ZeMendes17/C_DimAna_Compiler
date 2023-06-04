@@ -75,7 +75,8 @@ decl(type,var,value) ::= <<
 <typeValue.(type)> <var> <if(value)> = <value><endif>;
 >>
 
-decl_value(type,var,value) ::= <<
+decl_value(assign1,type,var,value) ::= <<
+<if(assign1)><assign1>;<endif>
 <typeValue.(type)> <var> = <value>;
 >>
 
@@ -177,8 +178,6 @@ assign_dvar(var_name, operando1, operando2, dataType, operacao,flag1,flag2) ::= 
 <var_name> = <operando1><if(flag1)>.getValue_<typeValue.(dataType)>()<endif> <operacao> <operando2><if(flag2)>.getValue_<typeValue.(dataType)>()<endif>;
 >>
 
-
-
 binaryOperation(type,var,e1,op,e2) ::= "<decl(type,var,[e1,\" \",op,\" \",e2])>"
    
 declString(var, value) ::= <<
@@ -222,18 +221,28 @@ if (<cond>) {
 }
 >>
 
-while_loop(assign1,assign2,cond,statements) ::= <<
+while_loop(regen_val,assign1,assign2,cond,statements,break,continue) ::= <<
 <assign1>;
 <assign2>;
 while (<cond>) {
    <statements>
+   <regen_val>
+   <if(break)><break><endif>
+   <if(continue)><continue><endif>
 }
 >>
 
-do_while_loop(assign1,assign2,cond,statements) ::= <<
+do_while_loop(regen_val,assign1,assign2,cond,statements,break,continue) ::= <<
 <assign1>;
 <assign2>;
 do {
    <statements>
+   <regen_val>
+   <if(break)><break><endif>
+   <if(continue)><continue><endif>
 } while (<cond>);
+>>
+
+get_array_idx(var,array,idx,type,flag) ::= <<
+<typeValue.(type)> <var> = <array>.get(<idx>)<if(flag)>.getValue_<typeValue.(type)>()<endif>
 >>

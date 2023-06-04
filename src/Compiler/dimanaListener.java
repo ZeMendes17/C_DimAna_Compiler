@@ -261,6 +261,42 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitElseBlock(dimanaParser.ElseBlockContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code ConditionalExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ConditionalExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IndexExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndexExpression(dimanaParser.IndexExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IndexExpression}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndexExpression(dimanaParser.IndexExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Get_array_idx}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGet_array_idx(dimanaParser.Get_array_idxContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Get_array_idx}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGet_array_idx(dimanaParser.Get_array_idxContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code AddSubExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -297,6 +333,18 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitTypeConversion(dimanaParser.TypeConversionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code RealSuffix}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterRealSuffix(dimanaParser.RealSuffixContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code RealSuffix}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitRealSuffix(dimanaParser.RealSuffixContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code StringLiteral}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -320,18 +368,6 @@ public interface dimanaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBoolLiteral(dimanaParser.BoolLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ConditionalExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ConditionalExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitConditionalExpression(dimanaParser.ConditionalExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code IdExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.
@@ -357,18 +393,6 @@ public interface dimanaListener extends ParseTreeListener {
 	 */
 	void exitParenExpression(dimanaParser.ParenExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code IndexExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterIndexExpression(dimanaParser.IndexExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IndexExpression}
-	 * labeled alternative in {@link dimanaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitIndexExpression(dimanaParser.IndexExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code IntLiteral}
 	 * labeled alternative in {@link dimanaParser#expression}.
 	 * @param ctx the parse tree
@@ -380,6 +404,18 @@ public interface dimanaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIntLiteral(dimanaParser.IntLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IntSuffix}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntSuffix(dimanaParser.IntSuffixContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IntSuffix}
+	 * labeled alternative in {@link dimanaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntSuffix(dimanaParser.IntSuffixContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code AndOrExpression}
 	 * labeled alternative in {@link dimanaParser#expression}.

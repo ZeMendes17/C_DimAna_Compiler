@@ -1,2 +1,0 @@
-integer N = 5;
-N = N + 1 ;

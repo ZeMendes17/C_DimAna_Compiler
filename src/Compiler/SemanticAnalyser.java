@@ -147,10 +147,66 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          }
       });
 
-      System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
+      //System.out.println("Added dimension " + ctx.ID(0).getText() + " with dimension " + ctx.expression().dimension);
 
       return res;
       // return res;
+   }
+
+   @Override
+   public Boolean visitIntSuffix(dimanaParser.IntSuffixContext ctx) {
+
+      boolean res = visit(ctx.expression()); // deve dar visit no ID Expression
+
+      if (isReservedName(ctx.expression().getText())){
+         ErrorHandling.printError(ctx, "Suffix " + ctx.expression().getText() + " cant use a Java reserved name");
+         return false;
+      }
+
+      visit(ctx.expression());
+      ctx.dimension = ctx.expression().dimension;
+
+      for (String s : varMap.keySet()){
+         if (varMap.get(s).size() == 3){
+            if (varMap.get(s).get(2).equals(ctx.expression().dimension)){
+               ctx.dimension = s;
+            }
+         }
+      }
+
+     
+      return true;
+   }
+
+   @Override
+   public Boolean visitRealSuffix(dimanaParser.RealSuffixContext ctx) {
+
+      boolean res = visit(ctx.expression()); // deve dar visit no ID Expression
+
+      if (isReservedName(ctx.expression().getText())){
+         ErrorHandling.printError(ctx, "Suffix " + ctx.expression().getText() + " cant use a Java reserved name");
+         return false;
+      }
+
+      visit(ctx.expression());
+      ctx.dimension = ctx.expression().dimension;
+      String saver = ctx.dimension;
+
+      for (String s : varMap.keySet()){
+         if (varMap.get(s).size() == 3){
+            if (varMap.get(s).get(2).equals(ctx.expression().dimension)){
+               ctx.dimension = s;
+            }
+         }
+      }
+      
+      if (ctx.dimension.equals(saver)){
+         ErrorHandling.printError(ctx, "Suffix " + ctx.expression().getText() + " does not exist or the corresponding dimension has not been declared yet");
+         return false;
+      }
+   
+
+      return true;
    }
 
    @Override
@@ -167,11 +223,11 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
          if (ctx.dataType().type == null) {
             ErrorHandling.printError(ctx,
-                  "Attempt at using a undeclared dimension when declaring the variable -> " + ctx.ID(0).getText());
+                  "Attempt at using a undeclared dimension when declaring the variable -> " + ctx.ID().getText());
             return false;
          }
 
-         String varName = ctx.ID(0).getText();
+         String varName = ctx.ID().getText();
 
          if (isReservedName(varName)) {
             ErrorHandling.printError(ctx, "Variable " + varName + " cant use a Java reserved name");
@@ -186,15 +242,15 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          if (ctx.expression() != null) { // se existir uma expressão a ser associada À variavel
 
             String expr_dataType = ctx.expression().dimension;
-            // System.out.println(expr_dataType);
-            // System.out.println(var_dataType);
+            System.out.println(ctx.expression().getText() + " of type ->  " + expr_dataType);
+            System.out.println("Variable of type -> " + var_dataType);
 
             if (var_dataType.equals("String"))
                var_dataType = "string";
             if (expr_dataType.equals("String"))
                expr_dataType = "string";
 
-            System.out.println("DATATYPES " + var_dataType + " " + expr_dataType);
+            //System.out.println("DATATYPES " + var_dataType + " " + expr_dataType);
 
             if (varMap.get(var_dataType).size() == 1 && varMap.get(expr_dataType).size() == 1) { // when both are type
                                                                                                  // string/integer/real
@@ -241,6 +297,23 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
       // System.out.println("Passed Variable Declaration check");
       // System.out.flush();
       return res;
+   }
+
+   public Boolean visitGet_array_idx(dimanaParser.Get_array_idxContext ctx) {
+
+      if (!declared_lists.containsKey(ctx.ID().getText())) {
+         ErrorHandling.printError(ctx, "List " + ctx.ID().getText() + " is not declared");
+         return false;
+      }
+
+      if (ctx.INT().getText().equals("0")){
+         ErrorHandling.printError(ctx, "Lists start at index 1, cant access index 0");
+         return false;
+      }
+
+      ctx.dimension = declared_lists.get(ctx.ID().getText());
+
+      return true;
    }
 
    @Override
@@ -432,12 +505,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
             return false;
          }
 
-         if (!declared_vars.containsKey(idNode.getText()) && !declared_lists.containsKey(idNode.getText())) // verificar
-                                                                                                            // se esta
-                                                                                                            // variavel
-                                                                                                            // já foi
-                                                                                                            // declarada
-         {
+         if (!declared_vars.containsKey(idNode.getText()) && !declared_lists.containsKey(idNode.getText())) {
             ErrorHandling.printError(ctx,
                   "Cant loop over variable or list " + idNode.getText() + " because it is not declared");
             return false;
@@ -655,7 +723,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
    public Boolean visitTypeConversion(dimanaParser.TypeConversionContext ctx) {
       Boolean res = visit(ctx.expression()) && visit(ctx.dataType());
       String convert_type = ctx.dataType().type;
-      System.out.println(ctx.expression().getText());
+      //System.out.println(ctx.expression().getText());
       if (convert_type.equals("real")) {
          try {
             Double.parseDouble(ctx.expression().getText());
@@ -725,14 +793,9 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
       ctx.dimension = ctx.ID().getText();
 
-      // System.out.println("Varmap " + varMap );
-      // System.out.println("Checking for decomposal with unit " + ctx.dimension + " ,
-      // does varMap have it? " + varMap.containsKey(ctx.dimension));
+   
       if (varMap.containsKey(ctx.dimension)) {
          if (varMap.get(ctx.dimension).get(1).contains("*") || varMap.get(ctx.dimension).get(1).contains("/")) {
-            // System.out.print("Entered unit replacement with " + ctx.dimension );
-            // System.out.println("Replaced " + ctx.dimension + " for " +
-            // varMap.get(ctx.dimension).get(1);
             ctx.dimension = "(" + varMap.get(ctx.dimension).get(1) + ")";
          }
 
@@ -958,7 +1021,7 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
 
          String default_type = varMap.get(split_dim[0]).get(0); // default datatype for when expression will cancel out
                                                                 // and result in a
-         System.out.println("DEFAULT TYPE -> " + default_type);
+         //System.out.println("DEFAULT TYPE -> " + default_type);
          // integer or real
 
          // System.out.println(ctx.dimension);

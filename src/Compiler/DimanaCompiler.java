@@ -2,6 +2,7 @@
 import java.util.*;
 
 import org.stringtemplate.v4.*;
+import org.antlr.v4.runtime.RuleContext;
 
 @SuppressWarnings("CheckReturnValue")
 public class DimanaCompiler extends dimanaBaseVisitor<ST> {
@@ -123,7 +124,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitVariableDeclaration(dimanaParser.VariableDeclarationContext ctx) {
       // NMEC n (dataType ID )
       visit(ctx.dataType());
-      String id = ctx.ID(0).getText();
+      String id = ctx.ID().getText();
       String expression = "";
       // so se tem dataType e id garantidos, a expression é opcional
 
@@ -141,7 +142,13 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             variable_declaration = templates.getInstanceOf("decl_value");
             variable_declaration.add("type", ctx.dataType().type);
             variable_declaration.add("var", id);
-            variable_declaration.add("value", expression);
+            if (ctx.expression() instanceof dimanaParser.Get_array_idxContext) {
+               visit(ctx.expression());
+               variable_declaration.add("assign1", visit(ctx.expression()).render());
+               variable_declaration.add("value", ctx.expression().varName);
+            } else {
+               variable_declaration.add("value", expression);
+            }
          } else {
             variable_declaration = templates.getInstanceOf("decl");
             variable_declaration.add("type", ctx.dataType().type);
@@ -171,13 +178,15 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             variable_declaration.add("value", ctx.expression().varName);
             // System.out.println("Variavel + " + id + " declarada com sucesso" + " do tipo
             // " + dataType);
-            System.out.println(ctx.dataType().type);
+            //System.out.println(ctx.dataType().type);
 
             if (ctx.dataType().type.equals("String")) {
                ctx.dataType().type = "string";
             }
 
-            if (varMap.get(ctx.dataType().type).size() != 1) {
+            //System.out.println(ctx.dataType().type);
+
+            if (varMap.get(ctx.dataType().type).size() == 3) {
                String suffix = varMap.get(ctx.dataType().type).get(2);
                variable_declaration.add("suffix", suffix);
             }
@@ -284,60 +293,33 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
 
    }
 
-   /*
-    * @Override
-    * public ST visitAddListExpression(dimanaParser.AddListExpressionContext ctx) {
-    * ST add_list = templates.getInstanceOf("add_list");
-    * String list_name = ctx.ID().getText(); // verificar se esta lista já foi
-    * declarada??
-    * System.out.println("dies of ctx.expression.render()");
-    * String value = visit(ctx.expression()).render();
-    * System.out.println(value);
-    * add_list.add("listname", list_name);
-    * add_list.add("value", value);
-    *
-    *
-    *
-    * return add_list;
-    * // return res;
-    * }
-    */
-   /*
-    * @Override
-    * public ST visitInputTypeExpression(dimanaParser.InputTypeExpressionContext
-    * ctx) {
-    * 
-    * ST input = templates.getInstanceOf("read_toArray"); // its a string
-    * if (ctx.castTypes() != null) {
-    * input = templates.getInstanceOf("read_and_cast_toArray");
-    * input.add("type", ctx.castTypes().getText());
-    * if (ctx.ID(0) != null && ctx.ID(1) != null) { // cast to dimension default
-    * value
-    * input.add("var", ctx.ID(1).getText());
-    * // System.out.println("BASE UNIT DA DIMENSÃO" + ctx.ID(0).getText());
-    * String dimension = "";
-    * for (String s : varMap.keySet()) {
-    * if (varMap.get(s).contains(ctx.ID(0).getText())) {
-    * dimension = s;
-    * break;
-    * }
-    * }
-    * input.add("dimension", dimension);
-    * } else
-    * input.add("var", ctx.ID(0).getText());
-    * input.add("temp", temp_vars());
-    * input.add("temp2", temp_vars());
-    * } else {
-    * if (ctx.ID(0) != null && ctx.ID(1) != null)
-    * input.add("var", ctx.ID(1).getText());
-    * else
-    * input.add("var", ctx.ID(0).getText());
-    * input.add("temp", temp_vars());
-    * input.add("temp2", temp_vars());
-    * }
-    * return input;
-    * }
-    */
+   @Override
+   public ST visitGet_array_idx(dimanaParser.Get_array_idxContext ctx) {
+
+      String array_name = ctx.ID().getText();
+      String idx = ctx.INT().getText();
+      String array_datatype = varMap.get(declared_lists.get(array_name)).get(0);
+      String array_dimension = declared_lists.get(array_name);
+      ST res = templates.getInstanceOf("get_array_idx");
+
+      ctx.varName = newVar();
+      res.add("type", array_datatype);
+      res.add("var", ctx.varName);
+
+      if (array_dimension.equals("String"))
+         array_dimension = "string";
+
+      if (array_dimension.equals("real") || array_dimension.equals("integer") || array_dimension.equals("string")) {
+         res.add("array", array_name);
+         res.add("idx", idx);
+      } else {
+         res.add("array", array_name);
+         res.add("idx", idx);
+         res.add("flag", "true");
+      }
+
+      return res;
+   }
 
    @Override
    public ST visitAssignment(dimanaParser.AssignmentContext ctx) {
@@ -347,7 +329,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       String var_type = varMap.get(var_dimension).get(0);
       ST res = null;
 
-      System.out.println("VISIT ASSIGNMENT, COM TYPE " + var_type + " E DIMENSION " + var_dimension);
+      //System.out.println("VISIT ASSIGNMENT, COM TYPE " + var_type + " E DIMENSION " + var_dimension);
 
       if (var_dimension.equals("real") || var_dimension.equals("integer")) { // integers ou reais
          res = templates.getInstanceOf("assign_2");
@@ -411,16 +393,10 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          if (var_dimension.equals("String"))
             var_dimension = "string";
 
-         if (var_dimension.equals("real") || var_dimension.equals("integer") || var_dimension.equals("string")) { // print
-                                                                                                                  // de
-                                                                                                                  // uma
-                                                                                                                  // variavel
-                                                                                                                  // integer/real
-
+         if (var_dimension.equals("real") || var_dimension.equals("integer") || var_dimension.equals("string")) {
             res = templates.getInstanceOf("stats");
             res.add("stat", id);
             return res;
-
          }
 
          else { // print de uma string + variavel de qualquer dimensão
@@ -445,38 +421,29 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
             if (var_dimension.equals("String"))
                var_dimension = "string";
 
-            if (var_dimension.equals("real") || var_dimension.equals("integer") || var_dimension.equals("string")) { // print
-                                                                                                                     // de
-                                                                                                                     // uma
-                                                                                                                     // variavel
-                                                                                                                     // integer/real
-
+            if (var_dimension.equals("real") || var_dimension.equals("integer") || var_dimension.equals("string")) {
                res = templates.getInstanceOf("stats");
                res.add("stat", "String.format(\"%" + ctx.INT().getText() + "s\" , " + id + ")");
                return res;
-
             }
 
             res.add("var", id);
             res.add("type", var_datatype);
             res.add("length", ctx.INT().getText());
-            return res;
 
-            // stg
+            return res;
          }
          if (ctx.STRING() != null) { // print de string right-aligned
             String str = ctx.STRING().getText();
             res = templates.getInstanceOf("string_RA");
             res.add("string", str);
             res.add("length", ctx.INT().getText());
+
             return res;
-            // stg
          }
          if (ctx.expression() != null) {
 
-            if (ctx.expression() instanceof dimanaParser.IndexExpressionContext) { // print de index de array
-                                                                                   // right-aligned
-
+            if (ctx.expression() instanceof dimanaParser.IndexExpressionContext) {
                dimanaParser.IndexExpressionContext array = (dimanaParser.IndexExpressionContext) ctx.expression();
                String type = varMap.get(declared_lists.get(array.ID(0).getText())).get(0);
                String dimension = declared_lists.get(array.ID(0).getText());
@@ -498,12 +465,14 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
                   res.add("length", ctx.INT().getText());
                   res.add("type", type);
                }
+
                return res;
 
             } else { // print de uma expressão qualquer
                res = templates.getInstanceOf("expr_getRA");
                res.add("expr", visit(ctx.expression()).render());
                res.add("length", ctx.INT().getText());
+
                return res;
             }
          }
@@ -600,8 +569,8 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       res = templates.getInstanceOf("assign_dvar");
       res.add("var_name", ctx.varName);
 
-      System.out.println("DIMENSAO 1 NO ADDSUB " + ctx.expression(0).dimension + " DIMENSAO 2 NO ADDSUB "
-            + ctx.expression(1).dimension);
+      //System.out.println("DIMENSAO 1 NO ADDSUB " + ctx.expression(0).dimension + " DIMENSAO 2 NO ADDSUB "
+            //+ ctx.expression(1).dimension);
       if (ctx.expression(0).dimension.equals("string") || ctx.expression(0).dimension.equals("real")
             || ctx.expression(0).dimension.equals("integer")) {
          res.add("operando1", operando1);
@@ -619,7 +588,7 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       res.add("dataType", var_type);
       res.add("operacao", op);
 
-      System.out.println("OUTPUT DO ADDSUB \n" + res.render());
+      //System.out.println("OUTPUT DO ADDSUB \n" + res.render());
 
       return res;
    }
@@ -673,16 +642,16 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       String varName = ctx.expression().getText();
       String value = visit(ctx.expression()).render();
 
-      System.out.println("Value do type conversion \n "+ value);
+      //System.out.println("Value do type conversion \n " + value);
 
       // deal with sums and other operations in the name of the variable
       if (varName.split("[/*+-]").length > 1) {
          varName = value.split(";")[1];
          varName = varName.split("=")[0];
-         varName = varName.replace("\n","");
+         varName = varName.replace("\n", "");
       }
 
-      //System.out.println("VARNAME CONVERTIDO " + varName);
+      // System.out.println("VARNAME CONVERTIDO " + varName);
       String type = ctx.dataType().type;
 
       switch (type) {
@@ -719,12 +688,36 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       ST res = templates.getInstanceOf("stats");
       ;
       ctx.varName = newVar();
+
+      System.out.println(ctx.ID().getText());
+      try {
       String dimension = declared_vars.get(ctx.ID().getText());
       String datatype = varMap.get(dimension).get(0);
       datatype = typeConvert(datatype);
       res.add("stat", datatype + " " + ctx.varName + " = " + ctx.ID().getText() + ";");
       // retorna String var = value; e define o ctx.varName (var) pra usar acima
       ctx.dimension = dimension;
+   }
+   catch (NullPointerException e){ // sufixos
+   }
+      return res;
+   }
+
+   public ST visitIntSuffix(dimanaParser.IntSuffixContext ctx) {
+      ST res = templates.getInstanceOf("stats");
+      ctx.varName = newVar();
+      res.add("stat", "int " + ctx.varName + " = " + ctx.INT().getText() + ";");
+      // retorna int var = value; e define o ctx.varName (var) pra usar acima
+      ctx.dimension = "integer";
+      return res;
+   }
+
+   public ST visitRealSuffix(dimanaParser.RealSuffixContext ctx) {
+      ST res = templates.getInstanceOf("stats");
+      ctx.varName = newVar();
+      res.add("stat", "double " + ctx.varName + " = " + ctx.REAL().getText() + ";");
+      // retorna int var = value; e define o ctx.varName (var) pra usar acima
+      ctx.dimension = "real";
       return res;
    }
 
@@ -905,6 +898,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitWhileStatement(dimanaParser.WhileStatementContext ctx) {
       ST while_loop = templates.getInstanceOf("while_loop");
 
+      int breaks = 0;
+      int continues = 0;
+
       int expression_amount = ctx.statement().size();
       String while_loop_statements = "";
       String condition = visit(ctx.expression()).render();
@@ -912,25 +908,27 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
       for (int i = 0; i < expression_amount; i++) {
          String statement = visit(ctx.statement(i)).render();
 
-         // tens de por os visit para o break e para o continue e po-lo a retornar um
-         // stats com o getText();
-         // isto não existe, não tá definido nos visits
          if (statement.equals("stop")) {
-            statement = "break;";
-
+            breaks += 1;
          } else if (statement.equals("procede")) {
-            statement = "continue;";
+            continues += 1;
+         } else {
+            while_loop_statements += statement + "\n";
          }
-
-         while_loop_statements += statement + "\n";
       }
 
       String[] split_conds = condition.split(";");
+
+      String var_to_regen = split_conds[2].split("[<>=!]+|==|!=")[0].replace("\n", "") + " = "
+            + split_conds[0].split("=")[1].replace("[\n]", "") + ";";
+
+      //System.out.println("var to regen: " + var_to_regen);
 
       while_loop.add("assign1", split_conds[0]);
       while_loop.add("assign2", split_conds[1]);
 
       while_loop.add("cond", split_conds[2]);
+      while_loop.add("regen_val", var_to_regen);
       while_loop.add("statements", while_loop_statements);
 
       return while_loop;
@@ -940,6 +938,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
    public ST visitDoWhileStatement(dimanaParser.DoWhileStatementContext ctx) {
       ST do_while_loop = templates.getInstanceOf("do_while_loop");
 
+      int breaks = 0;
+      int continues = 0;
+
       int expression_amount = ctx.statement().size();
       String do_while_loop_statements = "";
       String condition = visit(ctx.expression()).render();
@@ -948,22 +949,29 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          String statement = visit(ctx.statement(i)).render();
 
          if (statement.equals("stop")) {
-            statement = "break;";
+            breaks += 1;
 
          } else if (statement.equals("procede")) {
-            statement = "continue;";
+            continues += 1;
+         } else {
+            do_while_loop_statements += statement + "\n";
          }
-
-         do_while_loop_statements += statement + "\n";
       }
 
       String[] split_conds = condition.split(";");
 
+      String var_to_regen = split_conds[2].split("[<>=!]+|==|!=")[0].replace("\n", "") + " = "
+            + split_conds[0].split("=")[1].replace("[\n]", "") + ";";
+
       do_while_loop.add("assign1", split_conds[0]);
       do_while_loop.add("assign2", split_conds[1]);
-
+      do_while_loop.add("regen_val", var_to_regen);
       do_while_loop.add("cond", split_conds[2]);
       do_while_loop.add("statements", do_while_loop_statements);
+      if (breaks > 0)
+         do_while_loop.add("break", "break;");
+      if (continues > 0)
+         do_while_loop.add("continue", "continue;");
 
       return do_while_loop;
    }
@@ -987,8 +995,9 @@ public class DimanaCompiler extends dimanaBaseVisitor<ST> {
          assign_dvar.add("dataType", var_type);
          assign_dvar.add("operacao", ctx.op.getText());
 
-
-         // flags are used to see when its a dimension_var ( that needs method getValue<type> ) or a normal datatype ( real/integer ), which doesnt need this method.
+         // flags are used to see when its a dimension_var ( that needs method
+         // getValue<type> ) or a normal datatype ( real/integer ), which doesnt need
+         // this method.
          if (!(declared_vars.get(operando1).equals("integer") && declared_vars.get(operando1).equals("real")))
             assign_dvar.add("flag1", "true");
 

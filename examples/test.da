@@ -1,20 +1,9 @@
 dimension real Length [meter,m];
+dimension real Time [second,s];
+dimension real Mass [gram,g];
+dimension real Temperature [kelvin,K]; 
 
-Length x;
-Length y;
-
-x = 1.0*meter;
-y = 2.0*meter;
-integer N = 4;
-integer z = 0;
-
-do {
-    write N;
-    procede;
-} while (N < 6);
-
-if (N < 5) {
-    N = 300 ;
-};
-
-
+Length l = 5.0m;
+Time t = 10.0s;
+Mass m = 100.0g;
+Temperature T = 20.0K;

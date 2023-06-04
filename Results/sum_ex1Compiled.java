@@ -17,7 +17,7 @@ public class sum_ex1Compiled {
       v5 = x.getValue_double() + y.getValue_double();;
       DimensionVar z = new DimensionVar("Length",v5);
       z.setSuffix("m");
-      System.out.println(" z = ( should be 8.0 m ) ->  " + z.getValue_double() + " " + z.getSuffix());
+      System.out.println(" z ( should be 8.0 m ) ->  " + z.getValue_double() + " " + z.getSuffix());
       sc.close(); /*tem de fechar*/
    }
 }
