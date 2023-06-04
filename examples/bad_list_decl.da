@@ -1,6 +1,0 @@
-# trying to declare a list with a type and elements of it with another
-
-dimension integer NMEC [nmec];
-dimension real Grade [val];
-
-list[NMEC] nmecs = new list[Grade]; 

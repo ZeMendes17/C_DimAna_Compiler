@@ -1,9 +1,0 @@
-dimension real Length [meter,m];
-dimension real Time [second,s];
-dimension real Mass [gram,g];
-dimension real Temperature [kelvin,K]; 
-
-Length l = 5.0m;
-Time t = 10.0s;
-Mass m = 100.0g;
-Temperature T = 20.0K;

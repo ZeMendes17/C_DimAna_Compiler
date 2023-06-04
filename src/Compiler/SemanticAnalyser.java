@@ -242,8 +242,8 @@ public class SemanticAnalyser extends dimanaBaseVisitor<Boolean> {
          if (ctx.expression() != null) { // se existir uma expressão a ser associada À variavel
 
             String expr_dataType = ctx.expression().dimension;
-            System.out.println(ctx.expression().getText() + " of type ->  " + expr_dataType);
-            System.out.println("Variable of type -> " + var_dataType);
+            //System.out.println(ctx.expression().getText() + " of type ->  " + expr_dataType);
+            //System.out.println("Variable of type -> " + var_dataType);
 
             if (var_dataType.equals("String"))
                var_dataType = "string";

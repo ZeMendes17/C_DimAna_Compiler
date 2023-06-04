@@ -1,3 +1,0 @@
-dimension integer NMEC [nmec];
-dimension real Length [meter,m];
-integer abstract = 3;
