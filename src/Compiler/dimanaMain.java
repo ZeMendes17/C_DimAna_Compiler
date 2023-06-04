@@ -48,12 +48,6 @@ public class dimanaMain {
                   File directory = new File("../../Results");
                   File file = new File(directory, filename + ".java");
 
-                  /*
-                   * if (file.exists()) {
-                   * System.out.println("File already exists. Overwriting...");
-                   * }
-                   */
-
                   try (FileWriter writer = new FileWriter(file, false)) {
                      writer.write(result.render());
                      System.out.println("File created/overwritten -> " + file.getName());

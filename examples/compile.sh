@@ -1,6 +1,6 @@
 # bash scipt to compile the desired file, precompiling it first
 
-cd Precompiler/
+cd ../src/Precompiler/
 echo "Creating Temporary file"
 antlr4-run "../../examples/$1"
 cd ../Compiler/
