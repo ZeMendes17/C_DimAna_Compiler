@@ -1,6 +1,7 @@
 # Tema **DimAna**, grupo **dimana-01**
 -----
-Nota: 16.9
+Grade: 16.9
+
 ## Constituição dos grupos e participação individual global
 
 | NMec | Nome | email | Participação |
