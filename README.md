@@ -134,7 +134,7 @@ Todos os exemplos compilados são guardados na pasta Results, sendo que nesta pa
       - Geração de código do compilador (Compiler)
       - Relatório
       - Documentação adicional
-
+  
 - Rodrigo Silva Aguiar
 
       - Análise Semantica (Compiler)
